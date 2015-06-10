@@ -162,23 +162,29 @@ bullet = Class.extend({
 	var vy: null;
 	var damage: null;
 	var isDead: null;
+	var target: null;
 	
-	init: function(x, y, damage, vx, vy) {
+	init: function(x, y, damage, vx, vy, target) {
 		this.x = x;
 		this.y = y;
 		this.damage = damage;
 		this.vx = vx;
 		this.vy = vy;
 		this.isDead = false;
+		this.target = target;
 	}
 	
 	//redesign this
 	action: function() {
-		if (isDead) {
+		if (hit()) {
 			attack(target);
 			destroy();
 		}
 		else move();
+	}
+	
+	hit: function() {
+		return this.x = target.x && this.y = target.y;
 	}
 	
 	attack: function(target) {
