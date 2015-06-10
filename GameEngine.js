@@ -1,12 +1,10 @@
 var canvas = null;
 var ctx = null;
 var image = null;
-var frameRate = //todo;
+var frameRate = null; //todo
 
 var setup = function() {
 	canvas = document.getElementById("canvas");
-	
-	
 	ctx = canvas.getContext("2d");
 	
 	ctx.moveTo(0,0);
@@ -20,27 +18,28 @@ var setup = function() {
 	image.onload = onloadImage;
 	image.src = "./images/Banana_Tree.png";
 	*/
-}
+};
 
 world = Class.extend({
-	var objects: [];
-	var script: null;
-	var duration: null;//millisecond
-	var gameOver: false;
+	objects: null,
+	script: null,
+	duration: null,//millisecond
+	gameOver: false,
 	
 	init: function(level) {
+		this.objects = [];
 		this.script = level.parse;
 		//set duration
-	}
+	},
 	
 	isGameOver: function() {
 		if (gameOver) return true;
 		return duration <= 0;
-	}
+	},
 		
 	insertObject: function(object) {
 		objects.push(object);
-	}
+	},
 	
 	removeDead: function() {
 		for (var i=0; i<objects.length; i++) {
@@ -51,7 +50,7 @@ world = Class.extend({
 				objects.splice(i,1);
 			}
 		}
-	}
+	},
 	
 	action: function() {
 		for (var i=0; i<objects.length; i++) {
@@ -60,22 +59,22 @@ world = Class.extend({
 		removeDead();
 		duration -= frameRate;
 	}
-}
+});
 
 gameEngine = Class.extend({
-	var world: null;
-	var interval: null;
-	var renderingEngine: null;
+	world: null,
+	interval: null,
+	renderingEngine: null,
 	
 	init: function() {
-		this.world = new world(//level);
-		this.renderingEngine: new renderingEngine(this.world);
+		this.world = new world(); //parameter missing
+		this.renderingEngine = new renderingEngine(this.world);
 		setupInputManager();
 		this.interval = setInterval(action, frameRate);
-	}
+	},
 	
 	setupInputManager: function() {
-	}
+	},
 	
 	action: function() {
 		world.action();
@@ -84,9 +83,9 @@ gameEngine = Class.extend({
 			clearInterval(this.interval);
 			gameOverScreen();
 		}
-	}
+	},
 	
 	gameOverScreen: function() {
 		//todo: specify what to do when game is over
 	}
-}
+});

@@ -1,0 +1,9 @@
+level0 = {
+	events: [{
+		time: 0,
+		type: "gorilla",
+		startPostion: 1
+	}, {}],
+	level: 1,
+	
+}
