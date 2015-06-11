@@ -15,6 +15,8 @@ var setup = function() {
 	ctx.lineTo(0,720);
 	ctx.lineTo(0,0);
 	ctx.stroke();
+	
+	game = new gameEngine(json);
 	/*
 	image = new Image();
 	image.onload = onloadImage;
@@ -31,12 +33,19 @@ world = Class.extend({
 	timer: 0,
 	nextTimer: null,
 	bullets: null,
+	deploy: null,
 	
 	init: function(file) {
 		this.script = file.parse();
 		this.tree = new tree(script.level);
 		nextTimer = script.events[0].time;
 		bullets = [];
+		deploy = [];
+		//todo
+		for (var i=0; i<script.deploy.length; i++) {
+			var monkey = characterData["monkey"][script.deploy[i]];
+			var m = new monkey()//todo;
+		}
 		this.objects = {"a": [], "b":[], "c":[], "d":[]}; //a,b,c,d correspond to different direction of spawning
 	},
 	
@@ -50,9 +59,10 @@ world = Class.extend({
 		return (objects["a"].length == 0 && objects["b"].length == 0  && objects["c"].length == 0  && objects["d"].length == 0 );
 	},
 	
-	spawn: function(monster) {
-		m = new monster(monster.hp, positionData[monster.position].x, positionData[monster.position].y, monster.damage,
-			monster.attackRate, monster.attackRange, monster.vx);
+	spawn: function(xx) {
+		var monster = characterData["monster"][xx["type"]];
+		m = new monster(monster.hp, positionData[xx["position"]].x, positionData[xx["position"]].y, monster.damage,
+			monster.attackRate, monster.attackRange, xx["vx"]);
 		this.objects[monster.position].push(m);
 	},
 	
@@ -77,7 +87,13 @@ world = Class.extend({
 		}
 	},
 	
-	action: function() {
+	action: function(list) {
+		for (var i=0; i<list.length; i++) {//todo
+			if (list[i][0] == "deploying") {}
+			else if (list[i][0] == "rotating") {}
+			else if (list[i][0] == "deploy") {}
+			else if (list[i][0] == "rotate") {}
+		}
 		for (var j=0; j<4; j++) {
 			for (var i=0; i<objects[j].length; i++) {
 				var b = objects[j].action(tree.slots[Math.floor(j*1.5 + 0.5)]);
@@ -111,19 +127,17 @@ gameEngine = Class.extend({
 	world: null,
 	interval: null,
 	renderingEngine: null,
+	inputManager: null,
 	
 	init: function(file) {
 		this.world = new world(file);
 		this.renderingEngine = new renderingEngine(this.world);
-		setupInputManager();
+		this.inputManager = new inputManager(this.world);
 		this.interval = setInterval(action, frameRate);
 	},
 	
-	setupInputManager: function() {//this modify the html to setup the appropriate input manager
-	},
-	
 	action: function() {
-		world.action();
+		world.action(inputManager.store);
 		renderingEngine.render();
 		if (world.isGameOver()) {
 			clearInterval(this.interval);

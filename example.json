@@ -5,5 +5,6 @@ level0 = {
 		postion: "a",
 	}, {}],
 	level: 1,
+	deploy: ["xxx",]
 	
 }
