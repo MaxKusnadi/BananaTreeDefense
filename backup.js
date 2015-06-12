@@ -655,7 +655,7 @@ monster = armedBeing.extend({
 	
 	init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx) {
 		this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
-		this.vx = vx;
+		this.vx = vx/1000*frameRate;
 	},
 	
 	action: function(slot) {
@@ -672,7 +672,7 @@ monster = armedBeing.extend({
 	},
 	
 	move: function() {
-		this.x += this.vx/1000*frameRate;
+		this.x += this.vx;
 		this.moved = true;
 	},
 	
@@ -701,7 +701,6 @@ bullet = Class.extend({
 	isDead: null,
 	time: null,
 	v: null,
-	target: null,
 	
 	init: function(x, y, damage, v, target) {
 		this.x = x;
@@ -717,14 +716,12 @@ bullet = Class.extend({
 	},
 	
 	action: function() {
-		/*
 		if (this.target.moved) {
 			var t = this.calculateTrajectory(this, this.target, this.v);
 			this.vx = t[0]/1000*frameRate;
 			this.vy = t[1]/1000*frameRate;
 			this.time = t[2];
 		}
-		*/
 		ctx.fillRect(this.x, this.y, 5,5);
 		this.time -= frameRate/1000;
 		if (this.time<=0) {
@@ -746,22 +743,6 @@ bullet = Class.extend({
 	calculateTrajectory : function(a, b, v) {
 		var diffx = b.x-a.x;
 		var diffy = b.y-a.y;
-		if (b instanceof monster) {
-			var pos = diffx>=0 ? true : false;
-			var x0 = Math.abs(diffx);
-			var y0 = Math.abs(diffy);
-			var vg = b.vx;
-			if (v == Math.abs(vg)) {
-				var x = (y0*y0+x0*x0)/2/x0;
-			}
-			else{
-				var x = (vg*vg*x0-Math.sqrt(Math.pow(vg,4)*x0*x0-(vg*vg-v*v)*vg*vg*(y0*y0+x0*x0)))/(vg*vg-v*v);
-			}
-			diffx = pos ? (x0-x) : (x-x0);
-			if (b.attackRange>(pos?diffx:-diffx)) {
-				diffx = pos ? (b.attackRange) : -1*b.attackRange;
-			}
-		}
 		var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
 		return [v/hypo*diffx, v/hypo*diffy, hypo/v];
 	}	
