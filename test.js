@@ -9,6 +9,7 @@ var positionData = {0: {x:0, y:540}, 1: {x:0, y:180}, 2: {x:1200, y:180}, 3: {x:
 var world = null;
 var inputManager = null;
 var game = null;
+var gravity = 900;
 var boxPosition = {x: 35, y:45};
 var TREE_POSITION_X = 590;
 var TREE_POSITION_Y = 360;
@@ -22,6 +23,7 @@ var MONEY_POSITION = [900,700];
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
+<<<<<<< HEAD
   monkeys: {
     "soldier": {
       hp: 500,
@@ -63,20 +65,24 @@ var data = {
     }
     //...
   }
+>>>>>>> origin/master
 }
 //---------------------------BULLET DATA--------------------------------
 var bulletData= {
-  "type1": {
-    v : 240,
-    type : "projectile"
-  },
-  "type2": {
-    v: 500,
-    type : "projectile"
-  }
+<<<<<<< HEAD
+	"type1": {
+		v : 240,
+		type : "projectile"
+	},
+	"type2": {
+		v: 500,
+		type : "projectile"
+	}
+>>>>>>> origin/master
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
+<<<<<<< HEAD
   events: [{
     time: 1,
     type: "gorilla",
@@ -104,6 +110,8 @@ level0 = {
   level: 1,
   deployNumber: 2,
   deploy: ["soldier", "archer"]
+
+>>>>>>> origin/master
 }
 //------------------------------MAIN-------------------------------------
 var setup = function() {
@@ -625,6 +633,7 @@ armedBeing = livingBeing.extend({
 });
 
 monkey = armedBeing.extend({
+<<<<<<< HEAD
   slotNumber :null,
   
   init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost) {
@@ -666,9 +675,11 @@ monkey = armedBeing.extend({
     var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
     return b;
   }
+>>>>>>> origin/master
 });
 
 monster = armedBeing.extend({
+<<<<<<< HEAD
   vx: null,
   moved: false,
   
@@ -718,10 +729,11 @@ monster = armedBeing.extend({
     return b;
   }
   
-  
+>>>>>>> origin/master
 });
 
 bullet = Class.extend({
+<<<<<<< HEAD
   x: null,
   y: null,
   vx: null,
@@ -827,6 +839,7 @@ bullet = Class.extend({
     this.y += this.vy;
   } 
   
+>>>>>>> origin/master
 });
 
   
