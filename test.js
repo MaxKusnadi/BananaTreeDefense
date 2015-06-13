@@ -23,7 +23,6 @@ var MONEY_POSITION = [900,700];
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
-<<<<<<< HEAD
   monkeys: {
     "soldier": {
       hp: 500,
@@ -65,11 +64,9 @@ var data = {
     }
     //...
   }
->>>>>>> origin/master
 }
 //---------------------------BULLET DATA--------------------------------
 var bulletData= {
-<<<<<<< HEAD
 	"type1": {
 		v : 240,
 		type : "projectile"
@@ -78,11 +75,9 @@ var bulletData= {
 		v: 500,
 		type : "projectile"
 	}
->>>>>>> origin/master
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
-<<<<<<< HEAD
   events: [{
     time: 1,
     type: "gorilla",
@@ -111,7 +106,6 @@ level0 = {
   deployNumber: 2,
   deploy: ["soldier", "archer"]
 
->>>>>>> origin/master
 }
 //------------------------------MAIN-------------------------------------
 var setup = function() {
@@ -633,7 +627,6 @@ armedBeing = livingBeing.extend({
 });
 
 monkey = armedBeing.extend({
-<<<<<<< HEAD
   slotNumber :null,
   
   init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost) {
@@ -675,11 +668,9 @@ monkey = armedBeing.extend({
     var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
     return b;
   }
->>>>>>> origin/master
 });
 
 monster = armedBeing.extend({
-<<<<<<< HEAD
   vx: null,
   moved: false,
   
@@ -729,11 +720,9 @@ monster = armedBeing.extend({
     return b;
   }
   
->>>>>>> origin/master
 });
 
 bullet = Class.extend({
-<<<<<<< HEAD
   x: null,
   y: null,
   vx: null,
@@ -838,8 +827,7 @@ bullet = Class.extend({
     this.x += this.vx;
     this.y += this.vy;
   } 
-  
->>>>>>> origin/master
+
 });
 
   
