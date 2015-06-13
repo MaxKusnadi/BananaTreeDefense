@@ -9,6 +9,7 @@ var positionData = {0: {x:0, y:540}, 1: {x:0, y:180}, 2: {x:1200, y:180}, 3: {x:
 var world = null;
 var inputManager = null;
 var game = null;
+var gravity = 900;
 var boxPosition = {x: 35, y:45};
 var TREE_POSITION_X = 600;
 var TREE_POSITION_Y = 360;
@@ -41,11 +42,11 @@ var data = {
 	
 	monsters: {
 		"gorilla": {
-			hp: 1000,
-			damage: 20,
+			hp: 10000000,
+			damage: 2,
 			attackRate: 0.5,
 			attackRange: 200,
-			bulletType: "type1",
+			bulletType: "type2",
 			vx: 120
 		}, 
 		"kingkong": {
@@ -62,7 +63,12 @@ var data = {
 //---------------------------BULLET DATA--------------------------------
 var bulletData= {
 	"type1": {
-		v : 240
+		v : 240,
+		type : "projectile"
+	},
+	"type2": {
+		v: 500,
+		type : "projectile"
 	}
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
@@ -71,7 +77,7 @@ level0 = {
 		time: 1,
 		type: "gorilla",
 		position: 0
-	}, {
+	}/*, {
 		time: 1,
 		type: "gorilla",
 		position: 1
@@ -87,7 +93,7 @@ level0 = {
 		time: 5,
 		type: "kingkong",
 		position: 3
-	}
+	}*/
 		
 		
 		],
@@ -644,7 +650,7 @@ monkey = armedBeing.extend({
 	attack: function(target) {
 		if (this.coolDown>0) return null;
 		this.coolDown = this.attackRate;
-		var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target);
+		var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
 		return b;
 	}
 });
@@ -686,7 +692,7 @@ monster = armedBeing.extend({
 	attack: function(slot) {
 		if (this.coolDown>0) return null;
 		this.coolDown = this.attackRate;
-		var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, slot);
+		var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, slot, this.bulletType.type);
 		return b;
 	}
 	
@@ -702,8 +708,80 @@ bullet = Class.extend({
 	time: null,
 	v: null,
 	target: null,
+	action: null,
+	calculateTrajectory: null,
 	
-	init: function(x, y, damage, v, target) {
+	init: function(x, y, damage, v, target, type) {
+		if (type == "straight") {
+			this.action = (function() {
+				ctx.fillRect(this.x, this.y, 5,5);
+				this.time -= frameRate/1000;
+				if (this.time<=0) {
+					this.attack(this.target);
+					this.isDead = true;
+				}
+					else this.move();
+			});
+			this.calculateTrajectory = (function(a, b, v) {
+				var diffx = b.x-a.x;
+				var diffy = b.y-a.y;
+				if (b instanceof monster) {
+					var pos = diffx>=0 ? true : false;
+					var x0 = Math.abs(diffx);
+					var y0 = Math.abs(diffy);
+					var vg = b.vx;
+					if (v == Math.abs(vg)) {
+						var x = (y0*y0+x0*x0)/2/x0;
+					}
+					else{
+						var x = (vg*vg*x0-Math.sqrt(Math.pow(vg,4)*x0*x0-(vg*vg-v*v)*vg*vg*(y0*y0+x0*x0)))/(vg*vg-v*v);
+					}
+					diffx = pos ? (x0-x) : (x-x0);
+					if (b.attackRange>(pos?diffx:-diffx)) {
+						diffx = pos ? (b.attackRange) : -1*b.attackRange;
+					}
+				}
+				var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
+				return [v/hypo*diffx, v/hypo*diffy, hypo/v];
+				
+			});
+		}
+		else if (type == "projectile") {
+			this.action = (function() {
+				ctx.fillRect(this.x, this.y, 5,5);
+				this.time -= frameRate/1000;
+				if (this.time<=0) {
+					this.attack(this.target);
+					this.isDead = true;
+				}else {
+					this.vy += gravity/1000*frameRate/1000*frameRate;
+					this.move();
+				}
+			});
+			this.calculateTrajectory = (function(a, b, v) {
+				var diffx = b.x-a.x;
+				var diffy = b.y-a.y;
+				if (b instanceof monster) {
+					var pos = diffx>=0 ? true : false;
+					var x0 = Math.abs(diffx);
+					var y0 = Math.abs(diffy);
+					var vg = b.vx;
+					if (v == Math.abs(vg)) {
+						var x = (y0*y0+x0*x0)/2/x0;
+					}
+					else{
+						var x = (vg*vg*x0-Math.sqrt(Math.pow(vg,4)*x0*x0-(vg*vg-v*v)*vg*vg*(y0*y0+x0*x0)))/(vg*vg-v*v);
+					}
+					diffx = pos ? (x0-x) : (x-x0);
+					if (b.attackRange>(pos?diffx:-diffx)) {
+						diffx = pos ? (b.attackRange) : -1*b.attackRange;
+					}
+				}
+				var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
+				var time = hypo/v;
+				return [diffx/time, diffy/time - 1/2*gravity*time, time];
+			});
+		}
 		this.x = x;
 		this.y = y;
 		var t = this.calculateTrajectory(this, target, v);
@@ -716,23 +794,6 @@ bullet = Class.extend({
 		this.v = v;
 	},
 	
-	action: function() {
-		/*
-		if (this.target.moved) {
-			var t = this.calculateTrajectory(this, this.target, this.v);
-			this.vx = t[0]/1000*frameRate;
-			this.vy = t[1]/1000*frameRate;
-			this.time = t[2];
-		}
-		*/
-		ctx.fillRect(this.x, this.y, 5,5);
-		this.time -= frameRate/1000;
-		if (this.time<=0) {
-			this.attack(this.target);
-			this.isDead = true;
-		}
-		else this.move();
-	},
 	
 	attack: function(target) {
 		this.target.reduceHp(this.damage);
@@ -741,29 +802,6 @@ bullet = Class.extend({
 	move: function() {
 		this.x += this.vx;
 		this.y += this.vy;
-	},
-	
-	calculateTrajectory : function(a, b, v) {
-		var diffx = b.x-a.x;
-		var diffy = b.y-a.y;
-		if (b instanceof monster) {
-			var pos = diffx>=0 ? true : false;
-			var x0 = Math.abs(diffx);
-			var y0 = Math.abs(diffy);
-			var vg = b.vx;
-			if (v == Math.abs(vg)) {
-				var x = (y0*y0+x0*x0)/2/x0;
-			}
-			else{
-				var x = (vg*vg*x0-Math.sqrt(Math.pow(vg,4)*x0*x0-(vg*vg-v*v)*vg*vg*(y0*y0+x0*x0)))/(vg*vg-v*v);
-			}
-			diffx = pos ? (x0-x) : (x-x0);
-			if (b.attackRange>(pos?diffx:-diffx)) {
-				diffx = pos ? (b.attackRange) : -1*b.attackRange;
-			}
-		}
-		var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
-		return [v/hypo*diffx, v/hypo*diffy, hypo/v];
 	}	
 	
 });
