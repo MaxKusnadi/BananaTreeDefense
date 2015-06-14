@@ -16,7 +16,7 @@ var TREE_POSITION_X = 590;
 var TREE_POSITION_Y = 360;
 var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
-var startingGold = 100;
+var startingGold = 150;
 var slotSize = {
   x : 25,
   y: 35
@@ -78,6 +78,44 @@ var bulletData= {
 		v: 300,
 		type : "projectile"
 	}
+}
+//---------------------------BULLET DATA--------------------------------
+var musicData ={
+  "background":{
+    src: "audio/bg.mp3",
+    loop: true,
+    volume: 0.3
+  },
+  "monkeySpawn":{
+    src: "audio/monkey.mp3",
+    loop: false,
+    volume: 0.8
+  },
+  "pickCoin":{
+    src:"audio/pickCoin.wav",
+    loop: false,
+    volume: 0.4
+  },
+  "monkeyShoot":{
+    src:"audio/shoot.wav",
+    loop: false,
+    volume: 0.2
+  },
+  "gameover":{
+    src:"audio/gameover.wav",
+    loop: false,
+    volume: 0.4
+  },
+  "win":{
+    src:"audio/win.wav",
+    loop:false,
+    volume:0.4
+  },
+  "hit":{
+    src:"audio/hit.wav",
+    loop:false,
+    volume:1
+  }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
@@ -169,10 +207,14 @@ gameEngine = Class.extend({
 			//render
 			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Lost!");
 			game.over = false;
+      world.audio.stop("background");
+      world.audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
 			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Win!");
 			game.over = false;
+      world.audio.stop("background");
+      world.audio.play("win");
     }
 		world.action();
 		renderingEngine.render();
@@ -345,6 +387,7 @@ world = Class.extend({
   rotateBuffer: null,
   money: null,
 	coins: null,
+  audio: null,
   
   init: function(file) {
     this.script = file;
@@ -355,6 +398,8 @@ world = Class.extend({
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
+    this.audio = new audioManager();
+    this.audio.play("background");
     //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
@@ -396,7 +441,7 @@ world = Class.extend({
     m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
- 
+    this.audio.play("monkeySpawn");
   },
   
 	
@@ -467,6 +512,7 @@ world = Class.extend({
 				if (list[1].isDead == false) {
 					list[1].isDead = true;
 					world.money += list[1].value;
+          world.audio.play("pickCoin");
 				}
 			}
       list = inputManager.retrieve();
@@ -550,8 +596,8 @@ livingBeing = Class.extend({
 		this.hp = Math.max(this.hp- amt,0);
     if (this.hp<=0){
       this.isDead = true;
-			
-    } 
+    }
+    world.audio.play("hit"); 
   },
   
   recoverHp: function(amt) {
@@ -750,6 +796,7 @@ monkey = armedBeing.extend({
     if (this.coolDown>0) return null;
     this.coolDown = this.attackRate;
     var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
+    world.audio.play("monkeyShoot");
     return b;
   }
 });
@@ -983,4 +1030,28 @@ message = Class.extend({
 			this.time -=frameRate/1000;
 		}
 	}
+});
+
+audioManager = Class.extend({
+  collections: null,
+  context: null,
+
+  init: function(){
+    this.collections = {};
+    for(var key in musicData){
+      this.context = new Audio(musicData[key].src);
+      this.context.loop = musicData[key].loop;
+      this.context.volume = musicData[key].volume;
+      this.collections[key] = this.context;
+    } 
+  },
+
+  play: function(name){
+    this.collections[name].play();
+  },
+
+  stop: function(name){
+    this.collections[name].pause();
+  }
+
 });
