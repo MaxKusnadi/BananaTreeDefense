@@ -16,7 +16,7 @@ var TREE_POSITION_X = 590;
 var TREE_POSITION_Y = 360;
 var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
-var startingGold = 150;
+var startingGold = 200;
 var slotSize = {
   x : 25,
   y: 35
@@ -75,7 +75,7 @@ var bulletData= {
 		type : "straight"
 	},
 	"type2": {
-		v: 300,
+		v: 240,
 		type : "projectile"
 	}
 }
@@ -1048,15 +1048,12 @@ audioManager = Class.extend({
 
   play: function(name){
 		if (!this.collections[name].paused) {
-			console.log(this.collections[name].currentTime);
 			var clone = new Audio(musicData[name].src);
 			clone.loop = musicData[name].loop;
 			clone.volume = musicData[name].volume;
 			clone.play();
-			console.log(clone);
-			console.log(this.collections[name]);
-			console.log(clone==this.collections[name]);
 		}else this.collections[name].play();
+    console.log(name);
   },
 
   stop: function(name){
