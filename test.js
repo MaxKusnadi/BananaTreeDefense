@@ -7,6 +7,7 @@ var characterData = null;
 var bulletData = null;
 var positionData = {0: {x:0, y:540}, 1: {x:0, y:180}, 2: {x:1200, y:180}, 3: {x:1200, y:540}};
 var world = null;
+var renderingEngine = null;
 var inputManager = null;
 var game = null;
 var gravity = 900;
@@ -15,11 +16,13 @@ var TREE_POSITION_X = 590;
 var TREE_POSITION_Y = 360;
 var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
+var startingGold = 100;
 var slotSize = {
   x : 25,
   y: 35
 };
 var MONEY_POSITION = [900,700];
+var coinSize = {x:25, y:25};
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -143,11 +146,13 @@ gameEngine = Class.extend({
   interval: null,
   renderingEngine: null,
   inputManager: null,
+	over: true,
   
   init: function(file) {
     world = new world(file);
-    //this.renderingEngine = new renderingEngine(world);
+    renderingEngine = new renderingEngine();
     inputManager = new inputManager();
+		this.over = true;
     this.interval = setInterval(this.action, frameRate);
   },
   
@@ -159,51 +164,47 @@ gameEngine = Class.extend({
 	ctx.font="20px Georgia";
 	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
 	ctx.fillText("Money: "+world.money, 850, 50);
-    world.action();
     //renderingEngine.render();
-    if (world.isGameOver()) {
-      world.bullets = [];
-      world.buffer = null;
-      world.rotateBuffer = [];
-      clearInterval(game.interval);
-	  //render
-      ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
-      ctx.clearRect(1,586,canvas.width-2, 133);
-      ctx.clearRect(1,1,1198,88);
-	    ctx.font="20px Georgia";
-    	ctx.fillText("Tree Hp: "+ "0" ,550,50);
-    	ctx.fillText("Money: "+world.money, 850, 50);
-      world.action();
-      game.gameOverScreen();
-    }else if (world.isWin()) {
-      world.bullets = [];
-      world.buffer = null;
-      world.rotateBuffer = [];
-      clearInterval(game.interval);
-	  //render
-      ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
-      ctx.clearRect(1,586,canvas.width-2, 133);
-      ctx.clearRect(1,1,1198,88);
-	    ctx.font="20px Georgia";
-	    ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-    	ctx.fillText("Money: "+world.money, 850, 50);
-      world.action();
-      game.winScreen();
+    if (world.isGameOver() && game.over) {
+			//render
+			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Lost!");
+			game.over = false;
+    }else if (world.isWin()&& game.over) {
+			//render
+			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Win!");
+			game.over = false;
     }
+		world.action();
+		renderingEngine.render();
   },
   
   gameOverScreen: function() {
-	  //render
-    ctx.font="20px Georgia";
-  	ctx.fillText("You Lost!", 550, 680);
   },
   
   winScreen: function() {
-	  //render
-	  ctx.font="20px Georgia";
-  	ctx.fillText("You Win!", 550, 680);
 	}
 });
+
+//------------------------------RENDERINGENGINE-------------------------------
+renderingEngine = Class.extend({
+	messages: null,
+	
+	init: function() {
+		this.messages = [];
+	},
+	
+	createMessage: function(style, duration, x, y, text) {
+		this.messages.push(new message(style, duration, x, y, text));
+	},
+	
+	render: function() {
+		for (var i=0; i<this.messages.length; i++) {
+			this.messages[i].render();
+		}
+	}
+});
+		
+
 //------------------------------------INPUTMANAGER----------------------------------------
 
 inputManager = Class.extend({
@@ -215,7 +216,6 @@ inputManager = Class.extend({
     document.getElementById("canvas").addEventListener("mousedown", this.mouseDown);
     document.getElementById("canvas").addEventListener("mousemove", this.mouseMove);
     document.getElementById("canvas").addEventListener("mouseup", this.mouseUp);
-    document.getElementById("canvas").addEventListener("mouseover", this.mouseOver);
   },
   
   retrieve: function() {
@@ -226,6 +226,17 @@ inputManager = Class.extend({
   },
   
   mouseDown: function(event) {
+		if (event.button == 2) return;
+		if (world.isWin() || world.isGameOver()) {
+			clearInterval(game.interval);
+			game.action();
+			document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
+			document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
+			document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
+			if (world.isWin()) {
+				game.winScreen();
+			}else game.gameOverScreen();
+		}
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
@@ -259,7 +270,6 @@ inputManager = Class.extend({
         if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
           inputManager.store.push(["deploy", this.deploying, i]);
           this.deploying = null;
-          return;
         }
       }
       this.deploying = null;
@@ -277,7 +287,17 @@ inputManager = Class.extend({
       }
       inputManager.store.push(["rotate", this.rotating, nearest.number]);
       this.rotating = null;
-    }   
+    }
+		if (world.isWin() || world.isGameOver()) {
+			clearInterval(game.interval);
+			game.action();
+			document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
+			document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
+			document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
+			if (world.isWin()) {
+				game.winScreen();
+			}else game.gameOverScreen();
+		}
   },
   
   mouseMove: function(event) {
@@ -285,6 +305,12 @@ inputManager = Class.extend({
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
     
+		for (var i=0; i<world.coins.length; i++) {
+			var coin = world.coins[i];
+			if (Math.abs(coin.x-x)<=coinSize.x && Math.abs(coin.y-y)<=coinSize.y) {
+				inputManager.store.push(["collect", coin]);
+			}
+		}
     if (this.deploying) {
       inputManager.store.push(["deploying", this.deploying, x, y]);
     }else if(this.rotating) {
@@ -318,6 +344,7 @@ world = Class.extend({
   buffer: null,
   rotateBuffer: null,
   money: null,
+	coins: null,
   
   init: function(file) {
     this.script = file;
@@ -326,7 +353,8 @@ world = Class.extend({
     this.bullets = [];
     this.deploy = [];
     this.rotateBuffer = [];
-    this.money = 500;
+    this.money = startingGold;
+		this.coins = [];
     //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
@@ -358,35 +386,39 @@ world = Class.extend({
   },
   
   spawnMonkey: function(mon, position) {
-    if (this.tree.slots[position].monkey !== null || characterData.monkeys[mon].cost > this.money){
-      return false;
-    }
+    if (this.tree.slots[position].monkey !== null){
+      return;
+    }else if (characterData.monkeys[mon].cost > this.money) {
+			renderingEngine.createMessage("20px Georgia", 3, 550, 650, "You Need More Gold");
+			return;
+		}
     mm = characterData.monkeys[mon];
     m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
-    ctx.font="20px Georgia";
-    ctx.fillText("You Need More Gold!", 550, 680);
  
   },
   
-  removeDead: function() {
+	
+	removeDead: function() {
+		var remove = (function(list) {
+		var i=0;
+		while(i<list.length) {
+			if(list[i].isDead) {
+				list.splice(i,1);
+			}else i++;
+		}
+	});
     for (var i=0; i<4; i++) {
-      for (var j=0; j<this.objects[i].length; j++) {
-        if (this.objects[i][j].isDead) {
-          this.objects[i].splice(j,1);
-        }
-      }
+			remove(this.objects[i]);
     }
-    for (var i=0; i<this.bullets.length; i++) {
-      if (this.bullets[i].isDead) {
-        this.bullets.splice(i,1);
-      }
-    }
+    remove(this.bullets);
     for (var i=0; i<6; i++) {
       var m = world.tree.slots[i].monkey;
       if (m && m.isDead) world.tree.slots[i].monkey = null;
     }
+		remove(this.coins);
+		remove(renderingEngine.messages);
   },
   
   action: function() {
@@ -431,6 +463,12 @@ world = Class.extend({
       else if (list[0] == "clear") {
         this.buffer = null;
       }
+			else if (list[0] == "collect") {
+				if (list[1].isDead == false) {
+					list[1].isDead = true;
+					world.money += list[1].value;
+				}
+			}
       list = inputManager.retrieve();
     }
     for (var j=0; j<4; j++) {
@@ -462,6 +500,13 @@ world = Class.extend({
       this.deploy[i].monkey.action();
 	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-10);
     }
+	//render
+		for (var i=0; i<this.coins.length; i++) {
+			this.coins[i].action();
+			ctx.font="30px Georgia";
+			ctx.fillText("$", this.coins[i].x, this.coins[i].y);
+			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
+		}
 	//render
     if(this.buffer) {
       this.buffer.action();
@@ -502,10 +547,10 @@ livingBeing = Class.extend({
   },
   
   reduceHp: function(amt) {
-    this.hp -= amt;
+		this.hp = Math.max(this.hp- amt,0);
     if (this.hp<=0){
       this.isDead = true;
-
+			
     } 
   },
   
@@ -742,7 +787,9 @@ monster = armedBeing.extend({
     this.hp -= damage;
     if (this.hp<=0 && !this.isDead){
       this.isDead = true;
-      world.money += this.reward;
+			for (var i=0; i<this.reward/5; i++) {
+				world.coins.push(new coin(this.x, this.y));
+			}
     }
 
   },
@@ -875,7 +922,65 @@ bullet = Class.extend({
 
 });
 
-  
-  
-          
-  
+coin = Class.extend({
+	x: null,
+	y: null,
+	vy: null,
+	value: null,
+	isDead: false,
+	a: null,
+	vx: null,
+	
+	init: function(x,y) {
+		this.value = 5;
+		this.x = x;
+		this.y = y;
+		this.vx = Math.random()*100-50;
+		this.vy = -250+ Math.random()*50-25;
+		this.time = this.calculateTime();
+	},
+	
+	 move: function() {
+		 
+		this.vy += gravity/1000*frameRate;
+    this.y += this.vy/1000*frameRate;
+		this.y = Math.min(this.y, SLOTS_POSITION_Y[0]);
+		this.x += this.vx/1000*frameRate;
+  },
+	
+	action: function() {
+		if (this.time<=0) return;
+		this.time -= frameRate/1000;
+		this.move();
+	},
+	
+	calculateTime: function() {
+		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*gravity*(SLOTS_POSITION_Y[0]-this.y)))/gravity;
+	}
+});
+
+message = Class.extend({
+	x: null,
+	y: null,
+	time: null,
+	m: null,
+	style: null,
+	isDead: false,
+	
+	init: function(style, duration, x, y, m) {
+		this.x = x;
+		this.y = y;
+		this.time = duration;
+		this.m = m;
+		this.style = style;
+	},
+	
+	render: function() {
+		if (this.time <=0 ) isDead = true;
+		else {
+			ctx.font = this.style;
+			ctx.fillText(this.m, this.x, this.y);
+			this.time -=frameRate/1000;
+		}
+	}
+});
