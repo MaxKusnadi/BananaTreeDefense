@@ -669,7 +669,7 @@ tree = livingBeing.extend({
 	  //render
     ctx.fillRect(this.x,this.y,20,20);
 	ctx.font="20px Georgia";
-	ctx.fillText("CoolDown: "+Math.round(this.rotateCoolDown), 550, 85);
+	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 550, 85);
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
     
       /*
@@ -1047,7 +1047,16 @@ audioManager = Class.extend({
   },
 
   play: function(name){
-    this.collections[name].play();
+		if (!this.collections[name].paused) {
+			console.log(this.collections[name].currentTime);
+			var clone = new Audio(musicData[name].src);
+			clone.loop = musicData[name].loop;
+			clone.volume = musicData[name].volume;
+			clone.play();
+			console.log(clone);
+			console.log(this.collections[name]);
+			console.log(clone==this.collections[name]);
+		}else this.collections[name].play();
   },
 
   stop: function(name){
