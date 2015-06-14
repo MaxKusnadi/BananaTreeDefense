@@ -1,4 +1,4 @@
-//---------------------------------------VARIABLES-------------------------------------
+  //---------------------------------------VARIABLES-------------------------------------
 var canvas = null;
 var ctx = null;
 var image = null;
@@ -37,7 +37,7 @@ var data = {
       damage: 50,
       attackRate: 0.5,
       attackRange: 600,
-      bulletType: "type1",
+      bulletType: "type2",
       cost: 80
     }
     //...
@@ -69,10 +69,10 @@ var data = {
 var bulletData= {
 	"type1": {
 		v : 240,
-		type : "projectile"
+		type : "straight"
 	},
 	"type2": {
-		v: 500,
+		v: 300,
 		type : "projectile"
 	}
 }
@@ -170,9 +170,9 @@ gameEngine = Class.extend({
       ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
       ctx.clearRect(1,586,canvas.width-2, 133);
       ctx.clearRect(1,1,1198,88);
-	  ctx.font="20px Georgia";
-	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-	ctx.fillText("Money: "+world.money, 850, 50);
+	    ctx.font="20px Georgia";
+    	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+    	ctx.fillText("Money: "+world.money, 850, 50);
       world.action();
       game.gameOverScreen();
     }else if (world.isWin()) {
@@ -365,7 +365,8 @@ world = Class.extend({
     m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
-    //console.log(this.money);
+    ctx.font="20px Georgia";
+    ctx.fillText("You Need More Gold!", 550, 680);
  
   },
   
