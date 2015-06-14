@@ -17,6 +17,8 @@ var TREE_POSITION_Y = 360;
 var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
 var startingGold = 200;
+var audio = null;
+var numberOfTracks = 7;
 var slotSize = {
   x : 25,
   y: 35
@@ -170,13 +172,12 @@ var setup = function() {
   
   characterData = data;
   bulletData = bulletData;
-  game = new gameEngine(level0);
-  /*
-  image = new Image();
-  image.onload = onloadImage;
-  image.src = "./images/Banana_Tree.png";
-  */
+	audio = new audioManager();
 };
+
+var main = (function() {
+		game = new gameEngine(level0);
+	});
 
 //------------------------------GAMEENGINE---------------------------------
 gameEngine = Class.extend({
@@ -399,7 +400,7 @@ world = Class.extend({
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
-    this.audio = new audioManager();
+    this.audio = audio;
     this.audio.play("background");
     //todo
     for (var i=0; i<this.script.deploy.length; i++) {
@@ -1040,18 +1041,18 @@ audioManager = Class.extend({
     this.collections = {};
 		var i=0;
     for(var key in musicData){
-			console.log(key);
       this.context = new Audio();
-			this.context.oncanplaythrough = (function(){i++;console.log(i,',',this.src);});
+			this.context.oncanplaythrough = (function(){i++;
+			if(i==numberOfTracks){
+				this.oncanplaythrough = null;
+				main();
+			}});
 			this.context.src = musicData[key].src;
       this.context.loop = musicData[key].loop;
       this.context.volume = musicData[key].volume;
       this.collections[key] = this.context;
-			i--;
-			console.log(i);
     }
-		console.log(i);
-		var interval = setInterval((function(){console.log('i:',i);i==0?clearInterval(this):null;}),100);
+		this.context = null;
   },
 
   play: function(name){
