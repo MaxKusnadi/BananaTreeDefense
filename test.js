@@ -1051,7 +1051,7 @@ audioManager = Class.extend({
 			console.log(i);
     }
 		console.log(i);
-		var interval = setInterval((function(){i==0?clearInterval(this):null;}),100);
+		var interval = setInterval((function(){console.log('i:',i);i==0?clearInterval(this):null;}),100);
   },
 
   play: function(name){
