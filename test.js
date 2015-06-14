@@ -113,6 +113,8 @@ var setup = function() {
   ctx = canvas.getContext("2d");
   //canvas.width = document.body.clientWidth;
   //canvas.height = document.body.clientHeight;
+  
+  //render
   ctx.moveTo(0,0);
   ctx.lineTo(1200,0);
   ctx.lineTo(1200,720);
@@ -150,9 +152,13 @@ gameEngine = Class.extend({
   },
   
   action: function() {
+	  //render
     ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
     ctx.clearRect(1,1,1198,88);
     ctx.clearRect(1,586,canvas.width-2, 133);
+	ctx.font="20px Georgia";
+	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+	ctx.fillText("Money: "+world.money, 850, 50);
     world.action();
     //renderingEngine.render();
     if (world.isGameOver()) {
@@ -160,9 +166,13 @@ gameEngine = Class.extend({
       world.buffer = null;
       world.rotateBuffer = [];
       clearInterval(game.interval);
+	  //render
       ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
       ctx.clearRect(1,586,canvas.width-2, 133);
       ctx.clearRect(1,1,1198,88);
+	  ctx.font="20px Georgia";
+	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+	ctx.fillText("Money: "+world.money, 850, 50);
       world.action();
       game.gameOverScreen();
     }else if (world.isWin()) {
@@ -170,21 +180,29 @@ gameEngine = Class.extend({
       world.buffer = null;
       world.rotateBuffer = [];
       clearInterval(game.interval);
+	  //render
       ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
       ctx.clearRect(1,586,canvas.width-2, 133);
       ctx.clearRect(1,1,1198,88);
+	  ctx.font="20px Georgia";
+	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+	ctx.fillText("Money: "+world.money, 850, 50);
       world.action();
       game.winScreen();
     }
   },
   
   gameOverScreen: function() {
-    ctx.font = "bold 16px Arial";
-    ctx.fillText("LOSER", 600, 0);
-    console.log('lose','time taken',world.timer);//todo: specify what to do when game is over
+	  //render
+    ctx.font="20px Georgia";
+	ctx.fillText("You Lost!", 550, 680);
   },
   
-  winScreen: function() {console.log('win')}
+  winScreen: function() {
+	  //render
+	  ctx.font="20px Georgia";
+	ctx.fillText("You Win!", 550, 680);
+	  }
 });
 //------------------------------------INPUTMANAGER----------------------------------------
 
@@ -335,7 +353,7 @@ world = Class.extend({
   spawn: function(xx) {
     var mon = characterData.monsters[xx.type];
     var m = new monster(mon.hp, positionData[xx.position].x, positionData[xx.position].y, mon.damage,
-      mon.attackRate, mon.attackRange, mon.bulletType, ((xx.position)>1 ? -mon.vx: mon.vx), mon.reward);
+      mon.attackRate, mon.attackRange, mon.bulletType, ((xx.position)>1 ? -mon.vx: mon.vx), mon.reward, xx.type);
     this.objects[xx.position].push(m);
   },
   
@@ -344,7 +362,7 @@ world = Class.extend({
       return false;
     }
     mm = characterData.monkeys[mon];
-    m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost);
+    m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
     //console.log(this.money);
@@ -385,7 +403,7 @@ world = Class.extend({
           for (var i=0; i<6; i++) {
             var m = world.tree.slots[i].monkey;
             if (m) {
-              this.rotateBuffer.push(new dummyMonkey(null));
+              this.rotateBuffer.push(new dummyMonkey(m.type));
               this.rotateBuffer[i].x = m.x;
               this.rotateBuffer[i].y = m.y;
             } else this.rotateBuffer.push(null);
@@ -421,6 +439,7 @@ world = Class.extend({
       }
     }
     for (var i=0; i<6; i++) {
+		//render
       ctx.fillRect(this.tree.slots[i].x-slotSize.x, this.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
       ctx.clearRect(this.tree.slots[i].x-slotSize.x+1, this.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
       if (this.tree.slots[i].monkey) {
@@ -435,12 +454,18 @@ world = Class.extend({
     if (this.tree.isDead) {
       this.gameOver = true;
     }
+	//render
+	ctx.font="15px Georgia";
     for (var i=0; i<this.deploy.length; i++) {
+		//render
       this.deploy[i].monkey.action();
+	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-10);
     }
+	//render
     if(this.buffer) {
       this.buffer.action();
     }
+	//render
     if (this.rotateBuffer.length>0) {
       for (var i=0; i<6; i++) {
         if (this.rotateBuffer[i]) {
@@ -449,6 +474,7 @@ world = Class.extend({
       }
     }
     this.removeDead();
+	//todo add wave feature
     while (!this.isFinish && this.timer >= this.nextTimer) {
       this.spawn(this.script.events[0]);
       this.script.events.splice(0,1);
@@ -504,12 +530,12 @@ tree = livingBeing.extend({
     }
     this.rotateCoolDown = 0;
     this.coolDownLength = this.generateCoolDown(level);
-    this.coolDownRate = 1;//this.generateCoolDownRate(level);
+    this.coolDownRate = frameRate/1000;
   },
   //todo/discuss: generateHp and generateCoolDown
   
   generateCoolDown: function(level) {
-    return 1;
+    return 5;
   },
   
   generateHp: function(level) {
@@ -548,7 +574,10 @@ tree = livingBeing.extend({
   },
   
   action: function() {
+	  //render
     ctx.fillRect(this.x,this.y,20,20);
+	ctx.font="20px Georgia";
+	ctx.fillText("CoolDown: "+Math.round(this.rotateCoolDown), 550, 85);
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
     
       /*
@@ -577,7 +606,10 @@ dummyMonkey = Class.extend({
     this.type = type;
   },
   
+  //render
   action: function() {
+	  ctx.font="15px Georgia";
+	  ctx.fillText(this.type, this.x-20, this.y +30);
     ctx.fillRect(this.x, this.y, 10, 10);
   }
 });
@@ -628,15 +660,21 @@ armedBeing = livingBeing.extend({
 
 monkey = armedBeing.extend({
   slotNumber :null,
+  cost : null,
+  type : null,
   
-  init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost) {
+  init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost, type) {
     this._super(hp, SLOTS_POSITION_X[slotNumber], SLOTS_POSITION_Y[slotNumber],
     damage, attackRate, attackRange, bulletType);
     this.slotNumber = slotNumber;
     this.cost = cost;
+	this.type = type;
   },
   
   action: function(list) {
+	  //render
+	  ctx.font="15px Georgia";
+	  ctx.fillText(this.type, this.x-20, this.y-10);
     ctx.fillRect(this.x, this.y, 10,10);
     if (this.coolDown>0){
       this.coolDown -= frameRate/1000;
@@ -673,14 +711,20 @@ monkey = armedBeing.extend({
 monster = armedBeing.extend({
   vx: null,
   moved: false,
+  reward: null,
+  type: null,
   
-  init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward) {
+  init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
     this.vx = vx;
     this.reward = reward;
+	this.type = type;
   },
   
   action: function(slot) {
+	  //render
+	  ctx.font="15px Georgia";
+	  ctx.fillText(this.type, this.x-20, this.y-10);
     ctx.fillRect(this.x,this.y,10,10);
     if (this.coolDown>0) this.coolDown -= frameRate/1000;
     var target = this.getTarget(slot);
@@ -697,7 +741,7 @@ monster = armedBeing.extend({
     this.hp -= damage;
     if (this.hp<=0){
       this.isDead = true;
-      //money += this.reward;
+      world.money += this.reward;
     }
 
   },
