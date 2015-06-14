@@ -388,6 +388,7 @@ world = Class.extend({
   money: null,
 	coins: null,
   audio: null,
+	flag: null,
   
   init: function(file) {
     this.script = file;
@@ -1035,15 +1036,19 @@ message = Class.extend({
 audioManager = Class.extend({
   collections: null,
   context: null,
-
   init: function(){
     this.collections = {};
+		var i=0;
     for(var key in musicData){
-      this.context = new Audio(musicData[key].src);
+      this.context = new Audio();
+			this.context.oncanplaythrough = (function(){i++;});
+			this.context.src = musicData[key].src;
       this.context.loop = musicData[key].loop;
       this.context.volume = musicData[key].volume;
       this.collections[key] = this.context;
-    } 
+			i--;
+    }
+		var interval = setInterval((function(){i==0?clearInterval(this):null;}),100);
   },
 
   play: function(name){
@@ -1053,7 +1058,6 @@ audioManager = Class.extend({
 			clone.volume = musicData[name].volume;
 			clone.play();
 		}else this.collections[name].play();
-    console.log(name);
   },
 
   stop: function(name){
