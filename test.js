@@ -171,7 +171,7 @@ gameEngine = Class.extend({
       ctx.clearRect(1,586,canvas.width-2, 133);
       ctx.clearRect(1,1,1198,88);
 	    ctx.font="20px Georgia";
-    	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+    	ctx.fillText("Tree Hp: "+ "0" ,550,50);
     	ctx.fillText("Money: "+world.money, 850, 50);
       world.action();
       game.gameOverScreen();
@@ -184,9 +184,9 @@ gameEngine = Class.extend({
       ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
       ctx.clearRect(1,586,canvas.width-2, 133);
       ctx.clearRect(1,1,1198,88);
-	  ctx.font="20px Georgia";
-	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-	ctx.fillText("Money: "+world.money, 850, 50);
+	    ctx.font="20px Georgia";
+	    ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
+    	ctx.fillText("Money: "+world.money, 850, 50);
       world.action();
       game.winScreen();
     }
@@ -195,14 +195,14 @@ gameEngine = Class.extend({
   gameOverScreen: function() {
 	  //render
     ctx.font="20px Georgia";
-	ctx.fillText("You Lost!", 550, 680);
+  	ctx.fillText("You Lost!", 550, 680);
   },
   
   winScreen: function() {
 	  //render
 	  ctx.font="20px Georgia";
-	ctx.fillText("You Win!", 550, 680);
-	  }
+  	ctx.fillText("You Win!", 550, 680);
+	}
 });
 //------------------------------------INPUTMANAGER----------------------------------------
 
