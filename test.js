@@ -24,7 +24,7 @@ var MONEY_POSITION = [900,700];
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
   monkeys: {
-    "soldier": {
+    "Soldier": {
       hp: 500,
       damage: 30,
       attackRate: 1,
@@ -32,7 +32,7 @@ var data = {
       bulletType: "type1",
       cost: 50
     },
-    "archer": {
+    "Archer": {
       hp: 300,
       damage: 50,
       attackRate: 0.5,
@@ -44,7 +44,7 @@ var data = {
   },
   
   monsters: {
-    "gorilla": {
+    "Gorilla": {
       hp: 200,
       damage: 20,
       attackRate: 0.8,
@@ -53,7 +53,7 @@ var data = {
       vx: 70,
       reward: 15
     }, 
-    "kingkong": {
+    "Kingkong": {
       hp: 250,
       damage: 60,
       attackRate: 1.5,
@@ -80,23 +80,23 @@ var bulletData= {
 level0 = {
   events: [{
     time: 1,
-    type: "gorilla",
+    type: "Gorilla",
     position: 0
   }, {
     time: 1,
-    type: "gorilla",
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 3,
+    type: "Gorilla",
     position: 1
   },{
     time: 1,
-    type: "gorilla",
-    position: 1
-  },{
-    time: 1,
-    type: "gorilla",
+    type: "Gorilla",
     position: 2
   },{
     time: 5,
-    type: "kingkong",
+    type: "Kingkong",
     position: 3
   }
     
@@ -104,7 +104,7 @@ level0 = {
     ],
   level: 1,
   deployNumber: 2,
-  deploy: ["soldier", "archer"]
+  deploy: ["Soldier", "Archer"]
 
 }
 //------------------------------MAIN-------------------------------------
@@ -740,7 +740,7 @@ monster = armedBeing.extend({
   
   reduceHp: function(damage){
     this.hp -= damage;
-    if (this.hp<=0){
+    if (this.hp<=0 && !this.isDead){
       this.isDead = true;
       world.money += this.reward;
     }
