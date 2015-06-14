@@ -1040,14 +1040,17 @@ audioManager = Class.extend({
     this.collections = {};
 		var i=0;
     for(var key in musicData){
+			console.log(key);
       this.context = new Audio();
-			this.context.oncanplaythrough = (function(){i++;});
+			this.context.oncanplaythrough = (function(){i++;console.log(i,',',this.src);});
 			this.context.src = musicData[key].src;
       this.context.loop = musicData[key].loop;
       this.context.volume = musicData[key].volume;
       this.collections[key] = this.context;
 			i--;
+			console.log(i);
     }
+		console.log(i);
 		var interval = setInterval((function(){i==0?clearInterval(this):null;}),100);
   },
 
