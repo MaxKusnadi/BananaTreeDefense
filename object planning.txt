@@ -1,0 +1,27 @@
+Class
+attribute:
+
+livingBeing extends Class
+attribute: hp, x(position x), y, isDead(flag for engine to identify obsolete objects)
+method: reduceHp, recoverHp, action
+
+tree extends livingBeing
+attribute: slots, rotateCoolDown
+method: addMonkey, removeMonkey, generateHp(calculating the hp according to level?),
+	rotateClockwise, rotateAnticlockwise, [...other moves], override action
+
+armedBeing extends livingBeing
+attribute: damage, attackRate, attackRange, facing(left or right)
+method: attack, getTarget
+
+monkey extends armedBeing
+attribute: slotNumber, 
+method: override action
+
+monster extends armedBeing
+attribute: vx (velocity in the x direction)
+method: override action, move
+
+bullet extends Class
+attribute: position, vx, vy, damage, isDead(reused to be consistent)
+method: destroy, action(consistent), move
