@@ -50,7 +50,7 @@ var data = {
   
   monsters: {
     "Gorilla": {
-      hp: 200,
+      hp: 250,
       damage: 20,
       attackRate: 0.8,
       attackRange: 200,
@@ -59,9 +59,9 @@ var data = {
       reward: 25
     }, 
     "Kingkong": {
-      hp: 250,
+      hp: 500,
       damage: 60,
-      attackRate: 1.5,
+      attackRate: 1.8,
       attackRange: 50,
       bulletType: "type1",
       vx: 50,
@@ -142,23 +142,47 @@ level0 = {
     type: "Kingkong",
     position: 3
   },{
-    time: 7,
+    time: 15,
     type: "Gorilla",
     position: 0
   }, {
-    time: 7,
+    time: 15,
     type: "Gorilla",
     position: 1
   },{
-    time: 9,
+    time: 20,
     type: "Gorilla",
     position: 1
   },{
-    time: 7,
+    time: 15,
     type: "Gorilla",
     position: 2
   },{
-    time: 10,
+    time: 25,
+    type: "Kingkong",
+    position: 3
+  },{
+    time: 30,
+    type: "Kingkong",
+    position: 3
+  },{
+    time: 45,
+    type: "Gorilla",
+    position: 0
+  }, {
+    time: 45,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 55,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 45,
+    type: "Gorilla",
+    position: 2
+  },{
+    time: 60,
     type: "Kingkong",
     position: 3
   }
