@@ -139,7 +139,6 @@ level0 = {
     time: 5,
     type: "Kingkong",
     position: 3
-<<<<<<< HEAD
   },{
     time: 15,
     type: "Gorilla",
