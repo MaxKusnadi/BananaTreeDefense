@@ -1175,3 +1175,25 @@ audioManager = Class.extend({
   }
 
 });
+
+//so maybe we create a animation class like
+
+animation = Class.extend({
+	frame = 0,
+	size = null,
+	src = null,
+	
+	init: function(name) {
+		this.src = somewhere;//essentially an array of images, the animation
+		this.size = src.length;
+	},
+	
+	animate : function() {
+		var image = new Image(this.src);
+		frame = (frame+1)%size;
+		return image;
+	}
+});
+
+//so every instances of an object we add an additional attribute with consistent name referencing the animation class
+//so later the renderingEngine can just call ctx.draw(Monkey.render.animate(), ctx.x, ctx.y); to show the animation
