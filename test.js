@@ -39,11 +39,11 @@ var data = {
     },
     "Archer": {
       hp: 300,
-      damage: 50,
-      attackRate: 0.5,
+      damage: 40,
+      attackRate: 0.75,
       attackRange: 600,
       bulletType: "type2",
-      cost: 80
+      cost: 90
     }
     //...
   },
@@ -166,23 +166,23 @@ level0 = {
     type: "Kingkong",
     position: 3
   },{
-    time: 45,
+    time: 35,
     type: "Gorilla",
     position: 0
   }, {
-    time: 45,
+    time: 35,
     type: "Gorilla",
     position: 1
   },{
-    time: 55,
+    time: 35,
     type: "Gorilla",
     position: 1
   },{
-    time: 45,
+    time: 40,
     type: "Gorilla",
     position: 2
   },{
-    time: 60,
+    time: 50,
     type: "Kingkong",
     position: 3
   }
