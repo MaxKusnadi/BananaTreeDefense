@@ -225,10 +225,6 @@ var setup = function() {
   ctx.lineTo(canvas.width,canvas.height);
   ctx.lineTo(0,canvas.height);
   ctx.lineTo(0,0);
-  ctx.moveTo(0,0.125*canvas.height);
-  ctx.lineTo(canvas.width,0.125*canvas.height);
-  ctx.moveTo(0,0.8125*canvas.height);
-  ctx.lineTo(canvas.width,0.8125*canvas.height);
   ctx.stroke();
   
   
@@ -245,6 +241,7 @@ gameEngine = Class.extend({
   interval: null,
 	over: true,
 	loaded: 0,
+	string: null,
   
   init: function(file) {
     world = new world(file);
@@ -254,12 +251,30 @@ gameEngine = Class.extend({
   },
 	
 	load: function() {
+		string = "Loading";
+		this.interval = setInterval(this.loadingPage, 1000) 
 		audio = new audioManager();
     renderingEngine = new renderingEngine();
 	},
 	
+	loadingPage: function() {
+		//render;
+		ctx.clearRect(0.1*canvas.width, 0.1*canvas.height, 0.8*canvas.width, 0.8*canvas.height);
+		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
+		ctx.fillText(this.string, 0.4*canvas.width, 0.5*canvas.height);
+		this.string+='.';
+		if (this.string.length == 13) this.string = "Loading";
+	},
+		
 	startGame: function() {
 		if (this.loaded == numberToLoad) {
+			clearInterval(game.interval);
+			//render
+			ctx.moveTo(0,0.125*canvas.height);
+			ctx.lineTo(canvas.width,0.125*canvas.height);
+			ctx.moveTo(0,0.8125*canvas.height);
+			ctx.lineTo(canvas.width,0.8125*canvas.height);
+			ctx.stroke();
 			audio.play("background");
 			this.interval = setInterval(this.action, frameRate);
 		}
