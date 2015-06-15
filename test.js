@@ -109,7 +109,7 @@ var musicData ={
   "monkeyShoot":{
     src:"audio/shoot.wav",
     loop: false,
-    volume: 0.2
+    volume: 0.1
   },
   "gameover":{
     src:"audio/gameover.wav",
@@ -124,7 +124,7 @@ var musicData ={
   "hit":{
     src:"audio/hit.wav",
     loop:false,
-    volume:1
+    volume: 0.2
   }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
@@ -524,6 +524,7 @@ world = Class.extend({
     var m = new monster(mon.hp, positionData[xx.position].x, positionData[xx.position].y, mon.damage,
       mon.attackRate, mon.attackRange, mon.bulletType, ((xx.position)>1 ? -mon.vx: mon.vx), mon.reward, xx.type);
     this.objects[xx.position].push(m);
+    audio.play(m.type);
   },
   
   spawnMonkey: function(mon, position) {
@@ -904,7 +905,6 @@ monster = armedBeing.extend({
   moved: false,
   reward: null,
   type: null,
-  audio: null,
 
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
@@ -915,7 +915,6 @@ monster = armedBeing.extend({
   
   action: function(slot) {
 	  //render
-    audio.play(this.type);
 	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
 	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
     ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
