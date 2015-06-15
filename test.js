@@ -56,7 +56,7 @@ var data = {
       attackRange: 200,
       bulletType: "type1",
       vx: 70,
-      reward: 15
+      reward: 25
     }, 
     "Kingkong": {
       hp: 250,
@@ -65,7 +65,7 @@ var data = {
       attackRange: 50,
       bulletType: "type1",
       vx: 50,
-      reward: 25
+      reward: 30
     }
     //...
   }
@@ -139,6 +139,26 @@ level0 = {
     position: 2
   },{
     time: 5,
+    type: "Kingkong",
+    position: 3
+  },{
+    time: 7,
+    type: "Gorilla",
+    position: 0
+  }, {
+    time: 7,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 9,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 7,
+    type: "Gorilla",
+    position: 2
+  },{
+    time: 10,
     type: "Kingkong",
     position: 3
   }
