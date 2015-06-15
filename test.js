@@ -18,7 +18,7 @@ var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
 var startingGold = 200;
 var audio = null;
-var numberOfTracks = 7;
+var numberToLoad = 7;
 var slotSize = {
   x : 25,
   y: 35
@@ -81,7 +81,7 @@ var bulletData= {
 		type : "projectile"
 	}
 }
-//---------------------------BULLET DATA--------------------------------
+//---------------------------MUSIC DATA--------------------------------
 var musicData ={
   "background":{
     src: "audio/bg.mp3",
@@ -216,28 +216,36 @@ var setup = function() {
   
   characterData = data;
   bulletData = bulletData;
-	audio = new audioManager();
+	game = new gameEngine(level0);
 };
 
-var main = (function() {
-		game = new gameEngine(level0);
-	});
+
 
 //------------------------------GAMEENGINE---------------------------------
 gameEngine = Class.extend({
   world: null,
   interval: null,
-  renderingEngine: null,
-  inputManager: null,
 	over: true,
+	loaded: 0,
   
   init: function(file) {
     world = new world(file);
-    renderingEngine = new renderingEngine();
     inputManager = new inputManager();
 		this.over = true;
-    this.interval = setInterval(this.action, frameRate);
+		this.load();//put this as the last line
   },
+	
+	load: function() {
+		audio = new audioManager();
+    renderingEngine = new renderingEngine();
+	},
+	
+	startGame: function() {
+		if (this.loaded == numberToLoad) {
+			audio.play("background");
+			this.interval = setInterval(this.action, frameRate);
+		}
+	},
   
   action: function() {
 	  //render
@@ -252,14 +260,14 @@ gameEngine = Class.extend({
 			//render
 			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Lost!");
 			game.over = false;
-      world.audio.stop("background");
-      world.audio.play("gameover");
+      audio.stop("background");
+      audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
 			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Win!");
 			game.over = false;
-      world.audio.stop("background");
-      world.audio.play("win");
+      audio.stop("background");
+      audio.play("win");
     }
 		world.action();
 		renderingEngine.render();
@@ -444,8 +452,6 @@ world = Class.extend({
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
-    this.audio = audio;
-    this.audio.play("background");
     //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
@@ -487,7 +493,7 @@ world = Class.extend({
     m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
-    this.audio.play("monkeySpawn");
+    audio.play("monkeySpawn");
   },
   
 	
@@ -558,7 +564,7 @@ world = Class.extend({
 				if (list[1].isDead == false) {
 					list[1].isDead = true;
 					world.money += list[1].value;
-          world.audio.play("pickCoin");
+          audio.play("pickCoin");
 				}
 			}
       list = inputManager.retrieve();
@@ -643,7 +649,7 @@ livingBeing = Class.extend({
     if (this.hp<=0){
       this.isDead = true;
     }
-    world.audio.play("hit"); 
+    audio.play("hit"); 
   },
   
   recoverHp: function(amt) {
@@ -842,7 +848,7 @@ monkey = armedBeing.extend({
     if (this.coolDown>0) return null;
     this.coolDown = this.attackRate;
     var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
-    world.audio.play("monkeyShoot");
+    audio.play("monkeyShoot");
     return b;
   }
 });
@@ -1080,23 +1086,16 @@ message = Class.extend({
 
 audioManager = Class.extend({
   collections: null,
-  context: null,
   init: function(){
     this.collections = {};
-		var i=0;
     for(var key in musicData){
-      this.context = new Audio();
-			this.context.oncanplaythrough = (function(){i++;
-			if(i==numberOfTracks){
-				this.oncanplaythrough = null;
-				main();
-			}});
-			this.context.src = musicData[key].src;
-      this.context.loop = musicData[key].loop;
-      this.context.volume = musicData[key].volume;
-      this.collections[key] = this.context;
+      var context = new Audio();
+			context.oncanplaythrough = (function(){game.loaded++;game.startGame();});
+			context.src = musicData[key].src;
+      context.loop = musicData[key].loop;
+      context.volume = musicData[key].volume;
+      this.collections[key] = context;
     }
-		this.context = null;
   },
 
   play: function(name){
