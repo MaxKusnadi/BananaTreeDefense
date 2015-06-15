@@ -47,7 +47,7 @@ var data = {
   },
   
   monsters: {
-    "Gorilla": {
+    "Cow": {
       hp: 250,
       damage: 20,
       attackRate: 0.8,
@@ -56,7 +56,7 @@ var data = {
       vx: 70,
       reward: 25
     }, 
-    "Kingkong": {
+    "Chicken": {
       hp: 500,
       damage: 60,
       attackRate: 1.8,
@@ -89,7 +89,17 @@ var musicData ={
   "monkeySpawn":{
     src: "audio/monkey.mp3",
     loop: false,
-    volume: 0.8
+    volume: 0.6
+  },
+  "Cow":{
+    src: "audio/cow.wav",
+    loop: false,
+    volume: 0.6
+  },
+  "Chicken":{
+    src: "audio/chicken.mp3",
+    loop: false,
+    volume: 0.6
   },
   "pickCoin":{
     src:"audio/pickCoin.wav",
@@ -121,67 +131,67 @@ var musicData ={
 level0 = {
   events: [{
     time: 1,
-    type: "Gorilla",
+    type: "Cow",
     position: 0
   }, {
-    time: 1,
-    type: "Gorilla",
+    time: 5,
+    type: "Cow",
     position: 1
   },{
-    time: 3,
-    type: "Gorilla",
+    time: 8,
+    type: "Cow",
     position: 1
   },{
-    time: 1,
-    type: "Gorilla",
+    time: 10,
+    type: "Cow",
     position: 2
   },{
     time: 5,
-    type: "Kingkong",
+    type: "Chicken",
     position: 3
   },{
     time: 15,
-    type: "Gorilla",
+    type: "Cow",
     position: 1
   }, {
     time: 15,
-    type: "Gorilla",
+    type: "Cow",
     position: 2
   },{
     time: 20,
-    type: "Gorilla",
+    type: "Cow",
     position: 3
   },{
     time: 15,
-    type: "Gorilla",
+    type: "Cow",
     position: 1
   },{
     time: 25,
-    type: "Kingkong",
+    type: "Chicken",
     position: 0
   },{
     time: 30,
-    type: "Kingkong",
+    type: "Chicken",
     position: 2
   },{
     time: 35,
-    type: "Gorilla",
+    type: "Cow",
     position: 1
   }, {
     time: 35,
-    type: "Gorilla",
+    type: "Cow",
     position: 2
   },{
     time: 35,
-    type: "Gorilla",
+    type: "Cow",
     position: 3
   },{
     time: 40,
-    type: "Gorilla",
+    type: "Cow",
     position: 0
   },{
     time: 45,
-    type: "Kingkong",
+    type: "Chicken",
     position: 1
   }
     
@@ -894,16 +904,18 @@ monster = armedBeing.extend({
   moved: false,
   reward: null,
   type: null,
-  
+  audio: null,
+
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
     this.vx = vx/1000*frameRate;
     this.reward = reward;
-	this.type = type;
+  	this.type = type;
   },
   
   action: function(slot) {
 	  //render
+    audio.play(this.type);
 	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
 	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
     ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
@@ -1170,6 +1182,10 @@ audioManager = Class.extend({
 		}else this.collections[name].play();
   },
 
+  playMove: function(name){
+    this.collections[name].play();
+  },
+
   stop: function(name){
     this.collections[name].pause();
   }
@@ -1178,22 +1194,22 @@ audioManager = Class.extend({
 
 //so maybe we create a animation class like
 
-animation = Class.extend({
-	frame = 0,
-	size = null,
-	src = null,
+// animation = Class.extend({
+// 	frame = 0,
+// 	size = null,
+// 	src = null,
 	
-	init: function(name) {
-		this.src = somewhere;//essentially an array of images, the animation
-		this.size = src.length;
-	},
+// 	init: function(name) {
+// 		this.src = somewhere;//essentially an array of images, the animation
+// 		this.size = src.length;
+// 	},
 	
-	animate : function() {
-		var image = new Image(this.src);
-		frame = (frame+1)%size;
-		return image;
-	}
-});
+// 	animate : function() {
+// 		var image = new Image(this.src);
+// 		frame = (frame+1)%size;
+// 		return image;
+// 	}
+// });
 
 //so every instances of an object we add an additional attribute with consistent name referencing the animation class
 //so later the renderingEngine can just call ctx.draw(Monkey.render.animate(), ctx.x, ctx.y); to show the animation
