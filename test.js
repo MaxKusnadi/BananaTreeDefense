@@ -5,27 +5,24 @@ var image = null;
 var frameRate = 16.6; //todo
 var characterData = null;
 var bulletData = null;
-var positionData = {0: {x:0, y:540}, 1: {x:0, y:180}, 2: {x:1200, y:180}, 3: {x:1200, y:540}};
+var positionData = null;
 var world = null;
 var renderingEngine = null;
 var inputManager = null;
 var game = null;
-var gravity = 900;
-var boxPosition = {x: 35, y:45};
-var TREE_POSITION_X = 590;
-var TREE_POSITION_Y = 360;
-var SLOTS_POSITION_X = [500,500,500,700,700,700];
-var SLOTS_POSITION_Y = [540,360,180,180,360,540];
+var gravity = null;
+var boxPosition = null;
+var TREE_POSITION_X = null;
+var TREE_POSITION_Y = null;
+var SLOTS_POSITION_X = null;
+var SLOTS_POSITION_Y = null;
 var startingGold = 250;
 var audio = null;
-var numberToLoad = 7;
-var coinAcc = 1000;
-var slotSize = {
-  x : 25,
-  y: 35
-};
-var coinSize = {x:25, y:25};
-var moneyDisplay = {x:850, y:50};
+var numberToLoad = 7;//rmb to update
+var coinAcc = null;
+var slotSize = null;
+var coinSize = null;
+var moneyDisplay = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -44,7 +41,7 @@ var data = {
       attackRate: 0.65,
       attackRange: 600,
       bulletType: "type2",
-      cost: 80
+      cost: 90
     }
     //...
   },
@@ -142,6 +139,7 @@ level0 = {
     time: 5,
     type: "Kingkong",
     position: 3
+<<<<<<< HEAD
   },{
     time: 15,
     type: "Gorilla",
@@ -199,19 +197,39 @@ level0 = {
 var setup = function() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
-  //canvas.width = document.body.clientWidth;
-  //canvas.height = document.body.clientHeight;
+	canvas.width = 0.95*window.innerWidth;
+	canvas.height = 0.95*window.innerHeight;
+	if (canvas.height/canvas.width>0.6) {
+		canvas.height = 0.6*canvas.width;
+	}else if (canvas.height/canvas.width<0.6) {
+		canvas.width = canvas.height/0.6;
+	}
+	positionData = {0: {x:0, y:0.75*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.75*canvas.height}};
+  boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
+	TREE_POSITION_X = 0.5*canvas.width;
+	TREE_POSITION_Y = 0.5*canvas.height;
+	SLOTS_POSITION_X = [0.4*canvas.width,0.4*canvas.width,0.4*canvas.width,0.6*canvas.width,0.6*canvas.width,0.6*canvas.width];
+	SLOTS_POSITION_Y = [0.75*canvas.height,0.5*canvas.height,0.25*canvas.height,0.25*canvas.height,0.5*canvas.height,0.75*canvas.height];
+	gravity = 1.25*canvas.height;
+	coinAcc = gravity;
+	slotSize = {
+  x : 0.02*canvas.width,
+  y: 0.05*canvas.height
+	};
+	coinSize = {x:0.02*canvas.width, y:0.02*canvas.width};
+	moneyDisplay = {x:0.70*canvas.width, y:0.07*canvas.height};
+
   
   //render
   ctx.moveTo(0,0);
-  ctx.lineTo(1200,0);
-  ctx.lineTo(1200,720);
-  ctx.lineTo(0,720);
+  ctx.lineTo(canvas.width,0);
+  ctx.lineTo(canvas.width,canvas.height);
+  ctx.lineTo(0,canvas.height);
   ctx.lineTo(0,0);
-  ctx.moveTo(0,90);
-  ctx.lineTo(1200,90);
-  ctx.moveTo(0,585);
-  ctx.lineTo(1200,585);
+  ctx.moveTo(0,0.125*canvas.height);
+  ctx.lineTo(canvas.width,0.125*canvas.height);
+  ctx.moveTo(0,0.8125*canvas.height);
+  ctx.lineTo(canvas.width,0.8125*canvas.height);
   ctx.stroke();
   
   
@@ -250,22 +268,22 @@ gameEngine = Class.extend({
   
   action: function() {
 	  //render
-    ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
-    ctx.clearRect(1,1,1198,88);
-    ctx.clearRect(1,586,canvas.width-2, 133);
-	ctx.font="20px Georgia";
-	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
+    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+    ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
+    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
+  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
     //renderingEngine.render();
     if (world.isGameOver() && game.over) {
 			//render
-			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Lost!");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
 			game.over = false;
       audio.stop("background");
       audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
-			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Win!");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Win!");
 			game.over = false;
       audio.stop("background");
       audio.play("win");
@@ -487,7 +505,7 @@ world = Class.extend({
     if (this.tree.slots[position].monkey !== null){
       return;
     }else if (characterData.monkeys[mon].cost > this.money) {
-			renderingEngine.createMessage("20px Georgia", 3, 550, 650, "You Need More Gold");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "You Need More Gold");
 			return;
 		}
     mm = characterData.monkeys[mon];
@@ -593,16 +611,16 @@ world = Class.extend({
       this.gameOver = true;
     }
 	//render
-	ctx.font="15px Georgia";
+	ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
     for (var i=0; i<this.deploy.length; i++) {
 		//render
       this.deploy[i].monkey.action();
-	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-10);
+	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-0.014*canvas.height);
     }
 	//render
 		for (var i=0; i<this.coins.length; i++) {
 			this.coins[i].action();
-			ctx.font="30px Georgia";
+			ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
 			ctx.fillText("$", this.coins[i].x, this.coins[i].y);
 			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
 		}
@@ -720,9 +738,9 @@ tree = livingBeing.extend({
   
   action: function() {
 	  //render
-    ctx.fillRect(this.x,this.y,20,20);
-	ctx.font="20px Georgia";
-	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 550, 85);
+    ctx.fillRect(this.x,this.y,0.016*canvas.width,0.016*canvas.width);
+	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 0.46*canvas.width, 0.12*canvas.height);
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
     
       /*
@@ -753,9 +771,9 @@ dummyMonkey = Class.extend({
   
   //render
   action: function() {
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y +30);
-    ctx.fillRect(this.x, this.y, 10, 10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y +0.04*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.008*canvas.width, 0.008*canvas.width);
   }
 });
     
@@ -818,9 +836,9 @@ monkey = armedBeing.extend({
   
   action: function(list) {
 	  //render
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y-10);
-    ctx.fillRect(this.x, this.y, 10,10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0){
       this.coolDown -= frameRate/1000;
       return;
@@ -869,9 +887,9 @@ monster = armedBeing.extend({
   
   action: function(slot) {
 	  //render
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y-10);
-    ctx.fillRect(this.x,this.y,10,10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0) this.coolDown -= frameRate/1000;
     var target = this.getTarget(slot);
     if (target) {
