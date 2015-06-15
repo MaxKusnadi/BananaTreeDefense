@@ -16,7 +16,7 @@ var TREE_POSITION_X = 590;
 var TREE_POSITION_Y = 360;
 var SLOTS_POSITION_X = [500,500,500,700,700,700];
 var SLOTS_POSITION_Y = [540,360,180,180,360,540];
-var startingGold = 200;
+var startingGold = 250;
 var audio = null;
 var numberToLoad = 7;
 var coinAcc = 1000;
@@ -40,7 +40,7 @@ var data = {
     },
     "Archer": {
       hp: 300,
-      damage: 40,
+      damage: 50,
       attackRate: 0.65,
       attackRange: 600,
       bulletType: "type2",
