@@ -5,24 +5,24 @@ var image = null;
 var frameRate = 16.6; //todo
 var characterData = null;
 var bulletData = null;
-var positionData = {0: {x:0, y:540}, 1: {x:0, y:180}, 2: {x:1200, y:180}, 3: {x:1200, y:540}};
+var positionData = null;
 var world = null;
 var renderingEngine = null;
 var inputManager = null;
 var game = null;
-var gravity = 900;
-var boxPosition = {x: 35, y:45};
-var TREE_POSITION_X = 590;
-var TREE_POSITION_Y = 360;
-var SLOTS_POSITION_X = [500,500,500,700,700,700];
-var SLOTS_POSITION_Y = [540,360,180,180,360,540];
-var startingGold = 150;
-var slotSize = {
-  x : 25,
-  y: 35
-};
-var MONEY_POSITION = [900,700];
-var coinSize = {x:25, y:25};
+var gravity = null;
+var boxPosition = null;
+var TREE_POSITION_X = null;
+var TREE_POSITION_Y = null;
+var SLOTS_POSITION_X = null;
+var SLOTS_POSITION_Y = null;
+var startingGold = 200;
+var audio = null;
+var numberToLoad = 7;//rmb to update
+var coinAcc = null;
+var slotSize = null;
+var coinSize = null;
+var moneyDisplay = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -37,33 +37,33 @@ var data = {
     },
     "Archer": {
       hp: 300,
-      damage: 50,
-      attackRate: 0.5,
+      damage: 40,
+      attackRate: 0.75,
       attackRange: 600,
       bulletType: "type2",
-      cost: 80
+      cost: 90
     }
     //...
   },
   
   monsters: {
     "Gorilla": {
-      hp: 200,
+      hp: 250,
       damage: 20,
       attackRate: 0.8,
       attackRange: 200,
       bulletType: "type1",
       vx: 70,
-      reward: 15
+      reward: 25
     }, 
     "Kingkong": {
-      hp: 250,
+      hp: 500,
       damage: 60,
-      attackRate: 1.5,
+      attackRate: 1.8,
       attackRange: 50,
       bulletType: "type1",
       vx: 50,
-      reward: 25
+      reward: 30
     }
     //...
   }
@@ -75,11 +75,11 @@ var bulletData= {
 		type : "straight"
 	},
 	"type2": {
-		v: 300,
+		v: 240,
 		type : "projectile"
 	}
 }
-//---------------------------BULLET DATA--------------------------------
+//---------------------------MUSIC DATA--------------------------------
 var musicData ={
   "background":{
     src: "audio/bg.mp3",
@@ -139,6 +139,50 @@ level0 = {
     time: 5,
     type: "Kingkong",
     position: 3
+  },{
+    time: 15,
+    type: "Gorilla",
+    position: 0
+  }, {
+    time: 15,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 20,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 15,
+    type: "Gorilla",
+    position: 2
+  },{
+    time: 25,
+    type: "Kingkong",
+    position: 3
+  },{
+    time: 30,
+    type: "Kingkong",
+    position: 3
+  },{
+    time: 35,
+    type: "Gorilla",
+    position: 0
+  }, {
+    time: 35,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 35,
+    type: "Gorilla",
+    position: 1
+  },{
+    time: 40,
+    type: "Gorilla",
+    position: 2
+  },{
+    time: 50,
+    type: "Kingkong",
+    position: 3
   }
     
     
@@ -152,69 +196,96 @@ level0 = {
 var setup = function() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
-  //canvas.width = document.body.clientWidth;
-  //canvas.height = document.body.clientHeight;
+	canvas.width = 0.95*window.innerWidth;
+	canvas.height = 0.95*window.innerHeight;
+	if (canvas.height/canvas.width>0.6) {
+		canvas.height = 0.6*canvas.width;
+	}else if (canvas.height/canvas.width<0.6) {
+		canvas.width = canvas.height/0.6;
+	}
+	positionData = {0: {x:0, y:0.75*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.75*canvas.height}};
+  boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
+	TREE_POSITION_X = 0.5*canvas.width;
+	TREE_POSITION_Y = 0.5*canvas.height;
+	SLOTS_POSITION_X = [0.4*canvas.width,0.4*canvas.width,0.4*canvas.width,0.6*canvas.width,0.6*canvas.width,0.6*canvas.width];
+	SLOTS_POSITION_Y = [0.75*canvas.height,0.5*canvas.height,0.25*canvas.height,0.25*canvas.height,0.5*canvas.height,0.75*canvas.height];
+	gravity = 1.25*canvas.height;
+	coinAcc = gravity;
+	slotSize = {
+  x : 0.02*canvas.width,
+  y: 0.05*canvas.height
+	};
+	coinSize = {x:0.02*canvas.width, y:0.02*canvas.width};
+	moneyDisplay = {x:0.70*canvas.width, y:0.07*canvas.height};
+
   
   //render
   ctx.moveTo(0,0);
-  ctx.lineTo(1200,0);
-  ctx.lineTo(1200,720);
-  ctx.lineTo(0,720);
+  ctx.lineTo(canvas.width,0);
+  ctx.lineTo(canvas.width,canvas.height);
+  ctx.lineTo(0,canvas.height);
   ctx.lineTo(0,0);
-  ctx.moveTo(0,90);
-  ctx.lineTo(1200,90);
-  ctx.moveTo(0,585);
-  ctx.lineTo(1200,585);
+  ctx.moveTo(0,0.125*canvas.height);
+  ctx.lineTo(canvas.width,0.125*canvas.height);
+  ctx.moveTo(0,0.8125*canvas.height);
+  ctx.lineTo(canvas.width,0.8125*canvas.height);
   ctx.stroke();
   
   
   characterData = data;
   bulletData = bulletData;
-  game = new gameEngine(level0);
-  /*
-  image = new Image();
-  image.onload = onloadImage;
-  image.src = "./images/Banana_Tree.png";
-  */
+	game = new gameEngine(level0);
 };
+
+
 
 //------------------------------GAMEENGINE---------------------------------
 gameEngine = Class.extend({
   world: null,
   interval: null,
-  renderingEngine: null,
-  inputManager: null,
 	over: true,
+	loaded: 0,
   
   init: function(file) {
     world = new world(file);
-    renderingEngine = new renderingEngine();
     inputManager = new inputManager();
 		this.over = true;
-    this.interval = setInterval(this.action, frameRate);
+		this.load();//put this as the last line
   },
+	
+	load: function() {
+		audio = new audioManager();
+    renderingEngine = new renderingEngine();
+	},
+	
+	startGame: function() {
+		if (this.loaded == numberToLoad) {
+			audio.play("background");
+			this.interval = setInterval(this.action, frameRate);
+		}
+	},
   
   action: function() {
 	  //render
-    ctx.clearRect(1,91,canvas.width-2, canvas.height-227);
-    ctx.clearRect(1,1,1198,88);
-    ctx.clearRect(1,586,canvas.width-2, 133);
-	ctx.font="20px Georgia";
-	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-	ctx.fillText("Money: "+world.money, 850, 50);
+    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+    ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
+    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
+	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
     //renderingEngine.render();
     if (world.isGameOver() && game.over) {
 			//render
-			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Lost!");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
 			game.over = false;
-      world.audio.stop("background");
-      world.audio.play("gameover");
+      audio.stop("background");
+      audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
-			renderingEngine.createMessage("20px Georgia", 999999, 550, 680, "You Win!");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Win!");
 			game.over = false;
-      world.audio.stop("background");
-      world.audio.play("win");
+      audio.stop("background");
+      audio.play("win");
     }
 		world.action();
 		renderingEngine.render();
@@ -388,6 +459,7 @@ world = Class.extend({
   money: null,
 	coins: null,
   audio: null,
+	flag: null,
   
   init: function(file) {
     this.script = file;
@@ -398,8 +470,6 @@ world = Class.extend({
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
-    this.audio = new audioManager();
-    this.audio.play("background");
     //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
@@ -434,14 +504,14 @@ world = Class.extend({
     if (this.tree.slots[position].monkey !== null){
       return;
     }else if (characterData.monkeys[mon].cost > this.money) {
-			renderingEngine.createMessage("20px Georgia", 3, 550, 650, "You Need More Gold");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "You Need More Gold");
 			return;
 		}
     mm = characterData.monkeys[mon];
     m = new monkey(mm.hp, position, mm.damage, mm.attackRate, mm.attackRange, mm.bulletType, mm.cost, mon);
     this.tree.addMonkey(position, m);
     this.money -= mm.cost;
-    this.audio.play("monkeySpawn");
+    audio.play("monkeySpawn");
   },
   
 	
@@ -509,10 +579,10 @@ world = Class.extend({
         this.buffer = null;
       }
 			else if (list[0] == "collect") {
-				if (list[1].isDead == false) {
-					list[1].isDead = true;
-					world.money += list[1].value;
-          world.audio.play("pickCoin");
+				if (list[1].isCollect == false) {
+					list[1].isCollect = true;
+					list[1].collect();
+          audio.play("pickCoin");
 				}
 			}
       list = inputManager.retrieve();
@@ -540,16 +610,16 @@ world = Class.extend({
       this.gameOver = true;
     }
 	//render
-	ctx.font="15px Georgia";
+	ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
     for (var i=0; i<this.deploy.length; i++) {
 		//render
       this.deploy[i].monkey.action();
-	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-10);
+	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-0.014*canvas.height);
     }
 	//render
 		for (var i=0; i<this.coins.length; i++) {
 			this.coins[i].action();
-			ctx.font="30px Georgia";
+			ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
 			ctx.fillText("$", this.coins[i].x, this.coins[i].y);
 			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
 		}
@@ -597,7 +667,7 @@ livingBeing = Class.extend({
     if (this.hp<=0){
       this.isDead = true;
     }
-    world.audio.play("hit"); 
+    audio.play("hit"); 
   },
   
   recoverHp: function(amt) {
@@ -667,9 +737,9 @@ tree = livingBeing.extend({
   
   action: function() {
 	  //render
-    ctx.fillRect(this.x,this.y,20,20);
-	ctx.font="20px Georgia";
-	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 550, 85);
+    ctx.fillRect(this.x,this.y,0.016*canvas.width,0.016*canvas.width);
+	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 0.46*canvas.width, 0.12*canvas.height);
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
     
       /*
@@ -700,9 +770,9 @@ dummyMonkey = Class.extend({
   
   //render
   action: function() {
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y +30);
-    ctx.fillRect(this.x, this.y, 10, 10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y +0.04*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.008*canvas.width, 0.008*canvas.width);
   }
 });
     
@@ -765,9 +835,9 @@ monkey = armedBeing.extend({
   
   action: function(list) {
 	  //render
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y-10);
-    ctx.fillRect(this.x, this.y, 10,10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0){
       this.coolDown -= frameRate/1000;
       return;
@@ -796,7 +866,7 @@ monkey = armedBeing.extend({
     if (this.coolDown>0) return null;
     this.coolDown = this.attackRate;
     var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
-    world.audio.play("monkeyShoot");
+    audio.play("monkeyShoot");
     return b;
   }
 });
@@ -809,16 +879,16 @@ monster = armedBeing.extend({
   
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
-    this.vx = vx;
+    this.vx = vx/1000*frameRate;
     this.reward = reward;
 	this.type = type;
   },
   
   action: function(slot) {
 	  //render
-	  ctx.font="15px Georgia";
-	  ctx.fillText(this.type, this.x-20, this.y-10);
-    ctx.fillRect(this.x,this.y,10,10);
+	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
+    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0) this.coolDown -= frameRate/1000;
     var target = this.getTarget(slot);
     if (target) {
@@ -841,7 +911,7 @@ monster = armedBeing.extend({
 
   },
   move: function() {
-    this.x += this.vx/1000*frameRate;
+    this.x += this.vx;
     this.moved = true;
   },
   
@@ -873,12 +943,13 @@ bullet = Class.extend({
   target: null,
   action: null,
   calculateTrajectory: null,
+	ay: null,
   
   init: function(x, y, damage, v, target, type) {
     if (type == "straight") {
       this.action = (function() {
         ctx.fillRect(this.x, this.y, 5,5);
-        this.time -= frameRate/1000;
+        this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
           this.isDead = true;
@@ -910,14 +981,15 @@ bullet = Class.extend({
       });
     }
     else if (type == "projectile") {
+			this.ay = gravity/1000*frameRate/1000*frameRate;
       this.action = (function() {
         ctx.fillRect(this.x, this.y, 5,5);
-        this.time -= frameRate/1000;
+        this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
           this.isDead = true;
         }else {
-          this.vy += gravity/1000*frameRate/1000*frameRate;
+          this.vy += this.ay;
           this.move();
         }
       });
@@ -942,15 +1014,15 @@ bullet = Class.extend({
         }
         var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
         var time = hypo/v;
-        return [diffx/time, diffy/time - 1/2*gravity*time, time];
+        return [diffx/time, diffy/time - 1/2*this.ay*time, time];
       });
     }
     this.x = x;
     this.y = y;
-    var t = this.calculateTrajectory(this, target, v);
+    var t = this.calculateTrajectory(this, target, v/1000*frameRate);
     this.damage = damage;
-    this.vx = t[0]/1000*frameRate;
-    this.vy = t[1]/1000*frameRate;
+    this.vx = t[0];
+    this.vy = t[1];
     this.isDead = false;
     this.target = target;
     this.time = t[2];
@@ -977,32 +1049,57 @@ coin = Class.extend({
 	isDead: false,
 	a: null,
 	vx: null,
+	isCollect: false,
 	
 	init: function(x,y) {
 		this.value = 5;
 		this.x = x;
 		this.y = y;
-		this.vx = Math.random()*100-50;
-		this.vy = -250+ Math.random()*50-25;
+		this.vx = (Math.random()*100-50)/1000*frameRate;
+		this.vy = (-250+ Math.random()*50-25)/1000*frameRate;
+		this.ay = gravity/1000*frameRate/1000*frameRate;
 		this.time = this.calculateTime();
+		this.ax;
 	},
 	
 	 move: function() {
 		 
-		this.vy += gravity/1000*frameRate;
-    this.y += this.vy/1000*frameRate;
+		this.vy += this.ay;
+    this.y += this.vy;
 		this.y = Math.min(this.y, SLOTS_POSITION_Y[0]);
-		this.x += this.vx/1000*frameRate;
+		this.x += this.vx;
   },
+	
+	collect: function() {
+		this.vy = 0;
+		this.vx = 0;
+		var diffx = TREE_POSITION_X-this.x;
+		var diffy = TREE_POSITION_Y-this.y;
+		hypo = Math.sqrt(diffx*diffx+diffy*diffy);
+		var a = coinAcc/1000000*frameRate*frameRate;
+		this.ay = a/hypo*diffy;
+		this.ax = a/hypo*diffx;
+		this.time = Math.sqrt(2*hypo/a);
+		this.move = (function() {
+			this.vy += this.ay;
+			this.vx += this.ax;
+			this.y += this.vy;
+			this.x += this.vx;
+			if (this.time<=0){
+				world.money += this.value;
+				this.isDead = true;
+			}
+		});
+	},
 	
 	action: function() {
 		if (this.time<=0) return;
-		this.time -= frameRate/1000;
+		this.time -= 1;
 		this.move();
 	},
 	
 	calculateTime: function() {
-		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*gravity*(SLOTS_POSITION_Y[0]-this.y)))/gravity;
+		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*this.ay*(SLOTS_POSITION_Y[0]-this.y)))/this.ay;
 	}
 });
 
@@ -1034,28 +1131,24 @@ message = Class.extend({
 
 audioManager = Class.extend({
   collections: null,
-  context: null,
-
   init: function(){
     this.collections = {};
     for(var key in musicData){
-      this.context = new Audio(musicData[key].src);
-      this.context.loop = musicData[key].loop;
-      this.context.volume = musicData[key].volume;
-      this.collections[key] = this.context;
-    } 
+      var context = new Audio();
+			context.oncanplaythrough = (function(){game.loaded++;game.startGame();});
+			context.src = musicData[key].src;
+      context.loop = musicData[key].loop;
+      context.volume = musicData[key].volume;
+      this.collections[key] = context;
+    }
   },
 
   play: function(name){
 		if (!this.collections[name].paused) {
-			console.log(this.collections[name].currentTime);
 			var clone = new Audio(musicData[name].src);
 			clone.loop = musicData[name].loop;
 			clone.volume = musicData[name].volume;
 			clone.play();
-			console.log(clone);
-			console.log(this.collections[name]);
-			console.log(clone==this.collections[name]);
 		}else this.collections[name].play();
   },
 
