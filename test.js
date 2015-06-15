@@ -19,12 +19,13 @@ var SLOTS_POSITION_Y = [540,360,180,180,360,540];
 var startingGold = 200;
 var audio = null;
 var numberToLoad = 7;
+var coinAcc = 1000;
 var slotSize = {
   x : 25,
   y: 35
 };
-var MONEY_POSITION = [900,700];
 var coinSize = {x:25, y:25};
+var moneyDisplay = {x:850, y:50};
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -254,7 +255,7 @@ gameEngine = Class.extend({
     ctx.clearRect(1,586,canvas.width-2, 133);
 	ctx.font="20px Georgia";
 	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),550,50);
-	ctx.fillText("Money: "+world.money, 850, 50);
+	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
     //renderingEngine.render();
     if (world.isGameOver() && game.over) {
 			//render
@@ -561,9 +562,9 @@ world = Class.extend({
         this.buffer = null;
       }
 			else if (list[0] == "collect") {
-				if (list[1].isDead == false) {
-					list[1].isDead = true;
-					world.money += list[1].value;
+				if (list[1].isCollect == false) {
+					list[1].isCollect = true;
+					list[1].collect();
           audio.play("pickCoin");
 				}
 			}
@@ -861,7 +862,7 @@ monster = armedBeing.extend({
   
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
-    this.vx = vx;
+    this.vx = vx/1000*frameRate;
     this.reward = reward;
 	this.type = type;
   },
@@ -893,7 +894,7 @@ monster = armedBeing.extend({
 
   },
   move: function() {
-    this.x += this.vx/1000*frameRate;
+    this.x += this.vx;
     this.moved = true;
   },
   
@@ -925,12 +926,13 @@ bullet = Class.extend({
   target: null,
   action: null,
   calculateTrajectory: null,
+	ay: null,
   
   init: function(x, y, damage, v, target, type) {
     if (type == "straight") {
       this.action = (function() {
         ctx.fillRect(this.x, this.y, 5,5);
-        this.time -= frameRate/1000;
+        this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
           this.isDead = true;
@@ -962,14 +964,15 @@ bullet = Class.extend({
       });
     }
     else if (type == "projectile") {
+			this.ay = gravity/1000*frameRate/1000*frameRate;
       this.action = (function() {
         ctx.fillRect(this.x, this.y, 5,5);
-        this.time -= frameRate/1000;
+        this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
           this.isDead = true;
         }else {
-          this.vy += gravity/1000*frameRate/1000*frameRate;
+          this.vy += this.ay;
           this.move();
         }
       });
@@ -994,15 +997,15 @@ bullet = Class.extend({
         }
         var hypo = Math.sqrt(diffx*diffx + diffy*diffy);
         var time = hypo/v;
-        return [diffx/time, diffy/time - 1/2*gravity*time, time];
+        return [diffx/time, diffy/time - 1/2*this.ay*time, time];
       });
     }
     this.x = x;
     this.y = y;
-    var t = this.calculateTrajectory(this, target, v);
+    var t = this.calculateTrajectory(this, target, v/1000*frameRate);
     this.damage = damage;
-    this.vx = t[0]/1000*frameRate;
-    this.vy = t[1]/1000*frameRate;
+    this.vx = t[0];
+    this.vy = t[1];
     this.isDead = false;
     this.target = target;
     this.time = t[2];
@@ -1029,32 +1032,57 @@ coin = Class.extend({
 	isDead: false,
 	a: null,
 	vx: null,
+	isCollect: false,
 	
 	init: function(x,y) {
 		this.value = 5;
 		this.x = x;
 		this.y = y;
-		this.vx = Math.random()*100-50;
-		this.vy = -250+ Math.random()*50-25;
+		this.vx = (Math.random()*100-50)/1000*frameRate;
+		this.vy = (-250+ Math.random()*50-25)/1000*frameRate;
+		this.ay = gravity/1000*frameRate/1000*frameRate;
 		this.time = this.calculateTime();
+		this.ax;
 	},
 	
 	 move: function() {
 		 
-		this.vy += gravity/1000*frameRate;
-    this.y += this.vy/1000*frameRate;
+		this.vy += this.ay;
+    this.y += this.vy;
 		this.y = Math.min(this.y, SLOTS_POSITION_Y[0]);
-		this.x += this.vx/1000*frameRate;
+		this.x += this.vx;
   },
+	
+	collect: function() {
+		this.vy = 0;
+		this.vx = 0;
+		var diffx = TREE_POSITION_X-this.x;
+		var diffy = TREE_POSITION_Y-this.y;
+		hypo = Math.sqrt(diffx*diffx+diffy*diffy);
+		var a = coinAcc/1000000*frameRate*frameRate;
+		this.ay = a/hypo*diffy;
+		this.ax = a/hypo*diffx;
+		this.time = Math.sqrt(2*hypo/a);
+		this.move = (function() {
+			this.vy += this.ay;
+			this.vx += this.ax;
+			this.y += this.vy;
+			this.x += this.vx;
+			if (this.time<=0){
+				world.money += this.value;
+				this.isDead = true;
+			}
+		});
+	},
 	
 	action: function() {
 		if (this.time<=0) return;
-		this.time -= frameRate/1000;
+		this.time -= 1;
 		this.move();
 	},
 	
 	calculateTime: function() {
-		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*gravity*(SLOTS_POSITION_Y[0]-this.y)))/gravity;
+		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*this.ay*(SLOTS_POSITION_Y[0]-this.y)))/this.ay;
 	}
 });
 
