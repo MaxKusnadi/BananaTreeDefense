@@ -180,7 +180,7 @@ level0 = {
     type: "Gorilla",
     position: 0
   },{
-    time: 50,
+    time: 45,
     type: "Kingkong",
     position: 1
   }
@@ -227,7 +227,8 @@ var setup = function() {
   ctx.lineTo(0,0);
   ctx.stroke();
   
-  
+  //draw tree
+  ctx.drawImage(new Image("images/tree.png"), 0.5*canvas.width,0.5*canvas.height);
   characterData = data;
   bulletData = bulletData;
 	game = new gameEngine(level0);
@@ -697,6 +698,7 @@ tree = livingBeing.extend({
   rotateCoolDown: null,
   coolDownLength: null,
   coolDownRate: null,
+  image : null,
   
   init: function(level) {
     this._super(this.generateHp(level), TREE_POSITION_X, TREE_POSITION_Y);
@@ -708,6 +710,7 @@ tree = livingBeing.extend({
     this.rotateCoolDown = 0;
     this.coolDownLength = this.generateCoolDown(level);
     this.coolDownRate = frameRate/1000;
+
   },
   //todo/discuss: generateHp and generateCoolDown
   
