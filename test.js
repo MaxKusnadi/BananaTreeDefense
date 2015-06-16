@@ -129,6 +129,34 @@ var musicData ={
     volume: 0.2
   }
 }
+
+//----------------------------IMAGE DATA-------------------------------------------------------------
+imageData = {
+  "coin" : {
+    src: "images/coin.png",
+    sizeX: 32,
+    sizeY: 32,
+    numX: 8,
+    numY: 1,
+    actualSizeX: 20,
+    actualSizeY: 20},
+  "type1" : {
+    src: "images/banana.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 7,
+    actualSizeX: 60,
+    actualSizeY: 60},
+  "type2" : {
+    src: "images/banana.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 7,
+    actualSizeX: 60,
+    actualSizeY: 60}
+}
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
   events: [{
@@ -1209,8 +1237,10 @@ audioManager = Class.extend({
 
 imageManager = Class.extend({
 	collections: null,
+
 	init: function() {
-		this.collections = {};
+	
+  	this.collections = {};
 		for (var key in imageData) {
 			var list = [];
 			var img = new Image();
@@ -1233,33 +1263,6 @@ imageManager = Class.extend({
 		return this.collections[name];
 	}
 });
-
-imageData = {
-	"coin" : {
-		src: "images/banana.png",
-		sizeX: 120,
-		sizeY: 120,
-		numX: 10,
-		numY: 7,
-		actualSizeX: 60,
-		actualSizeY: 60},
-	"type1" : {
-		src: "images/banana.png",
-		sizeX: 120,
-		sizeY: 120,
-		numX: 10,
-		numY: 7,
-		actualSizeX: 60,
-		actualSizeY: 60},
-	"type2" : {
-		src: "images/banana.png",
-		sizeX: 120,
-		sizeY: 120,
-		numX: 10,
-		numY: 7,
-		actualSizeX: 60,
-		actualSizeY: 60}
-}
 
 animation = Class.extend({
 	frame : 0,
