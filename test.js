@@ -23,6 +23,8 @@ var coinAcc = null;
 var slotSize = null;
 var coinSize = null;
 var moneyDisplay = null;
+var imageData = null;
+var imageManager = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -264,6 +266,7 @@ gameEngine = Class.extend({
 	load: function() {
 		string = "Loading";
 		this.interval = setInterval(this.loadingPage, 1000) 
+		imageManager = new imageManager();
 		audio = new audioManager();
     renderingEngine = new renderingEngine();
 	},
@@ -337,6 +340,9 @@ renderingEngine = Class.extend({
 	},
 	
 	render: function() {
+		for (var i=0; i<world.coins.length; i++) {
+			ctx.drawImage(world.coins[i].render.animate(),world.coins[i].x, world.coins[i].y);
+		}
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
 		}
@@ -646,8 +652,8 @@ world = Class.extend({
 	//render
 		for (var i=0; i<this.coins.length; i++) {
 			this.coins[i].action();
-			ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
-			ctx.fillText("$", this.coins[i].x, this.coins[i].y);
+			//ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
+			//ctx.fillText("$", this.coins[i].x, this.coins[i].y);
 			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
 		}
 	//render
@@ -1079,6 +1085,7 @@ coin = Class.extend({
 	a: null,
 	vx: null,
 	isCollect: false,
+	render: null,
 	
 	init: function(x,y) {
 		this.value = 5;
@@ -1089,6 +1096,7 @@ coin = Class.extend({
 		this.ay = gravity/1000*frameRate/1000*frameRate;
 		this.time = this.calculateTime();
 		this.ax;
+		this.render = new animation("coin");
 	},
 	
 	 move: function() {
@@ -1191,24 +1199,54 @@ audioManager = Class.extend({
 
 });
 
-//so maybe we create a animation class like
-
-// animation = Class.extend({
-// 	frame = 0,
-// 	size = null,
-// 	src = null,
+imageManager = Class.extend({
+	collections: null,
+	init: function() {
+		this.collections = {};
+		for (var key in imageData) {
+			var list = [];
+			for (var i = 0; i<imageData[key].length; i++) {
+				var img = new Image();
+				img.src = imageData[key][i];
+				list.push(img);
+			}
+			this.collections[key] = list;
+		}
+	},
 	
-// 	init: function(name) {
-// 		this.src = somewhere;//essentially an array of images, the animation
-// 		this.size = src.length;
-// 	},
-	
-// 	animate : function() {
-// 		var image = new Image(this.src);
-// 		frame = (frame+1)%size;
-// 		return image;
-// 	}
-// });
+	retrieve: function(name) {
+		return this.collections[name];
+	}
+});
 
-//so every instances of an object we add an additional attribute with consistent name referencing the animation class
-//so later the renderingEngine can just call ctx.draw(Monkey.render.animate(), ctx.x, ctx.y); to show the animation
+imageData = {
+	"coin" : ["images/b0.png",
+					"images/b1.png",
+					"images/b2.png",
+					"images/b3.png",
+					"images/b4.png",
+					"images/b5.png",
+					"images/b6.png",
+					"images/b7.png",
+					"images/b8.png",
+					"images/b9.png",
+					"images/b10.png",
+					"images/b11.png"]
+}
+
+animation = Class.extend({
+	frame : 0,
+	size : null,
+	src : null,
+	
+	init: function(name) {
+		this.src = imageManager.retrieve(name);
+		this.size = this.src.length;
+	},
+	
+	animate : function() {
+		var image = this.src[this.frame];
+		this.frame = (this.frame+1)%this.size;
+		return image;
+	}
+});
