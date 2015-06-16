@@ -155,7 +155,16 @@ imageData = {
     numX: 10,
     numY: 7,
     actualSizeX: 60,
-    actualSizeY: 60}
+    actualSizeY: 60},
+  "tree" : {
+    src: "images/tree.png",
+    sizeX: 132,
+    sizeY: 219,
+    numX: 1,
+    nuY: 3,
+    actualSizeX: 60,
+    actualSizeY:60,
+    }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
@@ -368,6 +377,7 @@ renderingEngine = Class.extend({
 	},
 	
 	render: function() {
+    world.tree.image.animate();
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
 			//ctx.fillRect(this.x, this.y, 5,5);
@@ -380,6 +390,7 @@ renderingEngine = Class.extend({
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
 		}
+    
 	}
 });
 		
@@ -749,7 +760,7 @@ tree = livingBeing.extend({
   rotateCoolDown: null,
   coolDownLength: null,
   coolDownRate: null,
-  image : null,
+  render: null,
   
   init: function(level) {
     this._super(this.generateHp(level), TREE_POSITION_X, TREE_POSITION_Y);
@@ -761,7 +772,7 @@ tree = livingBeing.extend({
     this.rotateCoolDown = 0;
     this.coolDownLength = this.generateCoolDown(level);
     this.coolDownRate = frameRate/1000;
-
+    this.render = new animation(this, name);
   },
   //todo/discuss: generateHp and generateCoolDown
   
@@ -806,9 +817,7 @@ tree = livingBeing.extend({
   
   action: function() {
 	  //render
-    ctx.fillRect(this.x,this.y,0.016*canvas.width,0.016*canvas.width);
-	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
-	ctx.fillText("CoolDown: "+Math.ceil(this.rotateCoolDown), 0.46*canvas.width, 0.12*canvas.height);
+    
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
     
       /*
