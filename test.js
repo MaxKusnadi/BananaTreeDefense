@@ -341,7 +341,8 @@ renderingEngine = Class.extend({
 	
 	render: function() {
 		for (var i=0; i<world.coins.length; i++) {
-			ctx.drawImage(world.coins[i].render.animate(),world.coins[i].x, world.coins[i].y);
+      ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
+			ctx.fillText("$",world.coins[i].x, world.coins[i].y);
 		}
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
