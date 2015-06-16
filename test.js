@@ -16,20 +16,22 @@ var TREE_POSITION_X = null;
 var TREE_POSITION_Y = null;
 var SLOTS_POSITION_X = null;
 var SLOTS_POSITION_Y = null;
-var startingGold = 200;
+var startingGold = 250;
 var audio = null;
 var numberToLoad = 7;//rmb to update
 var coinAcc = null;
 var slotSize = null;
 var coinSize = null;
 var moneyDisplay = null;
+var imageData = null;
+var imageManager = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
   monkeys: {
     "Soldier": {
       hp: 500,
-      damage: 30,
+      damage: 40,
       attackRate: 1,
       attackRange: 300,
       bulletType: "type1",
@@ -37,8 +39,8 @@ var data = {
     },
     "Archer": {
       hp: 300,
-      damage: 40,
-      attackRate: 0.75,
+      damage: 50,
+      attackRate: 0.65,
       attackRange: 600,
       bulletType: "type2",
       cost: 90
@@ -142,47 +144,47 @@ level0 = {
   },{
     time: 15,
     type: "Gorilla",
-    position: 0
+    position: 1
   }, {
     time: 15,
     type: "Gorilla",
-    position: 1
+    position: 2
   },{
     time: 20,
     type: "Gorilla",
-    position: 1
+    position: 3
   },{
     time: 15,
     type: "Gorilla",
-    position: 2
+    position: 1
   },{
     time: 25,
     type: "Kingkong",
-    position: 3
+    position: 0
   },{
     time: 30,
     type: "Kingkong",
-    position: 3
+    position: 2
   },{
     time: 35,
     type: "Gorilla",
-    position: 0
+    position: 1
   }, {
     time: 35,
     type: "Gorilla",
-    position: 1
+    position: 2
   },{
     time: 35,
     type: "Gorilla",
-    position: 1
+    position: 3
   },{
     time: 40,
     type: "Gorilla",
-    position: 2
+    position: 0
   },{
-    time: 50,
+    time: 45,
     type: "Kingkong",
-    position: 3
+    position: 1
   }
     
     
@@ -227,7 +229,8 @@ var setup = function() {
   ctx.lineTo(0,0);
   ctx.stroke();
   
-  
+  //draw tree
+  ctx.drawImage(new Image("images/tree.png"), 0.5*canvas.width,0.5*canvas.height);
   characterData = data;
   bulletData = bulletData;
 	game = new gameEngine(level0);
@@ -253,6 +256,7 @@ gameEngine = Class.extend({
 	load: function() {
 		string = "Loading";
 		this.interval = setInterval(this.loadingPage, 1000) 
+		imageManager = new imageManager();
 		audio = new audioManager();
     renderingEngine = new renderingEngine();
 	},
@@ -265,7 +269,7 @@ gameEngine = Class.extend({
 		this.string+='.';
 		if (this.string.length == 13) this.string = "Loading";
 	},
-		
+	
 	startGame: function() {
 		if (this.loaded == numberToLoad) {
 			clearInterval(game.interval);
@@ -285,9 +289,9 @@ gameEngine = Class.extend({
     ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
     ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
     ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
-	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
-	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
-	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
+  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
     //renderingEngine.render();
     if (world.isGameOver() && game.over) {
 			//render
@@ -326,6 +330,9 @@ renderingEngine = Class.extend({
 	},
 	
 	render: function() {
+		for (var i=0; i<world.coins.length; i++) {
+			ctx.drawImage(world.coins[i].render.animate(),world.coins[i].x, world.coins[i].y);
+		}
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
 		}
@@ -634,8 +641,8 @@ world = Class.extend({
 	//render
 		for (var i=0; i<this.coins.length; i++) {
 			this.coins[i].action();
-			ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
-			ctx.fillText("$", this.coins[i].x, this.coins[i].y);
+			//ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
+			//ctx.fillText("$", this.coins[i].x, this.coins[i].y);
 			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
 		}
 	//render
@@ -697,6 +704,7 @@ tree = livingBeing.extend({
   rotateCoolDown: null,
   coolDownLength: null,
   coolDownRate: null,
+  image : null,
   
   init: function(level) {
     this._super(this.generateHp(level), TREE_POSITION_X, TREE_POSITION_Y);
@@ -708,6 +716,7 @@ tree = livingBeing.extend({
     this.rotateCoolDown = 0;
     this.coolDownLength = this.generateCoolDown(level);
     this.coolDownRate = frameRate/1000;
+
   },
   //todo/discuss: generateHp and generateCoolDown
   
@@ -1065,6 +1074,7 @@ coin = Class.extend({
 	a: null,
 	vx: null,
 	isCollect: false,
+	render: null,
 	
 	init: function(x,y) {
 		this.value = 5;
@@ -1075,6 +1085,7 @@ coin = Class.extend({
 		this.ay = gravity/1000*frameRate/1000*frameRate;
 		this.time = this.calculateTime();
 		this.ax;
+		this.render = new animation("coin");
 	},
 	
 	 move: function() {
@@ -1172,3 +1183,56 @@ audioManager = Class.extend({
   }
 
 });
+
+imageManager = Class.extend({
+	collections: null,
+	init: function() {
+		this.collections = {};
+		for (var key in imageData) {
+			var list = [];
+			for (var i = 0; i<imageData[key].length; i++) {
+				var img = new Image();
+				img.src = imageData[key][i];
+				list.push(img);
+			}
+			this.collections[key] = list;
+		}
+	},
+	
+	retrieve: function(name) {
+		return this.collections[name];
+	}
+});
+
+imageData = {
+	"coin" : ["images/b0.png",
+					"images/b1.png",
+					"images/b2.png",
+					"images/b3.png",
+					"images/b4.png",
+					"images/b5.png",
+					"images/b6.png",
+					"images/b7.png",
+					"images/b8.png",
+					"images/b9.png",
+					"images/b10.png",
+					"images/b11.png"]
+}
+
+animation = Class.extend({
+	frame : 0,
+	size : null,
+	src : null,
+	
+	init: function(name) {
+		this.src = imageManager.retrieve(name);
+		this.size = this.src.length;
+	},
+	
+	animate : function() {
+		var image = this.src[this.frame];
+		this.frame = (this.frame+1)%this.size;
+		return image;
+	}
+});
+
