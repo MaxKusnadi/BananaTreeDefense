@@ -131,7 +131,7 @@ var musicData ={
 }
 
 //----------------------------IMAGE DATA-------------------------------------------------------------
-imageData = {
+var imageData = {
   "coin" : {
     src: "images/coin.png",
     sizeX: 32,
@@ -161,7 +161,7 @@ imageData = {
     sizeX: 132,
     sizeY: 219,
     numX: 1,
-    nuY: 3,
+    numY: 3,
     actualSizeX: 60,
     actualSizeY:60,
     }
@@ -292,11 +292,12 @@ gameEngine = Class.extend({
 	over: true,
 	loaded: 0,
 	string: null,
+	file: null,
   
   init: function(file) {
-    world = new world(file);
     inputManager = new inputManager();
 		this.over = true;
+		this.file = file;
 		this.load();//put this as the last line
   },
 	
@@ -327,6 +328,7 @@ gameEngine = Class.extend({
 			ctx.lineTo(canvas.width,0.8125*canvas.height);
 			ctx.stroke();
 			audio.play("background");
+			world = new world(this.file);
 			this.interval = setInterval(this.action, frameRate);
 		}
 	},
@@ -377,7 +379,7 @@ renderingEngine = Class.extend({
 	},
 	
 	render: function() {
-    world.tree.image.animate();
+    world.tree.render.animate();
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
 			//ctx.fillRect(this.x, this.y, 5,5);
@@ -761,6 +763,8 @@ tree = livingBeing.extend({
   coolDownLength: null,
   coolDownRate: null,
   render: null,
+	x: null,
+	y: null,
   
   init: function(level) {
     this._super(this.generateHp(level), TREE_POSITION_X, TREE_POSITION_Y);
@@ -772,7 +776,9 @@ tree = livingBeing.extend({
     this.rotateCoolDown = 0;
     this.coolDownLength = this.generateCoolDown(level);
     this.coolDownRate = frameRate/1000;
-    this.render = new animation(this, name);
+    this.render = new animation(this, "tree");
+		this.x = TREE_POSITION_X;
+		this.y = TREE_POSITION_Y;
   },
   //todo/discuss: generateHp and generateCoolDown
   
@@ -1280,6 +1286,7 @@ animation = Class.extend({
 	from: null,
 	
 	init: function(from, name) {
+		console.log(from, name);
 		this.src = imageManager.retrieve(name);
 		this.size = this.src.length;
 		this.from = from;
