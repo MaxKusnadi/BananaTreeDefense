@@ -340,9 +340,14 @@ renderingEngine = Class.extend({
 	},
 	
 	render: function() {
+		for (var i=0; i<world.bullets.length; i++) {
+			world.bullets[i].render.animate();
+			//ctx.fillRect(this.x, this.y, 5,5);
+		}
 		for (var i=0; i<world.coins.length; i++) {
-      ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
-			ctx.fillText("$",world.coins[i].x, world.coins[i].y);
+			world.coins[i].render.animate();
+      //ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
+			//ctx.fillText("$",world.coins[i].x, world.coins[i].y);
 		}
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
@@ -851,7 +856,7 @@ armedBeing = livingBeing.extend({
     this.damage = damage;
     this.attackRate = attackRate;
     this.attackRange = attackRange;
-    this.bulletType = bulletData[bulletType];
+    this.bulletType = bulletType;
   },
   
 });
@@ -901,7 +906,8 @@ monkey = armedBeing.extend({
   attack: function(target) {
     if (this.coolDown>0) return null;
     this.coolDown = this.attackRate;
-    var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, target, this.bulletType.type);
+		var bt = bulletData[this.bulletType];
+    var b = new bullet(this.x, this.y, this.damage, bt.v, target, bt.type, this.bulletType);
     audio.play("monkeyShoot");
     return b;
   }
@@ -961,7 +967,8 @@ monster = armedBeing.extend({
   attack: function(slot) {
     if (this.coolDown>0) return null;
     this.coolDown = this.attackRate;
-    var b = new bullet(this.x, this.y, this.damage, this.bulletType.v, slot, this.bulletType.type);
+		var bt = bulletData[this.bulletType];
+    var b = new bullet(this.x, this.y, this.damage, bt.v, slot, bt.type, this.bulletType);
     return b;
   }
   
@@ -980,11 +987,11 @@ bullet = Class.extend({
   action: null,
   calculateTrajectory: null,
 	ay: null,
+	render: null,
   
-  init: function(x, y, damage, v, target, type) {
+  init: function(x, y, damage, v, target, type, name) {
     if (type == "straight") {
       this.action = (function() {
-        ctx.fillRect(this.x, this.y, 5,5);
         this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
@@ -1019,7 +1026,6 @@ bullet = Class.extend({
     else if (type == "projectile") {
 			this.ay = gravity/1000*frameRate/1000*frameRate;
       this.action = (function() {
-        ctx.fillRect(this.x, this.y, 5,5);
         this.time -= 1;
         if (this.time<=0) {
           this.attack(this.target);
@@ -1063,6 +1069,7 @@ bullet = Class.extend({
     this.target = target;
     this.time = t[2];
     this.v = v;
+		this.render = new animation(this, name);
   },
   
   
@@ -1097,7 +1104,7 @@ coin = Class.extend({
 		this.ay = gravity/1000*frameRate/1000*frameRate;
 		this.time = this.calculateTime();
 		this.ax;
-		this.render = new animation("coin");
+		this.render = new animation(this, "coin");
 	},
 	
 	 move: function() {
@@ -1206,10 +1213,17 @@ imageManager = Class.extend({
 		this.collections = {};
 		for (var key in imageData) {
 			var list = [];
-			for (var i = 0; i<imageData[key].length; i++) {
-				var img = new Image();
-				img.src = imageData[key][i];
-				list.push(img);
+			var img = new Image();
+			img.src = imageData[key].src;
+			var x = 0;
+			var y = 0;
+			var sx = imageData[key].actualSizeX/1200*canvas.width;
+			var sy = imageData[key].actualSizeY/720*canvas.height;
+			for (var i=0; i<imageData[key].numY; i++) {
+				for (var j=0; j<imageData[key].numX; j++) {
+					var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
+					list.push(inside);
+				}
 			}
 			this.collections[key] = list;
 		}
@@ -1221,33 +1235,52 @@ imageManager = Class.extend({
 });
 
 imageData = {
-	"coin" : ["images/b0.png",
-					"images/b1.png",
-					"images/b2.png",
-					"images/b3.png",
-					"images/b4.png",
-					"images/b5.png",
-					"images/b6.png",
-					"images/b7.png",
-					"images/b8.png",
-					"images/b9.png",
-					"images/b10.png",
-					"images/b11.png"]
+	"coin" : {
+		src: "images/banana.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 10,
+		numY: 7,
+		actualSizeX: 60,
+		actualSizeY: 60},
+	"type1" : {
+		src: "images/banana.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 10,
+		numY: 7,
+		actualSizeX: 60,
+		actualSizeY: 60},
+	"type2" : {
+		src: "images/banana.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 10,
+		numY: 7,
+		actualSizeX: 60,
+		actualSizeY: 60}
 }
 
 animation = Class.extend({
 	frame : 0,
 	size : null,
 	src : null,
+	from: null,
 	
-	init: function(name) {
+	init: function(from, name) {
 		this.src = imageManager.retrieve(name);
 		this.size = this.src.length;
+		this.from = from;
 	},
 	
-	animate : function() {
-		var image = this.src[this.frame];
+	animate : function(x, y) {
+		var list = this.src[this.frame];
 		this.frame = (this.frame+1)%this.size;
-		return image;
+		list[5] += this.from.x;
+		list[6] += this.from.y;
+		ctx.drawImage.apply(ctx,list);
+		list[5] -= this.from.x;
+		list[6] -= this.from.y;
 	}
 });
+
