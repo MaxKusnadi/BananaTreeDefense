@@ -1,4 +1,5 @@
   //---------------------------------------VARIABLES-------------------------------------
+var developerMode = false;
 var canvas = null;
 var ctx = null;
 var image = null;
@@ -259,6 +260,13 @@ level0 = {
   deploy: ["Soldier", "Archer"]
 
 }
+/*
+levelData = {
+	1:[{time:[0,0,0], type:['a','b','c'], position:[1,2,3]},//wave 1
+		{time:[1,1,1], type:['x','y','z'], position:[0,0,0]}],//wave 2
+	2:[...]
+}
+*/
 //------------------------------MAIN-------------------------------------
 var setup = function() {
   canvas = document.getElementById("canvas");
@@ -606,11 +614,16 @@ world = Class.extend({
 	coins: null,
   audio: null,
 	flag: null,
+	count: null,
+	wave: null,
   
   init: function(file) {
     this.script = file;
+		//newdatastructure
+		//this.script = levelData[file];
     this.tree = new tree(this.script.level);
     this.nextTimer = this.script.events[0].time;
+		//this.nextTimer = this.script[0].time[0];
     this.bullets = [];
     this.deploy = [];
     this.rotateBuffer = [];
@@ -766,6 +779,18 @@ world = Class.extend({
       }
       else this.nextTimer = this.script.events[0].time;
     }
+		/*newdatastructure
+		this.count = 0;
+		this.wave = 0;
+		while (!this.isFinish && this.timer >= this.nextTimer) {
+      this.spawn(this.script[this.wave]);
+      this.script.events.splice(0,1);
+      if (this.script.events.length == 0) {
+        this.isFinish = true;
+      }
+      else this.nextTimer = this.script.events[0].time;
+    }
+		*/
     this.timer+=frameRate/1000;
   }
 });
