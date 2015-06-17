@@ -329,7 +329,7 @@ gameEngine = Class.extend({
 		audio.play("background");
 		world = new world(game.file);
 		inputManager = new inputManager();
-		this.interval = setInterval(game.action, frameRate);
+		game.interval = setInterval(game.action, frameRate);
 	},
   
   action: function() {
@@ -416,9 +416,8 @@ renderingEngine = Class.extend({
 			
       //render monkey temporary
 			if (world.tree.slots[i].monkey) {
-				//world.tree.slots[i].monkey.render.animate();
-				ctx.fillText(world.tree.slots[i].monkey.type, world.tree.slots[i].monkey.x-0.016*canvas.width, world.tree.slots[i].monkey.y-0.014*canvas.height);
-				ctx.fillRect(world.tree.slots[i].monkey.x, world.tree.slots[i].monkey.y, 0.0083*canvas.width,0.0083*canvas.width);}
+				world.tree.slots[i].monkey.render.animate();
+				}
 		};
 		
     //render deployable units temporary
@@ -433,8 +432,6 @@ renderingEngine = Class.extend({
 		for (var i=0; i<4; i++) {
 			for (var j=0; j<world.objects[i].length; j++) {
 				world.objects[i][j].render.animate();
-				//ctx.fillText(world.objects[i][j].type, world.objects[i][j].x-0.016*canvas.width, world.objects[i][j].y-0.014*canvas.height);
-				//ctx.fillRect(world.objects[i][j].x, world.objects[i][j].y, 0.0083*canvas.width,0.0083*canvas.width);
 			}
 		}
 		
@@ -943,7 +940,15 @@ monkey = armedBeing.extend({
     damage, attackRate, attackRange, bulletType);
     this.slotNumber = slotNumber;
     this.cost = cost;
-	this.type = type;
+		this.type = type;
+		this.render = new animation(this,type);
+		//temporary
+		if (this.render.src == null) {
+			this.render.animate = (function() {
+				ctx.fillText(this.from.type, this.from.x-0.016*canvas.width, this.from.y-0.014*canvas.height);
+				ctx.fillRect(this.from.x, this.from.y, 0.0083*canvas.width,0.0083*canvas.width);
+			});
+		}
   },
   
   action: function(list) {
@@ -994,6 +999,13 @@ monster = armedBeing.extend({
     this.reward = reward;
   	this.type = type;
     this.render = new animation(this,type);
+		//temporary
+		if (this.render.src == null) {
+			this.render.animate = (function() {
+				ctx.fillText(this.from.type, this.from.x-0.016*canvas.width, this.from.y-0.014*canvas.height);
+				ctx.fillRect(this.from.x, this.from.y, 0.0083*canvas.width,0.0083*canvas.width);
+			});
+		}
   },
   
   action: function(slot) {
@@ -1136,6 +1148,12 @@ bullet = Class.extend({
     this.time = t[2];
     this.v = v;
 		this.render = new animation(this, name);
+		//temporary
+		if (this.render.src == null) {
+			this.render.animate = (function() {
+				ctx.fillRect(this.from.x, this.from.y, 5/1200*canvas.width, 5/1200*canvas.width);
+			});
+		}
   },
   
   
@@ -1311,7 +1329,11 @@ animation = Class.extend({
 	
 	init: function(from, name) {
 		this.src = imageManager.retrieve(name);
-		this.size = this.src.length;
+		//temporary
+		if (this.src) {
+			this.size = this.src.length;
+		}
+		
 		this.from = from;
 	},
 	
