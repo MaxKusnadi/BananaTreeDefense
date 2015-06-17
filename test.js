@@ -158,13 +158,17 @@ var imageData = {
     actualSizeY: 60},
   "tree" : {
     src: "images/tree.png",
-    sizeX: 132,
-    sizeY: 219,
+    sizeX: 222,
+    sizeY: 222,
     numX: 1,
-    numY: 3,
-    actualSizeX: 60,
-    actualSizeY:60,
-    }
+    numY: 1,
+    actualSizeX: 450,
+    actualSizeY:530,
+  },
+  "Cow" :{
+    src: ""
+  }
+
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
