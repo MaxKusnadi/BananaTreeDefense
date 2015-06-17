@@ -284,7 +284,6 @@ gameEngine = Class.extend({
   interval: null,
 	over: true,
 	loaded: 0,
-	string: null,
 	file: null,
   
   init: function(file) {
@@ -294,22 +293,29 @@ gameEngine = Class.extend({
   },
 	
 	load: function() {
-		string = "Loading";
 		renderingEngine = new renderingEngine();
-		this.interval = setInterval(renderingEngine.loadingPage, 1000) 
+		renderingEngine.string = "Loading";
+		this.interval = setInterval(renderingEngine.loadingPage, 1000);
 		imageManager = new imageManager();
 		audio = new audioManager();
 	},
 	
-	
 	checkLoading: function() {
 		if (this.loaded == numberToLoad) {
+			renderingEngine.string = "";
 			clearInterval(game.interval);
-			audio.play("background");
-			world = new world(this.file);
-			inputManager = new inputManager();
-			this.interval = setInterval(this.action, frameRate);
+			document.getElementById("canvas").addEventListener("mousedown", game.startGame);
+			this.interval = setInterval(renderingEngine.waitingPage, 1000);
 		}
+	},
+	
+	startGame: function() {
+		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
+		clearInterval(game.interval);
+		audio.play("background");
+		world = new world(game.file);
+		inputManager = new inputManager();
+		this.interval = setInterval(game.action, frameRate);
 	},
   
   action: function() {
@@ -340,9 +346,18 @@ gameEngine = Class.extend({
 //------------------------------RENDERINGENGINE-------------------------------
 renderingEngine = Class.extend({
 	messages: null,
+	string: null,
 	
 	init: function() {
 		this.messages = [];
+	},
+	
+	waitingPage: function() {
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
+		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
+		this.string == "Click to start" ? this.string = "" : this.string = "Click to start"
+		ctx.fillText(this.string, 0.35*canvas.width, 0.5*canvas.height);
 	},
 	
 	loadingPage: function() {
@@ -350,9 +365,9 @@ renderingEngine = Class.extend({
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
-		ctx.fillText(this.string, 0.4*canvas.width, 0.5*canvas.height);
-		this.string+='.';
-		if (this.string.length == 13) this.string = "Loading";
+		ctx.fillText(renderingEngine.string, 0.4*canvas.width, 0.5*canvas.height);
+		renderingEngine.string+='.';
+		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
 	},
 	
 	createMessage: function(style, duration, x, y, text) {
