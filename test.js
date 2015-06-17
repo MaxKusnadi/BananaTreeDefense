@@ -34,7 +34,7 @@ var data = {
       damage: 40,
       attackRate: 1,
       attackRange: 300,
-      bulletType: "type1",
+      bulletType: "type2",
       cost: 50
     },
     "Archer": {
@@ -141,12 +141,12 @@ var imageData = {
     actualSizeX: 20,
     actualSizeY: 20},
   "type1" : {
-    src: "images/banana.png",
-    sizeX: 120,
-    sizeY: 120,
-    numX: 10,
-    numY: 7,
-    actualSizeX: 60,
+    src: "images/bullet.png",
+    sizeX: 70,
+    sizeY: 65,
+    numX: 14,
+    numY: 6,
+    actualSizeX: 70,
     actualSizeY: 60},
   "type2" : {
     src: "images/banana.png",
@@ -165,10 +165,24 @@ var imageData = {
     actualSizeX: 450,
     actualSizeY:530,
   },
-  /*"Cow" :{
-    src: ""
-  }*/
-
+  "Cow" :{
+    src: "images/cow.png",
+    sizeX: 237,
+    sizeY: 160,
+    numX: 8,
+    numY: 8,
+    actualSizeX: 60,
+    actualSizeY:60,
+  },
+  "Chicken" :{
+    src: "images/chicken.png",
+    sizeX: 33,
+    sizeY: 20,
+    numX: 3,
+    numY: 1,
+    actualSizeX: 60,
+    actualSizeY:60,
+  }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 level0 = {
@@ -384,51 +398,62 @@ renderingEngine = Class.extend({
   	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
-		//render tree
+		
+    //render tree
     world.tree.render.animate();
-		//render cooldown text: temporary
+		
+    //render cooldown text: temporary
 		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText("CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.47*canvas.width, 0.105*canvas.height);
-		//font definition temporary
+		
+    //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-		//render boxes temporary
+		
+    //render boxes temporary
 		for (var i=0; i<6; i++) {
       ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
       ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
-			//render monkey temporary
+			
+      //render monkey temporary
 			if (world.tree.slots[i].monkey) {
 				//world.tree.slots[i].monkey.render.animate();
 				ctx.fillText(world.tree.slots[i].monkey.type, world.tree.slots[i].monkey.x-0.016*canvas.width, world.tree.slots[i].monkey.y-0.014*canvas.height);
 				ctx.fillRect(world.tree.slots[i].monkey.x, world.tree.slots[i].monkey.y, 0.0083*canvas.width,0.0083*canvas.width);}
 		};
-		//render deployable units temporary
+		
+    //render deployable units temporary
     for (var i=0; i<world.deploy.length; i++) {
 			//world.deploy[i].monkey.render.animate();
 			ctx.fillRect(world.deploy[i].monkey.x, world.deploy[i].monkey.y, 0.008*canvas.width, 0.008*canvas.width);
 			ctx.fillText(world.deploy[i].monkey.type, world.deploy[i].monkey.x-0.016*canvas.width, world.deploy[i].monkey.y +0.04*canvas.height);
 			ctx.fillText(characterData.monkeys[world.deploy[i].monkey.type].cost,world.deploy[i].monkey.x, world.deploy[i].monkey.y-0.014*canvas.height);
     }
-		//render monster temporary
+		
+    //render monster temporary
 		for (var i=0; i<4; i++) {
 			for (var j=0; j<world.objects[i].length; j++) {
-				//world.objects[i][j].render.animate();
-				ctx.fillText(world.objects[i][j].type, world.objects[i][j].x-0.016*canvas.width, world.objects[i][j].y-0.014*canvas.height);
-				ctx.fillRect(world.objects[i][j].x, world.objects[i][j].y, 0.0083*canvas.width,0.0083*canvas.width);
+				world.objects[i][j].render.animate();
+				//ctx.fillText(world.objects[i][j].type, world.objects[i][j].x-0.016*canvas.width, world.objects[i][j].y-0.014*canvas.height);
+				//ctx.fillRect(world.objects[i][j].x, world.objects[i][j].y, 0.0083*canvas.width,0.0083*canvas.width);
 			}
 		}
-		//render bullets
+		
+    //render bullets
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
 		}
-		//render coins
+		
+    //render coins
 		for (var i=0; i<world.coins.length; i++) {
 			world.coins[i].render.animate();
 		}
-		//render popup messages
+		
+    //render popup messages
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
 		}
-		//render deploying units temporary
+		
+    //render deploying units temporary
     if(world.buffer) {
 			//world.buffer.render.animate();
 			ctx.fillRect(world.buffer.x, world.buffer.y, 0.008*canvas.width, 0.008*canvas.width);
@@ -961,12 +986,14 @@ monster = armedBeing.extend({
   moved: false,
   reward: null,
   type: null,
+  render:null,
 
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
     this.vx = vx/1000*frameRate;
     this.reward = reward;
   	this.type = type;
+    this.render = new animation(this,type);
   },
   
   action: function(slot) {
