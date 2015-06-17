@@ -414,17 +414,15 @@ renderingEngine = Class.extend({
       ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
       ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
 			
-      //render monkey temporary
+			//render monkey
 			if (world.tree.slots[i].monkey) {
 				world.tree.slots[i].monkey.render.animate();
 				}
 		};
 		
-    //render deployable units temporary
+    //render deployable units (cost temporary)
     for (var i=0; i<world.deploy.length; i++) {
-			//world.deploy[i].monkey.render.animate();
-			ctx.fillRect(world.deploy[i].monkey.x, world.deploy[i].monkey.y, 0.008*canvas.width, 0.008*canvas.width);
-			ctx.fillText(world.deploy[i].monkey.type, world.deploy[i].monkey.x-0.016*canvas.width, world.deploy[i].monkey.y +0.04*canvas.height);
+			world.deploy[i].monkey.render.animate();
 			ctx.fillText(characterData.monkeys[world.deploy[i].monkey.type].cost,world.deploy[i].monkey.x, world.deploy[i].monkey.y-0.014*canvas.height);
     }
 		
@@ -450,18 +448,16 @@ renderingEngine = Class.extend({
 			this.messages[i].render();
 		}
 		
-    //render deploying units temporary
+    //render deploying units 
     if(world.buffer) {
-			//world.buffer.render.animate();
-			ctx.fillRect(world.buffer.x, world.buffer.y, 0.008*canvas.width, 0.008*canvas.width);
-		ctx.fillText(world.buffer.type, world.buffer.x-0.016*canvas.width, world.buffer.y +0.04*canvas.height);}
-		//render rotating units temporary
+			world.buffer.render.animate();
+		}
+		//render rotating units
 		if (world.rotateBuffer.length>0) {
       for (var i=0; i<6; i++) {
         if (world.rotateBuffer[i]) {
-					//world.rotateBuffer[i].render.animate();
-					ctx.fillRect(world.rotateBuffer[i].x, world.rotateBuffer[i].y, 0.008*canvas.width, 0.008*canvas.width);
-		ctx.fillText(world.rotateBuffer[i].type, world.rotateBuffer[i].x-0.016*canvas.width, world.rotateBuffer[i].y +0.04*canvas.height);}
+					world.rotateBuffer[i].render.animate();
+				}
       }
     }
 	}
@@ -880,9 +876,17 @@ dummyMonkey = Class.extend({
   x: null,
   y: null,
   type: null,
+	render: null,
   
   init: function(type) {
     this.type = type;
+		this.render = new animation(this, type);
+		if (this.render.src == null) {
+			this.render.animate = (function() {
+				ctx.fillRect(this.from.x, this.from.y, 0.008*canvas.width, 0.008*canvas.width);
+				ctx.fillText(this.from.type, this.from.x-0.016*canvas.width, this.from.y +0.04*canvas.height);
+			});
+		}
   }
 });
     
