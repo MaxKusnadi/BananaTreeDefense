@@ -149,6 +149,14 @@ var imageData = {
     numY: 6,
     actualSizeX: 70,
     actualSizeY: 60},
+  "type11" : {
+    src: "images/bullet1.png",
+    sizeX: 70,
+    sizeY: 65,
+    numX: 14,
+    numY: 6,
+    actualSizeX: 70,
+    actualSizeY: 60},
   "type2" : {
     src: "images/banana.png",
     sizeX: 120,
@@ -169,7 +177,7 @@ var imageData = {
   "Cow" :{
     src: "images/cow.png",
     sizeX: 237,
-    sizeY: 160,
+    sizeY: 159,
     numX: 8,
     numY: 8,
     actualSizeX: 60,
@@ -177,6 +185,24 @@ var imageData = {
   },
   "Chicken" :{
     src: "images/chicken.png",
+    sizeX: 33,
+    sizeY: 20,
+    numX: 3,
+    numY: 1,
+    actualSizeX: 60,
+    actualSizeY:60,
+  },
+  "Cow1" :{
+    src: "images/cow1.png",
+    sizeX: 237,
+    sizeY: 159,
+    numX: 8,
+    numY: 8,
+    actualSizeX: 60,
+    actualSizeY:60,
+  },
+  "Chicken1" :{
+    src: "images/chicken1.png",
     sizeX: 33,
     sizeY: 20,
     numX: 3,
@@ -1027,8 +1053,12 @@ monster = armedBeing.extend({
     this.vx = vx/1000*frameRate;
     this.reward = reward;
   	this.type = type;
-    this.render = new animation(this,type);
-		//temporary
+    if(vx > 0){
+      this.render = new animation(this,type+"1");
+    }else{
+      this.render = new animation(this,type);  
+    }
+    //temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
 				ctx.fillText(this.from.type, this.from.x-0.016*canvas.width, this.from.y-0.014*canvas.height);
@@ -1176,7 +1206,11 @@ bullet = Class.extend({
     this.target = target;
     this.time = t[2];
     this.v = v;
-		this.render = new animation(this, name);
+    if(this.vx>0){
+      this.render = new animation(this, name+"1");
+    }else{
+      this.render = new animation(this, name);
+    }
 		//temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -1371,7 +1405,10 @@ animation = Class.extend({
 		this.frame = (this.frame+1)%this.size;
 		list[5] += this.from.x;
 		list[6] += this.from.y;
+    //ctx.translate(canvas.width,0);
+    //ctx.scale(-1,-1);
 		ctx.drawImage.apply(ctx,list);
+    //ctx.restore();
 		list[5] -= this.from.x;
 		list[6] -= this.from.y;
 	}
