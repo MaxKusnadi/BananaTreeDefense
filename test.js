@@ -2,7 +2,7 @@
 var canvas = null;
 var ctx = null;
 var image = null;
-var frameRate = 16.6; //todo
+var frameRate = 16.6;
 var characterData = null;
 var bulletData = null;
 var positionData = null;
@@ -18,7 +18,7 @@ var SLOTS_POSITION_X = null;
 var SLOTS_POSITION_Y = null;
 var startingGold = 250;
 var audio = null;
-var numberToLoad = 7;//rmb to update
+var numberToLoad = null;
 var coinAcc = null;
 var slotSize = null;
 var coinSize = null;
@@ -165,9 +165,9 @@ var imageData = {
     actualSizeX: 450,
     actualSizeY:530,
   },
-  "Cow" :{
+  /*"Cow" :{
     src: ""
-  }
+  }*/
 
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
@@ -270,18 +270,7 @@ var setup = function() {
 	};
 	coinSize = {x:0.02*canvas.width, y:0.02*canvas.width};
 	moneyDisplay = {x:0.70*canvas.width, y:0.07*canvas.height};
-
-  
-  //render
-  ctx.moveTo(0,0);
-  ctx.lineTo(canvas.width,0);
-  ctx.lineTo(canvas.width,canvas.height);
-  ctx.lineTo(0,canvas.height);
-  ctx.lineTo(0,0);
-  ctx.stroke();
-  
-  //draw tree
-  ctx.drawImage(new Image("images/tree.png"), 0.5*canvas.width,0.5*canvas.height);
+	numberToLoad = (function() {var i = 0; for (key in musicData) i++; for (key in imageData) i++; return i;})();
   characterData = data;
   bulletData = bulletData;
 	game = new gameEngine(level0);
@@ -299,7 +288,6 @@ gameEngine = Class.extend({
 	file: null,
   
   init: function(file) {
-    inputManager = new inputManager();
 		this.over = true;
 		this.file = file;
 		this.load();//put this as the last line
@@ -307,45 +295,24 @@ gameEngine = Class.extend({
 	
 	load: function() {
 		string = "Loading";
-		this.interval = setInterval(this.loadingPage, 1000) 
+		renderingEngine = new renderingEngine();
+		this.interval = setInterval(renderingEngine.loadingPage, 1000) 
 		imageManager = new imageManager();
 		audio = new audioManager();
-    renderingEngine = new renderingEngine();
 	},
 	
-	loadingPage: function() {
-		//render;
-		ctx.clearRect(0.1*canvas.width, 0.1*canvas.height, 0.8*canvas.width, 0.8*canvas.height);
-		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
-		ctx.fillText(this.string, 0.4*canvas.width, 0.5*canvas.height);
-		this.string+='.';
-		if (this.string.length == 13) this.string = "Loading";
-	},
 	
-	startGame: function() {
+	checkLoading: function() {
 		if (this.loaded == numberToLoad) {
 			clearInterval(game.interval);
-			//render
-			ctx.moveTo(0,0.125*canvas.height);
-			ctx.lineTo(canvas.width,0.125*canvas.height);
-			ctx.moveTo(0,0.8125*canvas.height);
-			ctx.lineTo(canvas.width,0.8125*canvas.height);
-			ctx.stroke();
 			audio.play("background");
 			world = new world(this.file);
+			inputManager = new inputManager();
 			this.interval = setInterval(this.action, frameRate);
 		}
 	},
   
   action: function() {
-	  //render
-    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
-    ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
-    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
-  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
-  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
-  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
-    //renderingEngine.render();
     if (world.isGameOver() && game.over) {
 			//render
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
@@ -378,25 +345,88 @@ renderingEngine = Class.extend({
 		this.messages = [];
 	},
 	
+	loadingPage: function() {
+		//render temporary
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
+		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
+		ctx.fillText(this.string, 0.4*canvas.width, 0.5*canvas.height);
+		this.string+='.';
+		if (this.string.length == 13) this.string = "Loading";
+	},
+	
 	createMessage: function(style, duration, x, y, text) {
 		this.messages.push(new message(style, duration, x, y, text));
 	},
 	
 	render: function() {
+		//render screen: temporary
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+		ctx.fillRect(0,0.125*canvas.height,canvas.width,0.8125*canvas.height);
+    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+    ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
+    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
+  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
+		//render tree
     world.tree.render.animate();
+		//render cooldown text: temporary
+		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
+		ctx.fillText("CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.47*canvas.width, 0.105*canvas.height);
+		//font definition temporary
+		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
+		//render boxes temporary
+		for (var i=0; i<6; i++) {
+      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
+      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
+			//render monkey temporary
+			if (world.tree.slots[i].monkey) {
+				//world.tree.slots[i].monkey.render.animate();
+				ctx.fillText(world.tree.slots[i].monkey.type, world.tree.slots[i].monkey.x-0.016*canvas.width, world.tree.slots[i].monkey.y-0.014*canvas.height);
+				ctx.fillRect(world.tree.slots[i].monkey.x, world.tree.slots[i].monkey.y, 0.0083*canvas.width,0.0083*canvas.width);}
+		};
+		//render deployable units temporary
+    for (var i=0; i<world.deploy.length; i++) {
+			//world.deploy[i].monkey.render.animate();
+			ctx.fillRect(world.deploy[i].monkey.x, world.deploy[i].monkey.y, 0.008*canvas.width, 0.008*canvas.width);
+			ctx.fillText(world.deploy[i].monkey.type, world.deploy[i].monkey.x-0.016*canvas.width, world.deploy[i].monkey.y +0.04*canvas.height);
+			ctx.fillText(characterData.monkeys[world.deploy[i].monkey.type].cost,world.deploy[i].monkey.x, world.deploy[i].monkey.y-0.014*canvas.height);
+    }
+		//render monster temporary
+		for (var i=0; i<4; i++) {
+			for (var j=0; j<world.objects[i].length; j++) {
+				//world.objects[i][j].render.animate();
+				ctx.fillText(world.objects[i][j].type, world.objects[i][j].x-0.016*canvas.width, world.objects[i][j].y-0.014*canvas.height);
+				ctx.fillRect(world.objects[i][j].x, world.objects[i][j].y, 0.0083*canvas.width,0.0083*canvas.width);
+			}
+		}
+		//render bullets
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
-			//ctx.fillRect(this.x, this.y, 5,5);
 		}
+		//render coins
 		for (var i=0; i<world.coins.length; i++) {
 			world.coins[i].render.animate();
-      //ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
-			//ctx.fillText("$",world.coins[i].x, world.coins[i].y);
 		}
+		//render popup messages
 		for (var i=0; i<this.messages.length; i++) {
 			this.messages[i].render();
 		}
-    
+		//render deploying units temporary
+    if(world.buffer) {
+			//world.buffer.render.animate();
+			ctx.fillRect(world.buffer.x, world.buffer.y, 0.008*canvas.width, 0.008*canvas.width);
+		ctx.fillText(world.buffer.type, world.buffer.x-0.016*canvas.width, world.buffer.y +0.04*canvas.height);}
+		//render rotating units temporary
+		if (world.rotateBuffer.length>0) {
+      for (var i=0; i<6; i++) {
+        if (world.rotateBuffer[i]) {
+					//world.rotateBuffer[i].render.animate();
+					ctx.fillRect(world.rotateBuffer[i].x, world.rotateBuffer[i].y, 0.008*canvas.width, 0.008*canvas.width);
+		ctx.fillText(world.rotateBuffer[i].type, world.rotateBuffer[i].x-0.016*canvas.width, world.rotateBuffer[i].y +0.04*canvas.height);}
+      }
+    }
 	}
 });
 		
@@ -678,9 +708,6 @@ world = Class.extend({
       }
     }
     for (var i=0; i<6; i++) {
-		//render
-      ctx.fillRect(this.tree.slots[i].x-slotSize.x, this.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
-      ctx.clearRect(this.tree.slots[i].x-slotSize.x+1, this.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
       if (this.tree.slots[i].monkey) {
         var b = this.tree.slots[i].monkey.action(world.objects[Math.floor(i*0.7+0.2)]);
         if (b) this.bullets.push(b);
@@ -693,32 +720,9 @@ world = Class.extend({
     if (this.tree.isDead) {
       this.gameOver = true;
     }
-	//render
-	ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-    for (var i=0; i<this.deploy.length; i++) {
-		//render
-      this.deploy[i].monkey.action();
-	  ctx.fillText(characterData.monkeys[this.deploy[i].monkey.type].cost, this.deploy[i].x, this.deploy[i].y-0.014*canvas.height);
-    }
-	//render
 		for (var i=0; i<this.coins.length; i++) {
 			this.coins[i].action();
-			//ctx.font=(30/1200*canvas.width).toString()+"px Georgia";
-			//ctx.fillText("$", this.coins[i].x, this.coins[i].y);
-			//ctx.fillRect(this.coins[i].x-coinSize.x,this.coins[i].y-coinSize.y, 2*coinSize.x, 2*coinSize.y);
 		}
-	//render
-    if(this.buffer) {
-      this.buffer.action();
-    }
-	//render
-    if (this.rotateBuffer.length>0) {
-      for (var i=0; i<6; i++) {
-        if (this.rotateBuffer[i]) {
-          this.rotateBuffer[i].action();
-        }
-      }
-    }
     this.removeDead();
 	//todo add wave feature
     while (!this.isFinish && this.timer >= this.nextTimer) {
@@ -826,19 +830,7 @@ tree = livingBeing.extend({
   },
   
   action: function() {
-	  //render
-    
     if (this.rotateCoolDown>0) this.decreaseCoolDown();
-    
-      /*
-      ctx.moveTo(this.slots[i].x-slotSize.x,this.slots[i].y-slotSize.y);
-      ctx.lineTo(this.slots[i].x+slotSize.x,this.slots[i].y-slotSize.y);
-      ctx.lineTo(this.slots[i].x+slotSize.x,this.slots[i].y+slotSize.y);
-      ctx.lineTo(this.slots[i].x-slotSize.x,this.slots[i].y+slotSize.y);
-      ctx.lineTo(this.slots[i].x-slotSize.x,this.slots[i].y-slotSize.y);
-      ctx.stroke();
-      */
-      
   },
   
   decreaseCoolDown: function() {
@@ -854,13 +846,6 @@ dummyMonkey = Class.extend({
   
   init: function(type) {
     this.type = type;
-  },
-  
-  //render
-  action: function() {
-	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y +0.04*canvas.height);
-    ctx.fillRect(this.x, this.y, 0.008*canvas.width, 0.008*canvas.width);
   }
 });
     
@@ -922,10 +907,6 @@ monkey = armedBeing.extend({
   },
   
   action: function(list) {
-	  //render
-	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
-    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0){
       this.coolDown -= frameRate/1000;
       return;
@@ -974,10 +955,6 @@ monster = armedBeing.extend({
   },
   
   action: function(slot) {
-	  //render
-	  ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-	  ctx.fillText(this.type, this.x-0.016*canvas.width, this.y-0.014*canvas.height);
-    ctx.fillRect(this.x, this.y, 0.0083*canvas.width,0.0083*canvas.width);
     if (this.coolDown>0) this.coolDown -= frameRate/1000;
     var target = this.getTarget(slot);
     if (target) {
@@ -1227,7 +1204,7 @@ audioManager = Class.extend({
     this.collections = {};
     for(var key in musicData){
       var context = new Audio();
-			context.oncanplaythrough = (function(){game.loaded++;game.startGame();});
+			context.oncanplaythrough = (function(){game.loaded++;game.checkLoading();});
 			context.src = musicData[key].src;
       context.loop = musicData[key].loop;
       context.volume = musicData[key].volume;
@@ -1263,6 +1240,7 @@ imageManager = Class.extend({
 		for (var key in imageData) {
 			var list = [];
 			var img = new Image();
+			img.onload = (function(){game.loaded++;game.checkLoading();});
 			img.src = imageData[key].src;
 			var x = 0;
 			var y = 0;
@@ -1290,7 +1268,6 @@ animation = Class.extend({
 	from: null,
 	
 	init: function(from, name) {
-		console.log(from, name);
 		this.src = imageManager.retrieve(name);
 		this.size = this.src.length;
 		this.from = from;
