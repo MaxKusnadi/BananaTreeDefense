@@ -165,6 +165,14 @@ var imageData = {
     numY: 7,
     actualSizeX: 60,
     actualSizeY: 60},
+  "type21" : {
+    src: "images/banana1.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 7,
+    actualSizeX: 60,
+    actualSizeY: 60},
   "tree" : {
     src: "images/tree.png",
     sizeX: 222,
@@ -404,8 +412,16 @@ renderingEngine = Class.extend({
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
+
 		this.string == "Click to start" ? this.string = "" : this.string = "Click to start"
-		ctx.fillText(this.string, 0.35*canvas.width, 0.5*canvas.height);
+		ctx.fillText(this.string, 0.35*canvas.width, 0.9*canvas.height);
+    ctx.fillText("Instruction :", 0.35*canvas.width, 0.2*canvas.height);
+    ctx.fillText("1. Defend the tree from the incoming", 0.15*canvas.width, 0.3*canvas.height);
+    ctx.fillText("     hordes of wild animals", 0.15*canvas.width, 0.4*canvas.height);
+    ctx.fillText("2. Drag and deploy armies of monkey", 0.15*canvas.width, 0.5*canvas.height);
+    ctx.fillText("     from top left hand corner to the", 0.15*canvas.width, 0.6*canvas.height);
+    ctx.fillText("     6 given boxes", 0.15*canvas.width, 0.7*canvas.height);
+    ctx.fillText("3. Enjoy", 0.15*canvas.width, 0.8*canvas.height);
 	},
 	
 	loadingPage: function() {
