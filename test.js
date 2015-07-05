@@ -470,8 +470,6 @@ renderingEngine = Class.extend({
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
 		
-    //render tree
-    world.tree.render.animate();
 		
     //render cooldown text: temporary
 		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
@@ -479,17 +477,6 @@ renderingEngine = Class.extend({
 		
     //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-		
-    //render boxes temporary
-		for (var i=0; i<6; i++) {
-      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
-      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
-			
-			//render monkey
-			if (world.tree.slots[i].monkey) {
-				world.tree.slots[i].monkey.render.animate();
-				}
-		};
 		
     //render deployable units (cost temporary)
     for (var i=0; i<world.deploy.length; i++) {
@@ -504,14 +491,29 @@ renderingEngine = Class.extend({
 			}
 		}
 		
-    //render bullets
-		for (var i=0; i<world.bullets.length; i++) {
-			world.bullets[i].render.animate();
-		}
-		
     //render coins
 		for (var i=0; i<world.coins.length; i++) {
 			world.coins[i].render.animate();
+		}
+		
+		
+    //render tree
+    world.tree.render.animate();
+		
+    //render boxes temporary
+		for (var i=0; i<6; i++) {
+      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
+      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
+			
+			//render monkey
+			if (world.tree.slots[i].monkey) {
+				world.tree.slots[i].monkey.render.animate();
+				}
+		};
+		
+		 //render bullets
+		for (var i=0; i<world.bullets.length; i++) {
+			world.bullets[i].render.animate();
 		}
 		
     //render popup messages
