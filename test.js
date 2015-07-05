@@ -26,6 +26,7 @@ var coinSize = null;
 var moneyDisplay = null;
 var imageData = null;
 var imageManager = null;
+var pauseResumeButton = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -329,6 +330,7 @@ var setup = function() {
 	numberToLoad = (function() {var i = 0; for (key in musicData) i++; for (key in imageData) i++; return i;})();
   characterData = data;
   bulletData = bulletData;
+	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
 	game = new gameEngine(level0);
 };
 
@@ -336,7 +338,6 @@ var setup = function() {
 
 //------------------------------GAMEENGINE---------------------------------
 gameEngine = Class.extend({
-  world: null,
   interval: null,
 	over: true,
 	loaded: 0,
@@ -372,20 +373,32 @@ gameEngine = Class.extend({
 		world = new world(game.file);
 		inputManager = new inputManager();
 		game.interval = setInterval(game.action, frameRate);
+		renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+			pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
 	},
   
+	pause: function() {
+		audio.pause();
+		clearInterval(this.interval);
+	},
+	
+	resume: function() {
+		audio.resume();
+		game.interval = setInterval(game.action, frameRate);
+	},
+	
   action: function() {
     if (world.isGameOver() && game.over) {
 			//render
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
 			game.over = false;
-      audio.stop("background");
+      audio.stopBackground();
       audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Win!");
 			game.over = false;
-      audio.stop("background");
+      audio.stopBackground();
       audio.play("win");
     }
 		world.action();
@@ -403,9 +416,11 @@ gameEngine = Class.extend({
 renderingEngine = Class.extend({
 	messages: null,
 	string: null,
+	buttons: null,
 	
 	init: function() {
 		this.messages = [];
+		this.buttons = {};
 	},
 	
 	waitingPage: function() {
@@ -437,6 +452,10 @@ renderingEngine = Class.extend({
 	
 	createMessage: function(style, duration, x, y, text) {
 		this.messages.push(new message(style, duration, x, y, text));
+	},
+	
+	createButton: function(key, style, text, xx, yy, sx, sy, x, y) {
+		this.buttons[key] = new button(style, text, xx, yy, sx, sy, x, y);
 	},
 	
 	render: function() {
@@ -499,6 +518,9 @@ renderingEngine = Class.extend({
 			this.messages[i].render();
 		}
 		
+		for (key in this.buttons) {
+			this.buttons[key].render();
+		}
     //render deploying units 
     if(world.buffer) {
 			world.buffer.render.animate();
@@ -520,6 +542,7 @@ renderingEngine = Class.extend({
 inputManager = Class.extend({
   store: null,
   deploying: null,
+	paused: false,
   
   init: function() {
     this.store = [];
@@ -534,7 +557,7 @@ inputManager = Class.extend({
     this.store.splice(0,1);
     return x;
   },
-  
+	
   mouseDown: function(event) {
 		if (event.button == 2) return;
 		if (world.isWin() || world.isGameOver()) {
@@ -550,6 +573,15 @@ inputManager = Class.extend({
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
+		if (inputManager.paused) {
+			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+			inputManager.deploying = "resume";
+			}
+			return;
+		}
+		if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+			inputManager.deploying = "pause";
+		}
     for (var i=0; i<6; i++) {
       var slot = world.tree.slots[i];
       if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
@@ -573,7 +605,29 @@ inputManager = Class.extend({
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    
+		if (inputManager.paused) {
+			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)&&inputManager.deploying=="resume"){
+				game.resume();
+				inputManager.paused = false;
+				renderingEngine.buttons["Resume"].isDead = true;
+				renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+			}
+			inputManager.deploying = null;
+			return;
+		}
+		if (inputManager.deploying=="pause"){
+			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+				game.pause();
+				inputManager.paused = true;
+				renderingEngine.buttons["Pause"].isDead = true;
+				renderingEngine.createButton("Resume",(20/1200*canvas.width).toString()+"px Georgia", "Resume", pauseResumeButton.x-0.03*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+				renderingEngine.render();
+			}
+			inputManager.deploying = null;
+			return;
+		}
     if (this.deploying) {
       for (var i=0; i<6; i++) {
         var slot = world.tree.slots[i];
@@ -1338,10 +1392,44 @@ message = Class.extend({
 	}
 });
 
+button = Class.extend({
+	x: null,
+	y: null,
+	sx: null,
+	sy: null,
+	text: null,
+	isDead: false,
+	style: null,
+	xx: null,
+	yy: null,
+	
+	init: function(style, text, xx, yy, sx, sy, x, y) {
+		this.x = x;
+		this.y = y;
+		this.sx = sx;
+		this.sy = sy;
+		this.text = text;
+		this.xx = xx;
+		this.yy = yy;
+		this.style = style;
+	},
+	
+	render: function() {
+		if (this.isDead) return;
+		ctx.fillRect(this.x-this.sx, this.y-this.sy, 2*this.sx, 2*this.sy);
+		ctx.clearRect(this.x-this.sx+1, this.y-this.sy+1, 2*this.sx-2, 2*this.sy-2);
+		ctx.font = this.style;
+		ctx.fillText(this.text, this.xx, this.yy);
+	}
+});
+		
 audioManager = Class.extend({
   collections: null,
+	playing: null,
   init: function(){
     this.collections = {};
+		this.playing = [];
+		this.count = 0;
     for(var key in musicData){
       var context = new Audio();
 			context.oncanplaythrough = (function(){game.loaded++;game.checkLoading();});
@@ -1351,24 +1439,44 @@ audioManager = Class.extend({
       this.collections[key] = context;
     }
   },
-
+	
+	remove: function(name) {
+		var index = this.playing.indexOf(name);
+		this.playing.splice(index,1);
+	},
+	
   play: function(name){
-		if (!this.collections[name].paused) {
-			var clone = new Audio(musicData[name].src);
-			clone.loop = musicData[name].loop;
-			clone.volume = musicData[name].volume;
-			clone.play();
-		}else this.collections[name].play();
+		var clone = new Audio(musicData[name].src);
+		clone.loop = musicData[name].loop;
+		clone.volume = musicData[name].volume;
+		if (!clone.loop) {
+			clone.onended = (function(){
+				audio.remove(clone);
+			});
+		}
+		audio.playing.push(clone);
+		clone.play();
   },
 
   playMove: function(name){
     this.collections[name].play();
   },
-
-  stop: function(name){
-    this.collections[name].pause();
-  }
-
+	
+	stopBackground: function() {
+		this.playing[0].pause();
+	},
+	
+	pause: function() {
+		for(var i=0; i<this.playing.length; i++) {
+			this.playing[i].pause();
+		}
+	},
+	
+	resume: function() {
+		for(var i=0; i<this.playing.length; i++) {
+			this.playing[i].play();
+		}
+	}
 });
 
 imageManager = Class.extend({
