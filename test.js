@@ -430,6 +430,7 @@ renderingEngine = Class.extend({
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText(renderingEngine.string, 0.4*canvas.width, 0.5*canvas.height);
+		ctx.fillText(Math.round(game.loaded/numberToLoad*10000)/100+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
 	},
