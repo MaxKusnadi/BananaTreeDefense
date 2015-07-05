@@ -366,7 +366,8 @@ gameEngine = Class.extend({
 		}
 	},
 	
-	startGame: function() {
+	startGame: function(event) {
+		if (event.button == 2) return;
 		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
 		clearInterval(game.interval);
 		audio.play("background");
