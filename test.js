@@ -370,7 +370,7 @@ gameEngine = Class.extend({
 		if (event.button == 2) return;
 		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
 		clearInterval(game.interval);
-		audio.play("background");
+		audio.playBackground();
 		world = new world(game.file);
 		inputManager = new inputManager();
 		game.interval = setInterval(game.action, frameRate);
@@ -1444,6 +1444,10 @@ audioManager = Class.extend({
 	remove: function(name) {
 		var index = this.playing.indexOf(name);
 		this.playing.splice(index,1);
+	},
+	
+	playBackground: function() {
+		this.collections["background"].play();
 	},
 	
   play: function(name){
