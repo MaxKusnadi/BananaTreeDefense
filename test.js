@@ -613,6 +613,7 @@ inputManager = Class.extend({
 				renderingEngine.buttons["Resume"].isDead = true;
 				renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
 				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+				audio.playBackground();
 			}
 			inputManager.deploying = null;
 			return;
@@ -625,6 +626,7 @@ inputManager = Class.extend({
 				renderingEngine.createButton("Resume",(20/1200*canvas.width).toString()+"px Georgia", "Resume", pauseResumeButton.x-0.03*canvas.width, pauseResumeButton.y+0.01*canvas.height,
 				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
 				renderingEngine.render();
+				audio.stopBackground();
 			}
 			inputManager.deploying = null;
 			return;
@@ -1468,7 +1470,7 @@ audioManager = Class.extend({
   },
 	
 	stopBackground: function() {
-		this.playing[0].pause();
+		this.collections["background"].pause();
 	},
 	
 	pause: function() {
