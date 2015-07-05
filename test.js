@@ -574,12 +574,12 @@ inputManager = Class.extend({
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
 		if (inputManager.paused) {
-			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 			inputManager.deploying = "resume";
 			}
 			return;
 		}
-		if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 			inputManager.deploying = "pause";
 		}
     for (var i=0; i<6; i++) {
@@ -606,7 +606,7 @@ inputManager = Class.extend({
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
 		if (inputManager.paused) {
-			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)&&inputManager.deploying=="resume"){
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.deploying=="resume"){
 				game.resume();
 				inputManager.paused = false;
 				renderingEngine.buttons["Resume"].isDead = true;
@@ -617,7 +617,7 @@ inputManager = Class.extend({
 			return;
 		}
 		if (inputManager.deploying=="pause"){
-			if (Math.abs(pauseResumeButton.x-x<=pauseResumeButton.sx)&&Math.abs(pauseResumeButton.y-y<=pauseResumeButton.sy)){
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 				game.pause();
 				inputManager.paused = true;
 				renderingEngine.buttons["Pause"].isDead = true;
