@@ -461,11 +461,13 @@ renderingEngine = Class.extend({
 	
 	render: function() {
 		//render screen: temporary
+
 		ctx.fillRect(0,0,canvas.width, canvas.height);
 		ctx.fillRect(0,0.125*canvas.height,canvas.width,0.8125*canvas.height);
-    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+    ctx.fillStyle = "#19A3FF";
+   // ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
     ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
-    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
+   // ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
   	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
@@ -1548,3 +1550,7 @@ animation = Class.extend({
 	}
 });
 
+backgroundClass = Class.extend({
+  cloud : null,
+  grass : null
+});
