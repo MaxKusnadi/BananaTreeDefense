@@ -295,9 +295,14 @@ level0 = {
 }
 */
 levelData = {
-	1:{events:[{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+	1:{events:[	{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
 							type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
-							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1]}],
+							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+							wait:10},
+							
+							{time:[1,1,1,1],
+							type:["Chicken","Chicken","Chicken","Chicken"],
+							position:[0,1,2,3]}],
 		level: 1,
 		deploy: ["Soldier", "Archer"]},
 	2:{}
