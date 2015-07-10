@@ -313,7 +313,7 @@ var setup = function() {
 	}else if (canvas.height/canvas.width<0.6) {
 		canvas.width = canvas.height/0.6;
 	}
-	positionData = {0: {x:0, y:0.75*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.75*canvas.height}};
+	positionData = {0: {x:0, y:0.78*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.78*canvas.height}};
   boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
 	TREE_POSITION_X = 0.5*canvas.width;
 	TREE_POSITION_Y = 0.5*canvas.height;
@@ -418,10 +418,14 @@ renderingEngine = Class.extend({
 	messages: null,
 	string: null,
 	buttons: null,
+	gradient: null,
 	
 	init: function() {
 		this.messages = [];
 		this.buttons = {};
+		this.gradient = ctx.createLinearGradient(1,0.8125*canvas.height,1, canvas.height-1);
+		this.gradient.addColorStop(0,"#D2691E");
+		this.gradient.addColorStop(1,"#A52A2A");
 	},
 	
 	waitingPage: function() {
@@ -462,10 +466,12 @@ renderingEngine = Class.extend({
 	render: function() {
 		//render screen: temporary
 		ctx.fillRect(0,0,canvas.width, canvas.height);
-		ctx.fillRect(0,0.125*canvas.height,canvas.width,0.8125*canvas.height);
-    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+		ctx.fillStyle = "#00FFFF";
+    ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
+		ctx.fillStyle = this.gradient;
+		ctx.fillRect(1,0.8125*canvas.height,canvas.width-2, 0.1875*canvas.height-2);
+		ctx.fillStyle = "#000000";
     ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
-    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
   	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
@@ -536,6 +542,14 @@ renderingEngine = Class.extend({
 				}
       }
     }
+		
+		//render tree hp bar
+		ctx.fillStyle = "rgb(255,0,0)";
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.totalHp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillStyle = "rgb(0,255,0)";
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.hp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillStyle = "#000000";
+		
 	}
 });
 		
@@ -902,9 +916,11 @@ livingBeing = Class.extend({
   x: null,
   y: null,
   isDead: null,
+	totalHp: null,
   
   init: function(hp, x, y) {
     this.hp = hp;
+		this.totalHp = hp;
     this.x = x;
     this.y = y;
     this.isDead = false;
@@ -947,6 +963,7 @@ tree = livingBeing.extend({
     this.render = new animation(this, "tree");
 		this.x = TREE_POSITION_X;
 		this.y = TREE_POSITION_Y;
+		this.type = "coin";
   },
   //todo/discuss: generateHp and generateCoolDown
   
