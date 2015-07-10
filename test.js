@@ -159,7 +159,7 @@ var imageData = {
     actualSizeX: 70,
     actualSizeY: 60},
   "type2" : {
-    src: "images/banana.png",
+    src: "images/newbanana.png",
     sizeX: 120,
     sizeY: 120,
     numX: 10,
@@ -167,11 +167,11 @@ var imageData = {
     actualSizeX: 60,
     actualSizeY: 60},
   "type21" : {
-    src: "images/banana1.png",
+    src: "images/newbanana1.png",
     sizeX: 120,
     sizeY: 120,
     numX: 10,
-    numY: 7,
+    numY: 6,
     actualSizeX: 60,
     actualSizeY: 60},
   "tree" : {
