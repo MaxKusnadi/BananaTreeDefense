@@ -221,6 +221,7 @@ var imageData = {
   }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
+/*
 level0 = {
   events: [{
     time: 1,
@@ -286,22 +287,21 @@ level0 = {
     time: 45,
     type: "Chicken",
     position: 1
-  }
-    
-    
-    ],
+  }],
   level: 1,
   deployNumber: 2,
   deploy: ["Soldier", "Archer"]
 
 }
-/*
-levelData = {
-	1:[{time:[0,0,0], type:['a','b','c'], position:[1,2,3]},//wave 1
-		{time:[1,1,1], type:['x','y','z'], position:[0,0,0]}],//wave 2
-	2:[...]
-}
 */
+levelData = {
+	1:{events:[{time:[0,1,2], type:['Cow','Cow','Cow'], position:[0,1,2], wait:5},
+		{time:[1,2,3], type:['Chicken','Chicken','Chicken'], position:[3,2,1]}],
+		level: 1,
+		deploy: ["Soldier", "Archer"]},
+	2:{}
+}
+
 //------------------------------MAIN-------------------------------------
 var setup = function() {
   canvas = document.getElementById("canvas");
@@ -331,7 +331,9 @@ var setup = function() {
   characterData = data;
   bulletData = bulletData;
 	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
-	game = new gameEngine(level0);
+	//game = new gameEngine(level0);
+	//new data structure
+	game = new gameEngine(1);
 };
 
 
@@ -734,20 +736,16 @@ world = Class.extend({
 	flag: null,
 	count: null,
 	wave: null,
-  
+  /*
   init: function(file) {
     this.script = file;
-		//newdatastructure
-		//this.script = levelData[file];
     this.tree = new tree(this.script.level);
     this.nextTimer = this.script.events[0].time;
-		//this.nextTimer = this.script[0].time[0];
     this.bullets = [];
     this.deploy = [];
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
-    //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -758,8 +756,35 @@ world = Class.extend({
       m.y = box.y;
       box.monkey = m;
     }
-    this.objects = {0: [], 1:[], 2:[], 3:[]}; //a,b,c,d correspond to different direction of spawning
+    this.objects = {0: [], 1:[], 2:[], 3:[]};
   },
+	*/
+	//new data structure
+	init: function(levelNum) {
+		this.script = levelData[levelNum].events;
+		this.nextTimer = this.script[0].time[0];
+		this.count = 0;
+		this.wave = 0;
+		this.tree = new tree(levelData[levelNum].level);
+    this.bullets = [];
+    this.deploy = [];
+    this.rotateBuffer = [];
+    this.money = startingGold;
+		this.coins = [];
+		this.flag = true;
+    for (var i=0; i<levelData[levelNum].deploy.length; i++) {
+      this.deploy.push(new slot(null,null));
+      var box = this.deploy[i];
+      box.x = boxPosition.x+(i*2*slotSize.x);
+      box.y = boxPosition.y;
+      var m = new dummyMonkey(levelData[levelNum].deploy[i]);
+      m.x = box.x;
+      m.y = box.y;
+      box.monkey = m;
+    }
+    this.objects = {0: [], 1:[], 2:[], 3:[]};
+  },
+	
   
   isGameOver: function() {
     return this.gameOver;
@@ -770,14 +795,23 @@ world = Class.extend({
     return (this.objects[0].length == 0 && this.objects[1].length == 0  && this.objects[2].length == 0  && this.objects[3].length == 0 );
   },
   
-  spawn: function(xx) {
+  /*spawn: function(xx) {
     var mon = characterData.monsters[xx.type];
     var m = new monster(mon.hp, positionData[xx.position].x, positionData[xx.position].y, mon.damage,
       mon.attackRate, mon.attackRange, mon.bulletType, ((xx.position)>1 ? -mon.vx: mon.vx), mon.reward, xx.type);
     this.objects[xx.position].push(m);
     audio.play(m.type);
   },
-  
+  */
+	// new data structure
+	spawn: function(type, position) {
+		var mon = characterData.monsters[type];
+		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
+			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type);
+		this.objects[position].push(m);
+		audio.play(type);
+	},
+	
   spawnMonkey: function(mon, position) {
     if (this.tree.slots[position].monkey !== null){
       return;
@@ -888,20 +922,30 @@ world = Class.extend({
 			this.coins[i].action();
 		}
     this.removeDead();
-	//todo add wave feature
+		//new data structure
+		while (!this.isFinish && this.timer >= this.nextTimer) {
+			if (this.flag) {
+				renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "Wave "+(this.wave+1));
+				this.flag = false;
+			}
+			this.spawn(this.script[this.wave].type[this.count], this.script[this.wave].position[this.count]);
+		  this.count++;
+      if (this.count == this.script[this.wave].time.length) {
+			  if (this.wave == this.script.length-1) {
+				  this.isFinish = true;
+			  }else {
+				  this.timer = -this.script[this.wave].wait;
+				  this.nextTimer = this.script[this.wave+1].time[0];
+			  }
+        this.wave++;
+				this.count = 0;
+				this.flag = true;
+      }
+      else this.nextTimer = this.script[this.wave].time[this.count];
+    }
+		/*
     while (!this.isFinish && this.timer >= this.nextTimer) {
       this.spawn(this.script.events[0]);
-      this.script.events.splice(0,1);
-      if (this.script.events.length == 0) {
-        this.isFinish = true;
-      }
-      else this.nextTimer = this.script.events[0].time;
-    }
-		/*newdatastructure
-		this.count = 0;
-		this.wave = 0;
-		while (!this.isFinish && this.timer >= this.nextTimer) {
-      this.spawn(this.script[this.wave]);
       this.script.events.splice(0,1);
       if (this.script.events.length == 0) {
         this.isFinish = true;
