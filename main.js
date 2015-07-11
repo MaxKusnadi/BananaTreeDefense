@@ -58,7 +58,7 @@ var setup = function() {
   characterData = data;
   bulletData = bulletData;
 	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
-  
+  restartButton = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
 	//game = new gameEngine(level0);
 	//new data structure
 	game = new gameEngine(1);
@@ -101,11 +101,13 @@ gameEngine = Class.extend({
 		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
 		clearInterval(game.interval);
 		audio.playBackground();
-		world = new world(game.file);
-		inputManager = new inputManager();
+		world = new World(game.file);
+		inputManager = new InputManager();
 		game.interval = setInterval(game.action, frameRate);
 		renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
 			pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+    renderingEngine.createButton("Restart",(18/1200*canvas.width).toString()+"px Georgia", "Restart", restartButton.x-0.022*canvas.width, restartButton.y+0.01*canvas.height,
+      restartButton.sx, restartButton.sy, restartButton.x, restartButton.y);
 	},
   
 	pause: function() {
@@ -140,13 +142,18 @@ gameEngine = Class.extend({
   },
   
   winScreen: function() {
-	}
+	},
+
+  restartGame: function(){
+    game.startGame(1);
+  }
+
 });
 
 
 //------------------------------------INPUTMANAGER----------------------------------------
 
-inputManager = Class.extend({
+InputManager = Class.extend({
   store: null,
   deploying: null,
 	paused: false,
@@ -205,6 +212,11 @@ inputManager = Class.extend({
         this.deploying = slot.monkey;
         return;
       }
+    }
+    // restart
+    if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+     // console.log("AHHAHA");
+      inputManager.deploying = "restartGame";
     }
   },
   
@@ -271,6 +283,9 @@ inputManager = Class.extend({
 				game.winScreen();
 			}else game.gameOverScreen();
 		}
+    if(inputManager.deploying=="restartGame"){
+      game.restartGame();
+    }
   },
   
   mouseMove: function(event) {

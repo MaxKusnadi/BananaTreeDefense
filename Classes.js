@@ -1,6 +1,6 @@
 //--------------------------------CLASS-------------------------------------------
 
-world = Class.extend({
+World = Class.extend({
   tree: null,
   objects: null,
   isFinish: false,
@@ -848,12 +848,21 @@ imageManager = Class.extend({
 			var y = 0;
 			var sx = imageData[key].actualSizeX/1200*canvas.width;
 			var sy = imageData[key].actualSizeY/720*canvas.height;
-			for (var i=0; i<imageData[key].numY; i++) {
-				for (var j=0; j<imageData[key].numX; j++) {
-					var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
-					list.push(inside);
-				}
-			}
+      if (key[key.length-1]=='1') {
+        for (var i=0; i<imageData[key].numY; i++) {
+          for (var j=imageData[key].numX-1; j>=0; j--) {
+            var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
+            list.push(inside);
+          }
+        }
+      }else {
+  			for (var i=0; i<imageData[key].numY; i++) {
+	   			for (var j=0; j<imageData[key].numX; j++) {
+		  			var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
+			   		list.push(inside);
+				  }
+			 }
+      }
 			this.collections[key] = list;
 		}
 	},
