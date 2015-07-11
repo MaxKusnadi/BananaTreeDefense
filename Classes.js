@@ -882,7 +882,13 @@ animation = Class.extend({
 	},
 	
 	hit: function() {
-		if (this.timer !== null) return;
+		if (this.timer !== null) {
+			if (this.timer < 3000) {
+				this.timer += 1000;
+				this.time += 1000;
+			}
+			return;
+		}
 		this.timer = 3000;
 		this.time = 3000;
 	},

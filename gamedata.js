@@ -135,7 +135,7 @@ var imageData = {
     sizeX: 120,
     sizeY: 120,
     numX: 10,
-    numY: 7,
+    numY: 6,
     actualSizeX: 60,
     actualSizeY: 60},
   "type21" : {
