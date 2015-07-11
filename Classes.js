@@ -18,6 +18,7 @@ World = Class.extend({
 	flag: null,
 	count: null,
 	wave: null,
+	bgClass: null,
   /*
   init: function(file) {
     this.script = file;
@@ -54,6 +55,7 @@ World = Class.extend({
     this.money = startingGold;
 		this.coins = [];
 		this.flag = true;
+		this.bgClass = new backgroundClass();
     for (var i=0; i<levelData[levelNum].deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -181,7 +183,8 @@ World = Class.extend({
 			}
       list = inputManager.retrieve();
     }
-    for (var j=0; j<4; j++) {
+    this.bgClass.action();
+		for (var j=0; j<4; j++) {
       for (var i=0; i<this.objects[j].length; i++) {
         var b = this.objects[j][i].action(this.tree.slots[Math.floor(j*1.5 + 0.5)]);
         if (b) this.bullets.push(b);
@@ -919,5 +922,67 @@ animation = Class.extend({
 
 backgroundClass = Class.extend({
   cloud : null,
-  grass : null
+  grass : null,
+	
+	init : function() {
+		this.cloud = [];
+		this.grass = [];
+	},
+	
+	createCloud : function() {
+		var c = new cloud(Math.ceil(Math.random()*numCloud));
+		var count =0;
+		while (count<this.cloud.length) {
+			if (this.cloud[count].size > c.size) break;
+			count++;
+		}
+		this.cloud.splice(count,0,c);
+	},
+	
+	createGrassLand: function() {},
+	
+	animate: function() {
+		for (var i=0; i<this.cloud.length; i++) {
+			this.cloud[i].render.animate();
+		}
+		/*
+		for (var i=0; i<this.grass.length; i++) {
+			this.grass[i].render.animate();
+		}
+		*/
+	},
+	
+	action: function() {
+		Math.random()>0.995 ? this.createCloud():null;
+		for (var i=0; i<this.cloud.length; i++) {
+			this.cloud[i].move();
+		}
+	}
+});
+
+cloud = Class.extend({
+	x: null,
+	y: null,
+	vx: null,
+	render: null,
+	size: null,
+	time: null,
+	
+	init: function(type) {
+		this.size = type;
+		this.render = new animation(this, "Cloud"+type);
+		this.x = Math.random()>0.5 ? positionData[0].x : positionData[2].x;
+		this.y = (Math.random()*0.4+0.125)*canvas.height;
+		this.vx = (Math.random()*0.0025+0.00025)/(numCloud-type+1)*canvas.width*(this.x>0 ? -1: 1);
+		this.time = Math.abs(1.2*canvas.width/this.vx);
+	},
+	
+	move: function() {
+		this.x += this.vx;
+		this.time -= 1;
+		if (this.time<0) {
+			var i = world.bgClass.cloud.indexOf(this);
+			world.bgClass.cloud.splice(i,1);
+		}
+	}
 });

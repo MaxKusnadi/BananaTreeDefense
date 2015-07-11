@@ -69,6 +69,7 @@ renderingEngine = Class.extend({
     //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
 		
+		world.bgClass.animate();
     //render monster temporary
 		for (var i=0; i<4; i++) {
 			for (var j=0; j<world.objects[i].length; j++) {

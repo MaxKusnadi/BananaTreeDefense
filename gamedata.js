@@ -190,7 +190,25 @@ var imageData = {
     numY: 1,
     actualSizeX: 60,
     actualSizeY:60,
-  }
+  },
+	"Cloud2" : {
+		src: "images/cloud1.png",
+		sizeX:857,
+		sizeY: 646,
+		numX: 1,
+		numY: 1,
+		actualSizeX: 150,
+		actualSizeY: 113,
+	},
+	"Cloud1" : {
+		src: "images/cloud1.png",
+		sizeX:857,
+		sizeY: 646,
+		numX: 1,
+		numY: 1,
+		actualSizeX: 75,
+		actualSizeY: 56,
+	}
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 /*
