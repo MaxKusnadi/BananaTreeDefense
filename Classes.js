@@ -973,7 +973,7 @@ cloud = Class.extend({
 		this.render = new animation(this, "Cloud"+type);
 		this.x = Math.random()>0.5 ? positionData[0].x : positionData[2].x;
 		this.y = (Math.random()*0.4+0.125)*canvas.height;
-		this.vx = (Math.random()*0.0025+0.00025)/(numCloud-type+1)*canvas.width*(this.x>0 ? -1: 1);
+		this.vx = (Math.random()*0.00025+0.00025)/(numCloud-type+1)*canvas.width*(this.x>0 ? -1: 1);
 		this.time = Math.abs(1.2*canvas.width/this.vx);
 	},
 	

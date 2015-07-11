@@ -25,7 +25,7 @@ var data = {
   monsters: {
     "Cow": {
       hp: 250,
-      damage: 20,
+      damage: 200,
       attackRate: 0.8,
       attackRange: 200,
       bulletType: "type1",
