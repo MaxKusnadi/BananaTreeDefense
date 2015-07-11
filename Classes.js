@@ -643,6 +643,7 @@ bullet = Class.extend({
   
   attack: function(target) {
     this.target.reduceHp(this.damage);
+		if (this.target.type) this.target.render.hit();
   },
   
   move: function() {
@@ -877,6 +878,8 @@ animation = Class.extend({
 	size : null,
 	src : null,
 	from: null,
+	timer: null,
+	time: null,
 	
 	init: function(from, name) {
 		this.src = imageManager.retrieve(name);
@@ -888,7 +891,23 @@ animation = Class.extend({
 		this.from = from;
 	},
 	
+	hit: function() {
+		if (this.timer !== null) return;
+		this.timer = 3000;
+		this.time = 3000;
+	},
+
 	animate : function(x, y) {
+		if (this.timer) {
+			if (this.timer < 0) this.timer = null;
+			else if (this.time - this.timer <=125 && this.time>this.timer) {
+				this.timer -= frameRate;
+				return;
+			}else if (this.time - this.timer >0) {
+				this.time -= 500;
+				this.timer -= frameRate;
+			}else this.timer -=frameRate;
+		}
 		var list = this.src[this.frame];
 		this.frame = (this.frame+1)%this.size;
 		list[5] += this.from.x;
