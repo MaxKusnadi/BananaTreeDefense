@@ -68,6 +68,11 @@ renderingEngine = Class.extend({
 		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText("CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.47*canvas.width, 0.105*canvas.height);
 		
+		
+		for (key in this.buttons) {
+			this.buttons[key].render();
+		}
+		
     //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
 		
@@ -114,9 +119,6 @@ renderingEngine = Class.extend({
 			this.messages[i].render();
 		}
 		
-		for (key in this.buttons) {
-			this.buttons[key].render();
-		}
     //render deploying units 
     if(world.buffer) {
 			world.buffer.render.animate();

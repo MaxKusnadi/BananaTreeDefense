@@ -28,6 +28,7 @@ var imageData = null;
 var imageManager = null;
 var pauseResumeButton = null;
 var restartButton = null;
+var floorPostion = null;
 
 //------------------------------MAIN-------------------------------------
 var setup = function() {
@@ -41,7 +42,8 @@ var setup = function() {
 		canvas.width = canvas.height/0.6;
 	}
 	positionData = {0: {x:0, y:0.78*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.78*canvas.height}};
-  boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
+  floorPosition = positionData[0].y + 0.025*canvas.height;
+	boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
 	TREE_POSITION_X = 0.5*canvas.width;
 	TREE_POSITION_Y = 0.5*canvas.height;
 	SLOTS_POSITION_X = [0.4*canvas.width,0.4*canvas.width,0.4*canvas.width,0.6*canvas.width,0.6*canvas.width,0.6*canvas.width];

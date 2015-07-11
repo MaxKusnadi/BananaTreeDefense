@@ -679,7 +679,7 @@ coin = Class.extend({
 		 
 		this.vy += this.ay;
     this.y += this.vy;
-		this.y = Math.min(this.y, SLOTS_POSITION_Y[0]);
+		this.y = Math.min(this.y, floorPosition);
 		this.x += this.vx;
   },
 	
@@ -712,7 +712,7 @@ coin = Class.extend({
 	},
 	
 	calculateTime: function() {
-		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*this.ay*(SLOTS_POSITION_Y[0]-this.y)))/this.ay;
+		return (-1*this.vy+Math.sqrt(this.vy*this.vy+2*this.ay*(floorPosition-this.y)))/this.ay;
 	}
 });
 
