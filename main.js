@@ -291,6 +291,7 @@ InputManager = Class.extend({
   },
   
   mouseMove: function(event) {
+		if(inputManager.paused) return;
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
