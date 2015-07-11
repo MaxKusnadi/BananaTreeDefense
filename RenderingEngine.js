@@ -58,10 +58,7 @@ renderingEngine = Class.extend({
 		ctx.fillRect(1,0.8125*canvas.height,canvas.width-2, 0.1875*canvas.height-2);
 		ctx.fillStyle = "#000000";
     //ctx.fillStyle = "#19A3FF";
-    ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
-  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
-  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
-  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
+    
 		
 		
     //render cooldown text: temporary
@@ -69,18 +66,8 @@ renderingEngine = Class.extend({
 		ctx.fillText("CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.47*canvas.width, 0.105*canvas.height);
 		
 		
-		for (key in this.buttons) {
-			this.buttons[key].render();
-		}
-		
     //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-		
-    //render deployable units (cost temporary)
-    for (var i=0; i<world.deploy.length; i++) {
-			world.deploy[i].monkey.render.animate();
-			ctx.fillText(characterData.monkeys[world.deploy[i].monkey.type].cost,world.deploy[i].monkey.x, world.deploy[i].monkey.y-0.014*canvas.height);
-    }
 		
     //render monster temporary
 		for (var i=0; i<4; i++) {
@@ -98,31 +85,12 @@ renderingEngine = Class.extend({
     //render tree
     world.tree.render.animate();
 		
-    //render boxes temporary
-		for (var i=0; i<6; i++) {
-      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
-      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
-			
-			//render monkey
-			if (world.tree.slots[i].monkey) {
-				world.tree.slots[i].monkey.render.animate();
-				}
-		};
-		
+  
 		 //render bullets
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
 		}
 		
-    //render popup messages
-		for (var i=0; i<this.messages.length; i++) {
-			this.messages[i].render();
-		}
-		
-    //render deploying units 
-    if(world.buffer) {
-			world.buffer.render.animate();
-		}
 		//render rotating units
 		if (world.rotateBuffer.length>0) {
       for (var i=0; i<6; i++) {
@@ -138,6 +106,46 @@ renderingEngine = Class.extend({
 		ctx.fillStyle = "rgb(0,255,0)";
 		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.hp*0.0002*canvas.width,0.02*canvas.height);
 		ctx.fillStyle = "#000000";
+		
+		ctx.fillRect(0,0,canvas.width, 0.125*canvas.height);
+		ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
+  	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
+  	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+  	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
+		
+		for (key in this.buttons) {
+			this.buttons[key].render();
+		}
+		  //render boxes temporary
+			ctx.font = (15/1200*canvas.width).toString()+"px Georgia";
+		for (var i=0; i<6; i++) {
+      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
+      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
+			
+			//render monkey
+			if (world.tree.slots[i].monkey) {
+				world.tree.slots[i].monkey.render.animate();
+				}
+		};
+		
+    //render deployable units (cost temporary)
+		
+    for (var i=0; i<world.deploy.length; i++) {
+			world.deploy[i].monkey.render.animate();
+			ctx.fillText(characterData.monkeys[world.deploy[i].monkey.type].cost,world.deploy[i].monkey.x, world.deploy[i].monkey.y-0.014*canvas.height);
+    }
+		
+		
+    //render deploying units 
+    if(world.buffer) {
+			world.buffer.render.animate();
+		}
+		
+		
+    //render popup messages
+		for (var i=0; i<this.messages.length; i++) {
+			this.messages[i].render();
+		}
 		
 	}
 });

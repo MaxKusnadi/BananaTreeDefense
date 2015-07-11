@@ -207,7 +207,7 @@ World = Class.extend({
 		//new data structure
 		while (!this.isFinish && this.timer >= this.nextTimer) {
 			if (this.flag) {
-				renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "Wave "+(this.wave+1));
+				renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 3,  0.37*canvas.width, 0.95*canvas.height, "Wave "+(this.wave+1));
 				this.flag = false;
 			}
 			this.spawn(this.script[this.wave].type[this.count], this.script[this.wave].position[this.count]);
@@ -225,16 +225,6 @@ World = Class.extend({
       }
       else this.nextTimer = this.script[this.wave].time[this.count];
     }
-		/*
-    while (!this.isFinish && this.timer >= this.nextTimer) {
-      this.spawn(this.script.events[0]);
-      this.script.events.splice(0,1);
-      if (this.script.events.length == 0) {
-        this.isFinish = true;
-      }
-      else this.nextTimer = this.script.events[0].time;
-    }
-		*/
     this.timer+=frameRate/1000;
   }
 });
