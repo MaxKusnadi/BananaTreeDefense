@@ -125,13 +125,13 @@ gameEngine = Class.extend({
   action: function() {
     if (world.isGameOver() && game.over) {
 			//render
-			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
+			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 999999, 0.34*canvas.width, 0.95*canvas.height, "You Lost!");
 			game.over = false;
       audio.stopBackground();
       audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
-			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Win!");
+			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 999999, 0.34*canvas.width, 0.95*canvas.height, "You Win!");
 			game.over = false;
       audio.stopBackground();
       audio.play("win");

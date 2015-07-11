@@ -90,16 +90,7 @@ renderingEngine = Class.extend({
 		for (var i=0; i<world.bullets.length; i++) {
 			world.bullets[i].render.animate();
 		}
-		
-		//render rotating units
-		if (world.rotateBuffer.length>0) {
-      for (var i=0; i<6; i++) {
-        if (world.rotateBuffer[i]) {
-					world.rotateBuffer[i].render.animate();
-				}
-      }
-    }
-		
+
 		//render tree hp bar
 		ctx.fillStyle = "rgb(255,0,0)";
 		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.totalHp*0.0002*canvas.width,0.02*canvas.height);
@@ -140,6 +131,15 @@ renderingEngine = Class.extend({
     if(world.buffer) {
 			world.buffer.render.animate();
 		}
+				
+		//render rotating units
+		if (world.rotateBuffer.length>0) {
+      for (var i=0; i<6; i++) {
+        if (world.rotateBuffer[i]) {
+					world.rotateBuffer[i].render.animate();
+				}
+      }
+    }
 		
 		
     //render popup messages

@@ -98,7 +98,7 @@ World = Class.extend({
     if (this.tree.slots[position].monkey !== null){
       return;
     }else if (characterData.monkeys[mon].cost > this.money) {
-			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "You Need More Gold");
+			renderingEngine.createMessage((50/1200*canvas.width).toString()+"px Georgia", 3,  0.33*canvas.width, 0.93*canvas.height, "You Need More Gold");
 			return;
 		}
     mm = characterData.monkeys[mon];
@@ -205,7 +205,7 @@ World = Class.extend({
 		}
     this.removeDead();
 		//new data structure
-		while (!this.isFinish && this.timer >= this.nextTimer) {
+		while (!this.isFinish && this.timer >= this.nextTimer && !this.gameOver) {
 			if (this.flag) {
 				renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 3,  0.37*canvas.width, 0.95*canvas.height, "Wave "+(this.wave+1));
 				this.flag = false;
