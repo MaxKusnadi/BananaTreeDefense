@@ -13,7 +13,7 @@ gameEngine = Class.extend({
 	},
 	
 	load: function() {
-		renderingEngine = new renderingEngine();
+		renderingEngine = new RenderingEngine();
 		renderingEngine.string = "Loading";
 		this.interval = setInterval(renderingEngine.loadingPage, 1000);
 		imageManager = new imageManager();
@@ -78,7 +78,11 @@ gameEngine = Class.extend({
 	},
 
 	restartGame: function(){
+		renderingEngine = new RenderingEngine();
+		game.over = true;
+		inputManager = new InputManager();
 		game.startGame(1);
+		audio.reset();
 	}
 
 });

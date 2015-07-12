@@ -790,6 +790,13 @@ audioManager = Class.extend({
     }
   },
 	
+	reset: function() {
+		for (var i=0; i< this.playing.length; i++) {
+			this.playing[i].pause();
+		}
+		this.playing = [];
+	},
+		
 	remove: function(name) {
 		var index = this.playing.indexOf(name);
 		this.playing.splice(index,1);

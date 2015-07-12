@@ -1,5 +1,5 @@
 //------------------------------RENDERINGENGINE-------------------------------
-renderingEngine = Class.extend({
+RenderingEngine = Class.extend({
 	messages: null,
 	string: null,
 	buttons: null,

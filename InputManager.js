@@ -6,12 +6,24 @@ InputManager = Class.extend({
 	store: null,
 	deploying: null,
 	paused: false,
+	status: null,
+	rotating: null,
 
 	init: function() {
 		this.store = [];
 		document.getElementById("canvas").addEventListener("mousedown", this.mouseDown);
 		document.getElementById("canvas").addEventListener("mousemove", this.mouseMove);
 		document.getElementById("canvas").addEventListener("mouseup", this.mouseUp);
+		document.body.onmouseup = function() {
+			if (inputManager.deploying !== null) {
+				inputManager.deploying = null;
+				inputManager.store.push(["clear"]);
+			}
+			if (inputManager.rotating !== null) {
+				inputManager.store.push(["rotate", inputManager.rotating, inputManager.rotating.slotNumber]);
+				inputManager.rotating = null;
+			}
+		};
 	},
 
 	retrieve: function() {
@@ -29,6 +41,13 @@ InputManager = Class.extend({
 			document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
 			document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
 			document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
+			document.getElementById("canvas").addEventListener("mousedown", (function() {
+			if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		inputManager.status = "restartGame";}}));
+		document.getElementById("canvas").addEventListener("mouseup", (function() {
+			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		game.restartGame();
+		}}));
 			if (world.isWin()) {
 				game.winScreen();
 			}else game.gameOverScreen();
@@ -38,19 +57,19 @@ InputManager = Class.extend({
 		var y = event.clientY - rect.top;
 		if (inputManager.paused) {
 			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
-				inputManager.deploying = "resume";
+				inputManager.status = "resume";
 			}
 			return;
 		}
 		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
-			inputManager.deploying = "pause";
+			inputManager.status = "pause";
 		}
 		for (var i=0; i<6; i++) {
 			var slot = world.tree.slots[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
 				if (slot.monkey) {
-					this.rotating = slot.monkey;
-					inputManager.store.push(["rotating", this.rotating, slot.number]);
+					inputManager.rotating = slot.monkey;
+					inputManager.store.push(["rotating", inputManager.rotating, slot.number]);
 					return null;
 				}
 			}
@@ -58,14 +77,14 @@ InputManager = Class.extend({
 		for (var i=0; i<world.deploy.length; i++) {
 			var slot = world.deploy[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
-				this.deploying = slot.monkey;
+				inputManager.deploying = slot.monkey;
 				return;
 			}
 		}
     // restart
     if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
      // console.log("AHHAHA");
-     inputManager.deploying = "restartGame";
+     inputManager.status = "restartGame";
  }
 },
 
@@ -74,7 +93,7 @@ mouseUp: function(event) {
 	var x = event.clientX - rect.left;
 	var y = event.clientY - rect.top;
 	if (inputManager.paused) {
-		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.deploying=="resume"){
+		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.status=="resume"){
 			game.resume();
 			inputManager.paused = false;
 			renderingEngine.buttons["Resume"].isDead = true;
@@ -85,7 +104,7 @@ mouseUp: function(event) {
 		inputManager.deploying = null;
 		return;
 	}
-	if (inputManager.deploying=="pause"){
+	if (inputManager.status=="pause"){
 		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 			game.pause();
 			inputManager.paused = true;
@@ -98,17 +117,17 @@ mouseUp: function(event) {
 		inputManager.deploying = null;
 		return;
 	}
-	if (this.deploying) {
+	if (inputManager.deploying) {
 		for (var i=0; i<6; i++) {
 			var slot = world.tree.slots[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
-				inputManager.store.push(["deploy", this.deploying, i]);
-				this.deploying = null;
+				inputManager.store.push(["deploy", inputManager.deploying, i]);
+				inputManager.deploying = null;
 			}
 		}
-		this.deploying = null;
+		inputManager.deploying = null;
 		inputManager.store.push(["clear"]);
-	}else if (this.rotating) {
+	}else if (inputManager.rotating) {
 		var nearest = null;
 		var dist = 9999999999999;
 		for (var i=0; i<6; i++) {
@@ -119,8 +138,8 @@ mouseUp: function(event) {
 				nearest = slot;
 			}
 		}
-		inputManager.store.push(["rotate", this.rotating, nearest.number]);
-		this.rotating = null;
+		inputManager.store.push(["rotate", inputManager.rotating, nearest.number]);
+		inputManager.rotating = null;
 	}
 	if (world.isWin() || world.isGameOver()) {
 		clearInterval(game.interval);
@@ -128,11 +147,18 @@ mouseUp: function(event) {
 		document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
 		document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
 		document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
+		document.getElementById("canvas").addEventListener("mousedown", (function() {
+			if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		inputManager.status = "restartGame";}}));
+		document.getElementById("canvas").addEventListener("mouseup", (function() {
+			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		game.restartGame();
+		}}));
 		if (world.isWin()) {
 			game.winScreen();
 		}else game.gameOverScreen();
 	}
-	if(inputManager.deploying=="restartGame"){
+	if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		game.restartGame();
 	}
 },
@@ -149,9 +175,9 @@ mouseMove: function(event) {
 			inputManager.store.push(["collect", coin]);
 		}
 	}
-	if (this.deploying) {
-		inputManager.store.push(["deploying", this.deploying, x, y]);
-	}else if(this.rotating) {
+	if (inputManager.deploying) {
+		inputManager.store.push(["deploying", inputManager.deploying, x, y]);
+	}else if(inputManager.rotating) {
 		var nearest = null;
 		var dist = 99999999999999999;
 		for (var i=0; i<6; i++) {
@@ -162,7 +188,7 @@ mouseMove: function(event) {
 				nearest = slot;
 			}
 		}
-		inputManager.store.push(["rotating", this.rotating, nearest.number]);
+		inputManager.store.push(["rotating", inputManager.rotating, nearest.number]);
 	}
 },
 });
