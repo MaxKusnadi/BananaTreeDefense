@@ -208,7 +208,25 @@ var imageData = {
 		numY: 1,
 		actualSizeX: 75,
 		actualSizeY: 56,
-	}
+	},
+	"Soldier" : {
+		src: "images/monkey.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 10,
+		numY: 6,
+		actualSizeX:80,
+		actualSizeY:80,
+	},
+	"Soldier1" : {
+		src: "images/monkey1.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 10,
+		numY: 6,
+		actualSizeX:80,
+		actualSizeY:80,
+	},
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 /*

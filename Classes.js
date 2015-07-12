@@ -315,8 +315,10 @@ tree = livingBeing.extend({
       s[i].y = SLOTS_POSITION_Y[i];
       var m = s[i].monkey;
       if (m) {
+				m.slotNumber = i
         m.x = SLOTS_POSITION_X[i];
         m.y = SLOTS_POSITION_Y[i];
+				m.render.change();
       }
     }
     world.tree.slots = s;
@@ -410,7 +412,11 @@ monkey = armedBeing.extend({
     this.slotNumber = slotNumber;
     this.cost = cost;
 		this.type = type;
-		this.render = new animation(this,type);
+		this.render = new animation(this, type);
+		this.render.checkFace = (function() {
+			return this.from.slotNumber<3;
+		});
+		this.render.change();
 		//temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -467,11 +473,11 @@ monster = armedBeing.extend({
     this.vx = vx/1000*frameRate;
     this.reward = reward;
   	this.type = type;
-    if(vx > 0){
-      this.render = new animation(this,type+"1");
-    }else{
-      this.render = new animation(this,type);  
-    }
+		this.render = new animation(this, type);
+		this.render.checkFace = (function() {
+			return this.from.vx<0;
+		});
+		this.render.change();
     //temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -620,11 +626,11 @@ bullet = Class.extend({
     this.target = target;
     this.time = t[2];
     this.v = v;
-    if(this.vx>0){
-      this.render = new animation(this, name+"1");
-    }else{
-      this.render = new animation(this, name);
-    }
+    this.render = new animation(this, name);
+		this.render.checkFace = (function() {
+			return this.from.vx<0;
+		});
+		this.render.change();
 		//temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -873,15 +879,27 @@ animation = Class.extend({
 	from: null,
 	timer: null,
 	time: null,
+	leftSrc: null,
+	rightSrc: null,
 	
 	init: function(from, name) {
-		this.src = imageManager.retrieve(name);
+		this.leftSrc = imageManager.retrieve(name);
+		this.rightSrc = imageManager.retrieve(name+"1");
+		this.src = this.leftSrc;
 		//temporary
 		if (this.src) {
 			this.size = this.src.length;
 		}
 		
 		this.from = from;
+	},
+	
+	checkFace: function() {return true},
+	
+	change: function() {
+		if (this.checkFace()) {
+			this.src = this.leftSrc;
+		}else this.src = this.rightSrc;
 	},
 	
 	hit: function() {
