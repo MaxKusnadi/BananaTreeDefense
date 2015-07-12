@@ -953,7 +953,7 @@ backgroundClass = Class.extend({
 	},
 	
 	action: function() {
-		Math.random()>0.995 ? this.createCloud():null;
+		if (this.cloud.length<10) Math.random()>0.995 ? this.createCloud():null;
 		for (var i=0; i<this.cloud.length; i++) {
 			this.cloud[i].move();
 		}
