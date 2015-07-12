@@ -41,10 +41,14 @@ InputManager = Class.extend({
 			document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
 			document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
 			document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
-			document.getElementById("canvas").addEventListener("mousedown", (function() {
+			document.getElementById("canvas").addEventListener("mousedown", (function(event) {var rect = canvas.getBoundingClientRect();
+		var x = event.clientX - rect.left;
+		var y = event.clientY - rect.top;
 			if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		inputManager.status = "restartGame";}}));
-		document.getElementById("canvas").addEventListener("mouseup", (function() {
+		document.getElementById("canvas").addEventListener("mouseup", (function(event) {var rect = canvas.getBoundingClientRect();
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
 			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		game.restartGame();
 		}}));
@@ -147,10 +151,14 @@ mouseUp: function(event) {
 		document.getElementById("canvas").removeEventListener("mousedown", inputManager.mouseDown);
 		document.getElementById("canvas").removeEventListener("mousemove", inputManager.mouseMove);
 		document.getElementById("canvas").removeEventListener("mouseup", inputManager.mouseUp);
-		document.getElementById("canvas").addEventListener("mousedown", (function() {
+		document.getElementById("canvas").addEventListener("mousedown", (function(event) {var rect = canvas.getBoundingClientRect();
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
 			if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		inputManager.status = "restartGame";}}));
-		document.getElementById("canvas").addEventListener("mouseup", (function() {
+		document.getElementById("canvas").addEventListener("mouseup", (function(event) {var rect = canvas.getBoundingClientRect();
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
 			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		game.restartGame();
 		}}));
