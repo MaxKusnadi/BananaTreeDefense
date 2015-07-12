@@ -253,6 +253,7 @@ livingBeing = Class.extend({
       this.isDead = true;
     }
     audio.play("hit"); 
+		this.render.hit();
   },
   
   recoverHp: function(amt) {
@@ -501,6 +502,7 @@ monster = armedBeing.extend({
   
   reduceHp: function(damage){
     this.hp -= damage;
+		this.render.hit();
     if (this.hp<=0 && !this.isDead){
       this.isDead = true;
 			for (var i=0; i<this.reward/5; i++) {
@@ -642,7 +644,6 @@ bullet = Class.extend({
   
   attack: function(target) {
     this.target.reduceHp(this.damage);
-		if (this.target.type) this.target.render.hit();
   },
   
   move: function() {
@@ -908,7 +909,7 @@ animation = Class.extend({
 			this.src = this.leftSrc;
 		}else this.src = this.rightSrc;
 	},
-	
+	/*
 	hit: function() {
 		if (this.timer !== null) {
 			if (this.timer < 3000) {
@@ -920,14 +921,20 @@ animation = Class.extend({
 		this.timer = 3000;
 		this.time = 3000;
 	},
-
+	*/
+	
+	hit: function() {
+		this.timer = 64;
+		this.time = 65;
+	},
+	
 	animate : function(x, y) {
 		if (this.timer) {
 			if (this.timer < 0) this.timer = null;
-			else if (this.time - this.timer <=125 && this.time>this.timer) {
+			else if (this.time - this.timer <=64 && this.time>this.timer) {
 				this.timer -= frameRate;
 				return;
-			}else if (this.time - this.timer >0) {
+			}else if (this.time - this.timer >=0) {
 				this.time -= 500;
 				this.timer -= frameRate;
 			}else this.timer -=frameRate;
