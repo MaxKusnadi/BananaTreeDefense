@@ -26,6 +26,7 @@ gameEngine = Class.extend({
 			clearInterval(game.interval);
 			document.getElementById("canvas").addEventListener("mousedown", game.startGame);
 			this.interval = setInterval(renderingEngine.waitingPage, 1000);
+			clearInterval(renderingEngine.interval);
 		}
 	},
 	

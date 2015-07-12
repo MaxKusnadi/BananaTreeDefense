@@ -19,7 +19,6 @@ RenderingEngine = Class.extend({
 	},
 	
 	waitingPage: function() {
-		clearInterval(this.interval);
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
@@ -44,10 +43,10 @@ RenderingEngine = Class.extend({
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText(renderingEngine.string, 0.4*canvas.width, 0.5*canvas.height);
 		var number = Math.round(game.loaded/numberToLoad*100);
-		renderingEngine.diff = (number-renderingEngine.number)/60;
+		renderingEngine.diff = (number-renderingEngine.number)/30;
 		renderingEngine.interval = setInterval(function() {ctx.clearRect(0.45*canvas.width,0.52*canvas.height, 0.1*canvas.width, 0.1*canvas.height);
 		ctx.fillText(Math.round(renderingEngine.number)+"%", 0.45*canvas.width, 0.6*canvas.height);
-		renderingEngine.number += renderingEngine.diff;}, frameRate);
+		renderingEngine.number += renderingEngine.diff;}, frameRate*2);
 		ctx.fillText(Math.round(game.loaded/numberToLoad*100)+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
