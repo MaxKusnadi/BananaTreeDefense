@@ -4,16 +4,22 @@ RenderingEngine = Class.extend({
 	string: null,
 	buttons: null,
 	gradient: null,
+	number: null,
+	diff: null,
+	interval: null,
 	
 	init: function() {
 		this.messages = [];
 		this.buttons = {};
+		this.number = 0;
 		this.gradient = ctx.createLinearGradient(1,0.8125*canvas.height,1, canvas.height-1);
 		this.gradient.addColorStop(0,"#D2691E");
 		this.gradient.addColorStop(1,"#A52A2A");
+		
 	},
 	
 	waitingPage: function() {
+		clearInterval(this.interval);
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
@@ -31,10 +37,17 @@ RenderingEngine = Class.extend({
 	
 	loadingPage: function() {
 		//render temporary
+		clearInterval(renderingEngine.interval);
+		renderingEngine.number = Math.round(renderingEngine.number);
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText(renderingEngine.string, 0.4*canvas.width, 0.5*canvas.height);
+		var number = Math.round(game.loaded/numberToLoad*100);
+		renderingEngine.diff = (number-renderingEngine.number)/60;
+		renderingEngine.interval = setInterval(function() {ctx.clearRect(0.45*canvas.width,0.52*canvas.height, 0.1*canvas.width, 0.1*canvas.height);
+		ctx.fillText(Math.round(renderingEngine.number)+"%", 0.45*canvas.width, 0.6*canvas.height);
+		renderingEngine.number += renderingEngine.diff;}, frameRate);
 		ctx.fillText(Math.round(game.loaded/numberToLoad*100)+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
