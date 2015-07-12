@@ -347,7 +347,7 @@ dummyMonkey = Class.extend({
   
   init: function(type) {
     this.type = type;
-		this.render = new animation(this, type);
+		this.render = new animation(this, type+"Dummy");
 		if (this.render.src == null) {
 			this.render.animate = (function() {
 				ctx.fillRect(this.from.x, this.from.y, 0.008*canvas.width, 0.008*canvas.width);
