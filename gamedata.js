@@ -191,6 +191,7 @@ var imageData = {
     actualSizeX: 60,
     actualSizeY:60,
   },
+	//larger number of cloud means the cloud is rendered larger
 	"Cloud2" : {
 		src: "images/cloud1.png",
 		sizeX:857,
@@ -201,9 +202,9 @@ var imageData = {
 		actualSizeY: 113,
 	},
 	"Cloud1" : {
-		src: "images/cloud1.png",
-		sizeX:857,
-		sizeY: 646,
+		src: "images/cloud2.png",
+		sizeX:400,
+		sizeY: 300,
 		numX: 1,
 		numY: 1,
 		actualSizeX: 75,
