@@ -61,7 +61,7 @@ World = Class.extend({
       var box = this.deploy[i];
       box.x = boxPosition.x+(i*2*slotSize.x);
       box.y = boxPosition.y;
-      var m = new dummyMonkey(levelData[levelNum].deploy[i]);
+      var m = new dummyMonkey(levelData[levelNum].deploy[i],0);
       m.x = box.x;
       m.y = box.y;
       box.monkey = m;
@@ -137,7 +137,7 @@ World = Class.extend({
     while (list) {
       if (list[0] == "deploying") {
         if (!this.buffer) {
-          this.buffer = new dummyMonkey(list[1].type);
+          this.buffer = new dummyMonkey(list[1].type,0);
         }
         this.buffer.x = list[2];
         this.buffer.y = list[3];
@@ -147,7 +147,7 @@ World = Class.extend({
           for (var i=0; i<6; i++) {
             var m = world.tree.slots[i].monkey;
             if (m) {
-              this.rotateBuffer.push(new dummyMonkey(m.type));
+              this.rotateBuffer.push(new dummyMonkey(m.type,i));
               this.rotateBuffer[i].x = m.x;
               this.rotateBuffer[i].y = m.y;
             } else this.rotateBuffer.push(null);
@@ -159,6 +159,8 @@ World = Class.extend({
             if (this.rotateBuffer[i]) {
               this.rotateBuffer[i].x = SLOTS_POSITION_X[(diff+i)%6];
               this.rotateBuffer[i].y = SLOTS_POSITION_Y[(diff+i)%6];
+							this.rotateBuffer[i].slotNumber = (diff+i)%6;
+							this.rotateBuffer[i].render.change()
             }
           }
         } 
@@ -345,10 +347,16 @@ dummyMonkey = Class.extend({
   y: null,
   type: null,
 	render: null,
+	slotNumber: null,
   
-  init: function(type) {
+  init: function(type, num) {
     this.type = type;
+		this.slotNumber = num;
 		this.render = new animation(this, type+"Dummy");
+		this.render.checkFace = (function() {
+			return this.from.slotNumber<3;
+		});
+		this.render.change();
 		if (this.render.src == null) {
 			this.render.animate = (function() {
 				ctx.fillRect(this.from.x, this.from.y, 0.008*canvas.width, 0.008*canvas.width);

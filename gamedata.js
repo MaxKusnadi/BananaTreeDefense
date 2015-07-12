@@ -236,6 +236,15 @@ var imageData = {
 		numY: 1,
 		actualSizeX:70,
 		actualSizeY: 70,
+	},
+	"SoldierDummy1": {
+		src: "images/monkeydummy1.png",
+		sizeX: 120,
+		sizeY: 120,
+		numX: 1,
+		numY: 1,
+		actualSizeX:70,
+		actualSizeY: 70,
 	}
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
