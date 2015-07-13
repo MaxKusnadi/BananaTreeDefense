@@ -59,6 +59,11 @@ InputManager = Class.extend({
 		var rect = canvas.getBoundingClientRect();
 		var x = event.clientX - rect.left;
 		var y = event.clientY - rect.top;
+		// restart
+    if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+     // console.log("AHHAHA");
+     inputManager.status = "restartGame";
+ }
 		if (inputManager.paused) {
 			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 				inputManager.status = "resume";
@@ -85,17 +90,16 @@ InputManager = Class.extend({
 				return;
 			}
 		}
-    // restart
-    if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
-     // console.log("AHHAHA");
-     inputManager.status = "restartGame";
- }
+    
 },
 
 mouseUp: function(event) {
 	var rect = canvas.getBoundingClientRect();
 	var x = event.clientX - rect.left;
 	var y = event.clientY - rect.top;
+	if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		game.restartGame();
+	}
 	if (inputManager.paused) {
 		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.status=="resume"){
 			game.resume();
@@ -166,9 +170,7 @@ mouseUp: function(event) {
 			game.winScreen();
 		}else game.gameOverScreen();
 	}
-	if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
-		game.restartGame();
-	}
+	
 },
 
 mouseMove: function(event) {
