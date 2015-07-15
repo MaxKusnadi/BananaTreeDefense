@@ -6,7 +6,7 @@ var data = {
     "Soldier": {
       hp: 500,
       damage: 40,
-      attackRate: 1,
+      attackRate: 0.8,
       attackRange: 300,
       bulletType: "type2",
       cost: 50
@@ -25,7 +25,7 @@ var data = {
   monsters: {
     "Cow": {
       hp: 250,
-      damage: 200,
+      damage: 50,
       attackRate: 0.8,
       attackRange: 200,
       bulletType: "type1",
