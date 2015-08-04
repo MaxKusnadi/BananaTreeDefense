@@ -19,6 +19,7 @@ World = Class.extend({
 	count: null,
 	wave: null,
 	bgClass: null,
+  score: null,
   /*
   init: function(file) {
     this.script = file;
@@ -56,6 +57,7 @@ World = Class.extend({
 		this.coins = [];
 		this.flag = true;
 		this.bgClass = new backgroundClass();
+    this.score= 0;
     for (var i=0; i<levelData[levelNum].deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -91,7 +93,7 @@ World = Class.extend({
 	spawn: function(type, position) {
 		var mon = characterData.monsters[type];
 		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
-			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type);
+			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
 		this.objects[position].push(m);
 		//audio.play(type);
 	},
@@ -482,11 +484,14 @@ monster = armedBeing.extend({
   reward: null,
   type: null,
   render:null,
+  point:null,
 
-  init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type) {
+  init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type, point) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
     this.vx = vx/1000*frameRate;
     this.reward = reward;
+    this.point = point;
+    //console.log(this.point);
   	this.type = type;
 		this.render = new animation(this, type);
 		this.render.checkFace = (function() {
@@ -519,6 +524,8 @@ monster = armedBeing.extend({
 		this.render.hit();
     if (this.hp<=0 && !this.isDead){
       this.isDead = true;
+      world.score += this.point;
+      //console.log(world.score);
 			for (var i=0; i<this.reward/5; i++) {
 				world.coins.push(new coin(this.x, this.y));
 			}

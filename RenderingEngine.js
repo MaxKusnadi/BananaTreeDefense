@@ -115,6 +115,7 @@ RenderingEngine = Class.extend({
 		ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
   	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
+  	ctx.fillText("Score: "+world.score,0.46*canvas.width,0.11*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
 		
 		for (key in this.buttons) {

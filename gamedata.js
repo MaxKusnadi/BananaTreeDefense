@@ -30,7 +30,8 @@ var data = {
       attackRange: 200,
       bulletType: "type1",
       vx: 70,
-      reward: 25
+      reward: 25,
+      point: 100
     }, 
     "Chicken": {
       hp: 500,
@@ -39,7 +40,8 @@ var data = {
       attackRange: 50,
       bulletType: "type1",
       vx: 50,
-      reward: 30
+      reward: 30,
+      point: 100
     },
     "Skeleton": {
       hp: 600,
@@ -48,7 +50,8 @@ var data = {
       attackRange: 150,
       bulletType: "type2",
       vx: 30,
-      reward: 35
+      reward: 35,
+      point: 150
     }, 
     "Spider": {
       hp: 100,
@@ -57,7 +60,8 @@ var data = {
       attackRange: 10,
       bulletType: "type1",
       vx: 80,
-      reward: 50
+      reward: 50,
+      point: 75
     },
     "Snail": {
       hp: 1500,
@@ -66,7 +70,8 @@ var data = {
       attackRange: 1,
       bulletType: "type1",
       vx: 5,
-      reward: 50
+      reward: 50,
+      point: 200
     }, 
     "Zombie": {
       hp: 600,
@@ -75,7 +80,8 @@ var data = {
       attackRange: 150,
       bulletType: "type2",
       vx: 25,
-      reward: 35
+      reward: 35,
+      point: 150
     }
 
     //...
@@ -359,11 +365,11 @@ var imageData = {
 //----------------------------LEVEL DATA-------------------------------------------------------------
 
 levelData = {
-	1:{events:[	{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-							type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Chicken", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
-							wait:10},
-							
+              wait:10},
+
 							{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider", "Spider", "Skeleton", "Spider", "Skeleton", "Spider", "Spider", "Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider"], 
               position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
@@ -372,7 +378,7 @@ levelData = {
               {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Zombie", "Zombie", "Zombie", "Zombie", "Snail", "Snail", "Zombie", "Snail", "Zombie", "Snail", "Snail", "Zombie", "Zombie", "Zombie", "Zombie", "Snail"], 
               position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
-              wait:10},
+              wait:10}],
 		level: 1,
 		deploy: ["Soldier", "Archer"]},
 	2:{}

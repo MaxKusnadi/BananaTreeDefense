@@ -30,6 +30,7 @@ var pauseResumeButton = null;
 var restartButton = null;
 var floorPostion = null;
 var numCloud = null;
+var scoreDisplay = null;
 
 //------------------------------MAIN-------------------------------------
 var setup = function() {
@@ -63,6 +64,7 @@ var setup = function() {
 	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
   restartButton = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
 	numCloud = 2;
+	scoreDisplay = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height}
 	//game = new gameEngine(level0);
 	//new data structure
 	game = new gameEngine(1);
