@@ -13,7 +13,7 @@ var data = {
     },
     "Archer": {
       hp: 300,
-      damage: 50,
+      damage:70,
       attackRate: 0.65,
       attackRange: 600,
       bulletType: "type2",
@@ -40,7 +40,44 @@ var data = {
       bulletType: "type1",
       vx: 50,
       reward: 30
+    },
+    "Skeleton": {
+      hp: 600,
+      damage: 80,
+      attackRate: 0.5,
+      attackRange: 150,
+      bulletType: "type2",
+      vx: 30,
+      reward: 35
+    }, 
+    "Spider": {
+      hp: 100,
+      damage: 60,
+      attackRate: 0.2,
+      attackRange: 10,
+      bulletType: "type1",
+      vx: 80,
+      reward: 50
+    },
+    "Snail": {
+      hp: 1500,
+      damage: 10,
+      attackRate: 1,
+      attackRange: 1,
+      bulletType: "type1",
+      vx: 5,
+      reward: 50
+    }, 
+    "Zombie": {
+      hp: 600,
+      damage: 60,
+      attackRate: 0.7,
+      attackRange: 150,
+      bulletType: "type2",
+      vx: 25,
+      reward: 35
     }
+
     //...
   }
 }
@@ -245,91 +282,97 @@ var imageData = {
 		numY: 1,
 		actualSizeX:70,
 		actualSizeY: 70,
-	}
+	},
+  "Skeleton" :{
+    src: "images/skeleton.png",
+    sizeX: 63,
+    sizeY: 93,
+    numX: 7,
+    numY: 1,
+    actualSizeX: 100,
+    actualSizeY:150,
+  },
+  "Snail" :{
+    src: "images/snail.png",
+    sizeX: 51.5,
+    sizeY: 80,
+    numX: 9,
+    numY: 1,
+    actualSizeX: 100,
+    actualSizeY:120,
+  },
+  "Skeleton1" :{
+    src: "images/skeleton1.png",
+    sizeX: 63,
+    sizeY: 93,
+    numX: 7,
+    numY: 1,
+    actualSizeX:100,
+    actualSizeY:150,
+  },
+  "Snail1" :{
+    src: "images/snail1.png",
+    sizeX: 50,
+    sizeY: 80,
+    numX: 9,
+    numY: 1,
+    actualSizeX: 100,
+    actualSizeY:120,
+  },
+  "Zombie" :{
+    src: "images/zombie.png",
+    sizeX: 64,
+    sizeY: 70,
+    numX: 7,
+    numY: 1,
+    actualSizeX: 100,
+    actualSizeY:100,
+  },
+  "Spider" :{
+    src: "images/spider.png",
+    sizeX: 36,
+    sizeY: 50,
+    numX: 6,
+    numY: 1,
+    actualSizeX: 80,
+    actualSizeY:80,
+  },
+  "Zombie1" :{
+    src: "images/zombie1.png",
+    sizeX: 64,
+    sizeY: 70,
+    numX: 7,
+    numY: 1,
+    actualSizeX: 100,
+    actualSizeY:100,
+  },
+  "Spider1" :{
+    src: "images/spider1.png",
+    sizeX: 36,
+    sizeY: 50,
+    numX: 6,
+    numY: 1,
+    actualSizeX: 80,
+    actualSizeY:80,
+  }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
-/*
-level0 = {
-  events: [{
-    time: 1,
-    type: "Cow",
-    position: 0
-  }, {
-    time: 5,
-    type: "Cow",
-    position: 1
-  },{
-    time: 8,
-    type: "Cow",
-    position: 1
-  },{
-    time: 10,
-    type: "Cow",
-    position: 2
-  },{
-    time: 5,
-    type: "Chicken",
-    position: 3
-  },{
-    time: 15,
-    type: "Cow",
-    position: 1
-  }, {
-    time: 15,
-    type: "Cow",
-    position: 2
-  },{
-    time: 20,
-    type: "Cow",
-    position: 3
-  },{
-    time: 15,
-    type: "Cow",
-    position: 1
-  },{
-    time: 25,
-    type: "Chicken",
-    position: 0
-  },{
-    time: 30,
-    type: "Chicken",
-    position: 2
-  },{
-    time: 35,
-    type: "Cow",
-    position: 1
-  }, {
-    time: 35,
-    type: "Cow",
-    position: 2
-  },{
-    time: 35,
-    type: "Cow",
-    position: 3
-  },{
-    time: 40,
-    type: "Cow",
-    position: 0
-  },{
-    time: 45,
-    type: "Chicken",
-    position: 1
-  }],
-  level: 1,
-  deployNumber: 2,
-  deploy: ["Soldier", "Archer"]
 
-}
-*/
 levelData = {
 	1:{events:[	{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-							type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+							type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Chicken", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
 							wait:10},
 							
-							{time:[1,1,1,1],
-							type:["Chicken","Chicken","Chicken","Chicken"],
-							position:[0,1,2,3]}],
+							{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+              type:["Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider", "Spider", "Skeleton", "Spider", "Skeleton", "Spider", "Spider", "Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider"], 
+              position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              wait:10},
+
+              {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+              type:["Zombie", "Zombie", "Zombie", "Zombie", "Snail", "Snail", "Zombie", "Snail", "Zombie", "Snail", "Snail", "Zombie", "Zombie", "Zombie", "Zombie", "Snail"], 
+              position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              wait:10},
 		level: 1,
 		deploy: ["Soldier", "Archer"]},
 	2:{}

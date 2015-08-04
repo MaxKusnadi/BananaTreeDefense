@@ -93,7 +93,7 @@ World = Class.extend({
 		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type);
 		this.objects[position].push(m);
-		audio.play(type);
+		//audio.play(type);
 	},
 	
   spawnMonkey: function(mon, position) {
@@ -433,6 +433,12 @@ monkey = armedBeing.extend({
 				ctx.fillRect(this.from.x, this.from.y, 0.0083*canvas.width,0.0083*canvas.width);
 			});
 		}
+  },
+  
+  levelUp: function(){
+    this.damage *=1.3;
+    this.hp *= 1.2;
+    this.hp *= 1.1;
   },
   
   action: function(list) {
