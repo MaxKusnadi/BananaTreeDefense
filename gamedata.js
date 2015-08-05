@@ -5,19 +5,19 @@ var data = {
   monkeys: {
     "Soldier": {
       hp: 500,
-      damage: 40,
+      damage: 50,
       attackRate: 0.8,
       attackRange: 300,
       bulletType: "type2",
       cost: 50
     },
     "Archer": {
-      hp: 300,
+      hp: 400,
       damage:70,
-      attackRate: 0.65,
+      attackRate: 0.6,
       attackRange: 600,
       bulletType: "type2",
-      cost: 90
+      cost: 80
     }
     //...
   },
@@ -64,7 +64,7 @@ var data = {
       point: 75
     },
     "Snail": {
-      hp: 1500,
+      hp: 2000,
       damage: 10,
       attackRate: 1,
       attackRange: 1,
@@ -144,6 +144,26 @@ var musicData ={
     src:"audio/hit.wav",
     loop:false,
     volume: 0.2
+  },
+  "Zombie":{
+    src:"audio/zombie.wav",
+    loop: false,
+    volume: 0.6
+  },
+  "Spider":{
+    src:"audio/spider.wav",
+    loop: false,
+    volume: 0.6
+  },
+  "Skeleton":{
+    src:"audio/skeleton.wav",
+    loop: false,
+    volume: 0.6
+  },
+  "Snail":{
+    src:"audio/snail.wav",
+    loop: false,
+    volume: 0.6
   }
 }
 
@@ -336,7 +356,7 @@ var imageData = {
   },
   "Spider" :{
     src: "images/spider.png",
-    sizeX: 36,
+    sizeX: 35.5,
     sizeY: 50,
     numX: 6,
     numY: 1,
@@ -354,7 +374,7 @@ var imageData = {
   },
   "Spider1" :{
     src: "images/spider1.png",
-    sizeX: 36,
+    sizeX: 35.5,
     sizeY: 50,
     numX: 6,
     numY: 1,
@@ -366,7 +386,7 @@ var imageData = {
 
 levelData = {
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+              type:["Spider", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 

@@ -95,7 +95,7 @@ World = Class.extend({
 		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
 		this.objects[position].push(m);
-		//audio.play(type);
+		audio.play(type);
 	},
 	
   spawnMonkey: function(mon, position) {
