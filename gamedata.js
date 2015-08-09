@@ -4,7 +4,7 @@
 var data = {
   monkeys: {
     "Soldier": {
-      hp: 500,
+      hp: 350,
       damage: 50,
       attackRate: 0.8,
       attackRange: 300,
@@ -12,7 +12,7 @@ var data = {
       cost: 50
     },
     "Archer": {
-      hp: 400,
+      hp: 200,
       damage:70,
       attackRate: 0.6,
       attackRange: 600,
