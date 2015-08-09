@@ -12,10 +12,10 @@ var data = {
       cost: 50
     },
     "Archer": {
-      hp: 200,
+      hp: 400,
       damage:70,
       attackRate: 0.6,
-      attackRange: 600,
+      attackRange: 400,
       bulletType: "type2",
       cost: 80
     }
@@ -59,14 +59,14 @@ var data = {
       attackRate: 0.2,
       attackRange: 10,
       bulletType: "type1",
-      vx: 80,
+      vx: 200,
       reward: 50,
       point: 75
     },
     "Snail": {
-      hp: 2000,
-      damage: 10,
-      attackRate: 1,
+      hp: 5000,
+      damage: 1000,
+      attackRate: 10,
       attackRange: 1,
       bulletType: "type1",
       vx: 5,
