@@ -12,7 +12,7 @@ var data = {
       cost: 50
     },
     "Archer": {
-      hp: 400,
+      hp: 550,
       damage:70,
       attackRate: 0.6,
       attackRange: 400,
@@ -123,7 +123,7 @@ var musicData ={
   "pickCoin":{
     src:"audio/pickCoin.wav",
     loop: false,
-    volume: 0.4
+    volume: 0.1
   },
   "monkeyShoot":{
     src:"audio/shoot.wav",
