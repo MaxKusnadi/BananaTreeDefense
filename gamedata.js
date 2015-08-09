@@ -320,7 +320,7 @@ var imageData = {
   },
   "Snail" :{
     src: "images/snail.png",
-    sizeX: 51.5,
+    sizeX: 50,
     sizeY: 80,
     numX: 9,
     numY: 1,
@@ -386,7 +386,7 @@ var imageData = {
 
 levelData = {
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Spider", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
