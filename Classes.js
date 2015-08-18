@@ -144,7 +144,7 @@ World = Class.extend({
 
   upgrade: function(){
     if(this.money < this.upgradeCost){
-      renderingEngine.createMessage((50/1200*canvas.width).toString()+"px Georgia", 3,  0.33*canvas.width, 0.93*canvas.height, "You Need More Gold");
+      renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1,  0.07*canvas.width, 0.03*canvas.height, "You Need More Gold");
       return;
     }else{
 			monkeySpeed+=1;
@@ -161,6 +161,8 @@ World = Class.extend({
 					this.tree.slots[i].monkey.attackRate /= 10;
 				}
 			}
+					renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.05*canvas.width, 0.03*canvas.height, "Monkeys have been upgraded!");
+
 			
       //Need Help
     }
@@ -518,7 +520,6 @@ monster = armedBeing.extend({
     this.vx = vx/1000*frameRate;
     this.reward = reward;
     this.point = point;
-    //console.log(this.point);
   	this.type = type;
 		this.render = new animation(this, type);
 		this.render.checkFace = (function() {
@@ -552,7 +553,6 @@ monster = armedBeing.extend({
     if (this.hp<=0 && !this.isDead){
       this.isDead = true;
       world.score += this.point;
-      //console.log(world.score);
 			for (var i=0; i<this.reward/5; i++) {
 				world.coins.push(new coin(this.x, this.y));
 			}
@@ -782,7 +782,7 @@ message = Class.extend({
 	},
 	
 	render: function() {
-		if (this.time <=0 ) isDead = true;
+		if (this.time <=0 ) this.isDead = true;
 		else {
 			ctx.font = this.style;
 			ctx.fillText(this.m, this.x, this.y);
@@ -801,6 +801,7 @@ button = Class.extend({
 	style: null,
 	xx: null,
 	yy: null,
+	colour: null,
 	
 	init: function(style, text, xx, yy, sx, sy, x, y) {
 		this.x = x;
@@ -811,12 +812,15 @@ button = Class.extend({
 		this.xx = xx;
 		this.yy = yy;
 		this.style = style;
+		this.colour = "#FFFF00";
 	},
 	
 	render: function() {
 		if (this.isDead) return;
 		ctx.fillRect(this.x-this.sx, this.y-this.sy, 2*this.sx, 2*this.sy);
-		ctx.clearRect(this.x-this.sx+1, this.y-this.sy+1, 2*this.sx-2, 2*this.sy-2);
+		ctx.fillStyle = this.colour;
+		ctx.fillRect(this.x-this.sx+1, this.y-this.sy+1, 2*this.sx-2, 2*this.sy-2);
+		ctx.fillStyle = "#000000";
 		ctx.font = this.style;
 		ctx.fillText(this.text, this.xx, this.yy);
 	}

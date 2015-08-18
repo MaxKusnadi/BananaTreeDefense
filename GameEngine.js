@@ -37,8 +37,10 @@ gameEngine = Class.extend({
 		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
 		clearInterval(game.interval);
 		audio.playBackground();
+		world = null;
 		world = new World(game.file);
 		inputManager = new InputManager();
+		game.over = true;
 		game.interval = setInterval(game.action, frameRate);
 		renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
 			pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
@@ -59,15 +61,15 @@ gameEngine = Class.extend({
 	},
 	
 	action: function() {
-		if (world.isGameOver() && game.over) {
+		if (world.isGameOver()&& game.over) {
 			//render
-			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 1, 0.34*canvas.width, 0.95*canvas.height, "You Lost!");
+			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 999999, 0.34*canvas.width, 0.95*canvas.height, "You Lost!");
 			game.over = false;
 			audio.stopBackground();
 			audio.play("gameover");
 		}else if (world.isWin()&& game.over) {
 			//render
-			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 1, 0.34*canvas.width, 0.95*canvas.height, "You Win!");
+			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 999999, 0.34*canvas.width, 0.95*canvas.height, "You Win!");
 			game.over = false;
 			audio.stopBackground();
 			audio.play("win");
@@ -84,21 +86,16 @@ gameEngine = Class.extend({
 
 	restartGame: function(){
 		clearInterval(game.interval);
-		renderingEngine = new RenderingEngine();
+		renderingEngine.reset();
 		game.over = true;
+		world = new World(game.file);
 		inputManager = new InputManager();
 		monkeySpeed = 1;
 		//game.startGame(1);
 		audio.reset();
 		characterData.monkeys["Soldier"].attackRate = game.data;
 		game.checkLoading();
-	},
-
-	upgrade: function(){
-		world.monkey.levelUp();
-		renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 1, 0.30*canvas.width, 0.95*canvas.height, "Monkeys have been upgraded!");
 	}
-
 });
 
 

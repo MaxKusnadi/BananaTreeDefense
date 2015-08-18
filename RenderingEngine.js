@@ -18,6 +18,17 @@ RenderingEngine = Class.extend({
 		
 	},
 	
+	reset: function() {
+		renderingEngine.messages = [];
+		renderingEngine.buttons = {};
+		renderingEngine.number = 0;
+		renderingEngine.gradient = ctx.createLinearGradient(1,0.8125*canvas.height,1, canvas.height-1);
+		renderingEngine.gradient.addColorStop(0,"#D2691E");
+		renderingEngine.string = null;
+		renderingEngine.diff = null;
+		renderingEngine.interval = null;
+	},
+	
 	waitingPage: function() {
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
@@ -159,8 +170,8 @@ RenderingEngine = Class.extend({
 		
 		
     //render popup messages
-    for (var i=0; i<this.messages.length; i++) {
-    	this.messages[i].render();
+    for (var i=0; i<renderingEngine.messages.length; i++) {
+    	renderingEngine.messages[i].render();
     }
 
 }
