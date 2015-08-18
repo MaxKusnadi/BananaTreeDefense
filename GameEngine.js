@@ -5,10 +5,12 @@ gameEngine = Class.extend({
 	over: true,
 	loaded: 0,
 	file: null,
+	data: null,
 
 	init: function(file) {
 		this.over = true;
 		this.file = file;
+		this.data = characterData.monkeys["Soldier"].attackRate;
 		this.load();//put this as the last line
 	},
 	
@@ -16,7 +18,7 @@ gameEngine = Class.extend({
 		renderingEngine = new RenderingEngine();
 		renderingEngine.string = "Loading";
 		this.interval = setInterval(renderingEngine.loadingPage, 1000);
-		imageManager = new imageManager();
+		imageManager = new ImageManager();
 		audio = new audioManager();
 	},
 	
@@ -81,11 +83,15 @@ gameEngine = Class.extend({
 	},
 
 	restartGame: function(){
+		clearInterval(game.interval);
 		renderingEngine = new RenderingEngine();
 		game.over = true;
 		inputManager = new InputManager();
-		game.startGame(1);
+		monkeySpeed = 1;
+		//game.startGame(1);
 		audio.reset();
+		characterData.monkeys["Soldier"].attackRate = game.data;
+		game.checkLoading();
 	},
 
 	upgrade: function(){

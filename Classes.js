@@ -94,8 +94,14 @@ World = Class.extend({
 	// new data structure
 	spawn: function(type, position) {
 		var mon = characterData.monsters[type];
+		if (type=="Gorilla") {
+			var m = new monster(mon.hp, positionData[position].x
+			, positionData[position].y-80/720*canvas.height, mon.damage,
+			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
+		}else{
 		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
+		}
 		this.objects[position].push(m);
 		audio.play(type);
 	},
@@ -141,21 +147,18 @@ World = Class.extend({
       renderingEngine.createMessage((50/1200*canvas.width).toString()+"px Georgia", 3,  0.33*canvas.width, 0.93*canvas.height, "You Need More Gold");
       return;
     }else{
+			monkeySpeed+=1;
 			this.money -= this.upgradeCost;
       this.upgradeCost *= 1.2;
 			this.upgradeCost = Math.ceil(this.upgradeCost/10)*10;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
-			characterData.monkeys["Soldier"].hp *= 1.2;
-			characterData.monkeys["Soldier"].damage *= 1.2;
-			characterData.monkeys["Soldier"].attackRate *= 1.2;
+			characterData.monkeys["Soldier"].attackRate /= 10;
 			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.2/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
-					this.tree.slots[i].monkey.hp *= 1.2;
-					this.tree.slots[i].monkey.damage *= 1.2;
-					this.tree.slots[i].monkey.attackRate *= 1.2;
+					this.tree.slots[i].monkey.attackRate /= 10;
 				}
 			}
 			
@@ -447,7 +450,7 @@ monkey = armedBeing.extend({
   type : null,
   
   init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost, type) {
-    this._super(hp, SLOTS_POSITION_X[slotNumber], SLOTS_POSITION_Y[slotNumber],
+    this._super(hp, SLOTS_POSITION_X[slotNumber]+0.005*canvas.width*(slotNumber<3?-1:1), SLOTS_POSITION_Y[slotNumber],
     damage, attackRate, attackRange, bulletType);
     this.slotNumber = slotNumber;
     this.cost = cost;
@@ -508,7 +511,8 @@ monster = armedBeing.extend({
   type: null,
   render:null,
   point:null,
-
+	
+	
   init: function(hp, x, y, damage, attackRate, attackRange, bulletType, vx, reward, type, point) {
     this._super(hp, x, y, damage, attackRate, attackRange, bulletType);
     this.vx = vx/1000*frameRate;
@@ -840,6 +844,7 @@ audioManager = Class.extend({
 			this.playing[i].pause();
 		}
 		this.playing = [];
+		this.stopBackground();
 	},
 		
 	remove: function(name) {
@@ -885,7 +890,7 @@ audioManager = Class.extend({
 	}
 });
 
-imageManager = Class.extend({
+ImageManager = Class.extend({
 	collections: null,
 
 	init: function() {
@@ -1001,7 +1006,7 @@ animation = Class.extend({
 			}else this.timer -=frameRate;
 		}
 		var list = this.src[this.frame];
-		this.frame = (this.frame+1)%this.size;
+		this.frame = (this.frame+monkeySpeed)%this.size;
 		list[5] += this.from.x;
 		list[6] += this.from.y;
     //ctx.translate(canvas.width,0);

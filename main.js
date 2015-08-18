@@ -32,6 +32,7 @@ var upgradeButton = null;
 var floorPostion = null;
 var numCloud = null;
 var scoreDisplay = null;
+var monkeySpeed = 1;
 
 //------------------------------MAIN-------------------------------------
 var setup = function() {

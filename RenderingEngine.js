@@ -83,12 +83,6 @@ RenderingEngine = Class.extend({
     ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
 
     world.bgClass.animate();
-    //render monster temporary
-    for (var i=0; i<4; i++) {
-    	for (var j=0; j<world.objects[i].length; j++) {
-    		world.objects[i][j].render.animate();
-    	}
-    }
 
     //render coins
     for (var i=0; i<world.coins.length; i++) {
@@ -99,7 +93,13 @@ RenderingEngine = Class.extend({
     //render tree
     world.tree.render.animate();
 
-
+		 //render monster temporary
+    for (var i=0; i<4; i++) {
+    	for (var j=0; j<world.objects[i].length; j++) {
+    		world.objects[i][j].render.animate();
+    	}
+    }
+		
 		 //render bullets
 		 for (var i=0; i<world.bullets.length; i++) {
 		 	world.bullets[i].render.animate();

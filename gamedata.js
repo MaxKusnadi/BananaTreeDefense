@@ -48,7 +48,7 @@ var data = {
       damage: 80,
       attackRate: 0.5,
       attackRange: 150,
-      bulletType: "type2",
+      bulletType: "spell",
       vx: 30,
       reward: 35,
       point: 150
@@ -87,7 +87,7 @@ var data = {
       hp: 7000,
       damage: 250,
       attackRate: 3,
-      attackRange: 10,
+      attackRange: 50,
       bulletType: "type1",
       vx: 50,
       reward: 0,
@@ -106,6 +106,10 @@ var bulletData= {
 	"type2": {
 		v: 240,
 		type : "projectile"
+	},
+	"spell": {
+		v: 240,
+		type : "straight"
 	}
 }
 //---------------------------MUSIC DATA--------------------------------
@@ -222,6 +226,22 @@ var imageData = {
     sizeY: 120,
     numX: 10,
     numY: 6,
+    actualSizeX: 60,
+    actualSizeY: 60},
+	"spell" : {
+    src: "images/spell.png",
+    sizeX: 60,
+    sizeY: 60,
+    numX: 10,
+    numY: 1,
+    actualSizeX: 60,
+    actualSizeY: 60},
+	"spell1" : {
+    src: "images/spell1.png",
+    sizeX: 60,
+    sizeY: 60,
+    numX: 10,
+    numY: 1,
     actualSizeX: 60,
     actualSizeY: 60},
   "tree" : {
@@ -397,12 +417,12 @@ var imageData = {
     actualSizeY:80,
   },
   "Gorilla" :{
-    src: "images/gorilla1.png",
+    src: "images/gorilla.png",
     sizeX: 69,
     sizeY: 70,
     numX: 10,
     numY: 1,
-    actualSizeX: 160,
+    actualSizeX: 280,
     actualSizeY:280,
   },
   "Gorilla1" :{
@@ -411,7 +431,7 @@ var imageData = {
     sizeY: 70,
     numX: 10,
     numY: 1,
-    actualSizeX: 160,
+    actualSizeX: 280,
     actualSizeY:280,
   }
 }
@@ -419,7 +439,7 @@ var imageData = {
 
 levelData = {
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+              type:["Skeleton", "Skeleton", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[3, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
