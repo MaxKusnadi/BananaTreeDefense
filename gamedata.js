@@ -4,21 +4,21 @@
 var data = {
   monkeys: {
     "Soldier": {
-      hp: 350,
-      damage: 50,
-      attackRate: 0.8,
-      attackRange: 300,
-      bulletType: "type2",
-      cost: 50
-    },
-    "Archer": {
       hp: 550,
-      damage:70,
+      damage: 70,
       attackRate: 0.6,
       attackRange: 400,
       bulletType: "type2",
       cost: 80
-    }
+    },
+    // "Archer": {
+    //   hp: 550,
+    //   damage:70,
+    //   attackRate: 0.6,
+    //   attackRange: 400,
+    //   bulletType: "type2",
+    //   cost: 80
+    // }
     //...
   },
   
@@ -59,7 +59,7 @@ var data = {
       attackRate: 0.2,
       attackRange: 10,
       bulletType: "type1",
-      vx: 200,
+      vx: 150,
       reward: 50,
       point: 75
     },
@@ -82,6 +82,16 @@ var data = {
       vx: 25,
       reward: 35,
       point: 150
+    },
+    "Gorilla": {
+      hp: 7000,
+      damage: 250,
+      attackRate: 3,
+      attackRange: 10,
+      bulletType: "type1",
+      vx: 20,
+      reward: 0,
+      point: 15000
     }
 
     //...
@@ -162,6 +172,11 @@ var musicData ={
   },
   "Snail":{
     src:"audio/snail.wav",
+    loop: false,
+    volume: 0.6
+  },
+  "Gorilla":{
+    src:'audio/gorilla.wav',
     loop: false,
     volume: 0.6
   }
@@ -380,13 +395,31 @@ var imageData = {
     numY: 1,
     actualSizeX: 80,
     actualSizeY:80,
+  },
+  "Gorilla" :{
+    src: "images/gorilla1.png",
+    sizeX: 35.5,
+    sizeY: 50,
+    numX: 6,
+    numY: 1,
+    actualSizeX: 80,
+    actualSizeY:80,
+  },
+  "Gorilla1" :{
+    src: "images/gorilla1.png",
+    sizeX: 35.5,
+    sizeY: 50,
+    numX: 6,
+    numY: 1,
+    actualSizeX: 80,
+    actualSizeY:80,
   }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 
 levelData = {
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+              type:["Gorilla", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
@@ -398,8 +431,13 @@ levelData = {
               {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Zombie", "Zombie", "Zombie", "Zombie", "Snail", "Snail", "Zombie", "Snail", "Zombie", "Snail", "Snail", "Zombie", "Zombie", "Zombie", "Zombie", "Snail"], 
               position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              wait:10},
+
+              {time:[1, 1], 
+              type:["Gorilla", "Gorilla"], 
+              position:[0, 3],
               wait:10}],
 		level: 1,
-		deploy: ["Soldier", "Archer"]},
+		deploy: ["Soldier"]},
 	2:{}
 }
