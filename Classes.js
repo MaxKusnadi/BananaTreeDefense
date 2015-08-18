@@ -462,6 +462,28 @@ monkey = armedBeing.extend({
 			return this.from.slotNumber<3;
 		});
 		this.render.change();
+		this.render.animate = (function(x, y) {
+		if (this.timer) {
+			if (this.timer < 0) this.timer = null;
+			else if (this.time - this.timer <=64 && this.time>this.timer) {
+				this.timer -= frameRate;
+				return;
+			}else if (this.time - this.timer >=0) {
+				this.time -= 500;
+				this.timer -= frameRate;
+			}else this.timer -=frameRate;
+		}
+		var list = this.src[this.frame];
+		this.frame = (this.frame+monkeySpeed)%this.size;
+		list[5] += this.from.x;
+		list[6] += this.from.y;
+    //ctx.translate(canvas.width,0);
+    //ctx.scale(-1,-1);
+		ctx.drawImage.apply(ctx,list);
+    //ctx.restore();
+		list[5] -= this.from.x;
+		list[6] -= this.from.y;
+	});
 		//temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -1010,7 +1032,7 @@ animation = Class.extend({
 			}else this.timer -=frameRate;
 		}
 		var list = this.src[this.frame];
-		this.frame = (this.frame+monkeySpeed)%this.size;
+		this.frame = (this.frame+1)%this.size;
 		list[5] += this.from.x;
 		list[6] += this.from.y;
     //ctx.translate(canvas.width,0);
