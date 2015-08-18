@@ -11,6 +11,12 @@ InputManager = Class.extend({
 
 	init: function() {
 		this.store = [];
+		document.getElementById("canvas").addEventListener("mouseup", (function(event) {var rect = canvas.getBoundingClientRect();
+	var x = event.clientX - rect.left;
+	var y = event.clientY - rect.top;
+			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+		game.restartGame();
+		}}));
 		document.getElementById("canvas").addEventListener("mousedown", this.mouseDown);
 		document.getElementById("canvas").addEventListener("mousemove", this.mouseMove);
 		document.getElementById("canvas").addEventListener("mouseup", this.mouseUp);
@@ -46,12 +52,6 @@ InputManager = Class.extend({
 		var y = event.clientY - rect.top;
 			if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
 		inputManager.status = "restartGame";}}));
-		document.getElementById("canvas").addEventListener("mouseup", (function(event) {var rect = canvas.getBoundingClientRect();
-	var x = event.clientX - rect.left;
-	var y = event.clientY - rect.top;
-			if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
-		game.restartGame();
-		}}));
 			if (world.isWin()) {
 				game.winScreen();
 			}else game.gameOverScreen();

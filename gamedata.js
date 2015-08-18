@@ -438,6 +438,7 @@ var imageData = {
 //----------------------------LEVEL DATA-------------------------------------------------------------
 
 levelData = {
+	/*
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
 							position:[3, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
@@ -456,6 +457,11 @@ levelData = {
               {time:[1, 1], 
               type:["Gorilla", "Gorilla"], 
               position:[0, 3],
+              wait:10}],
+							*/
+		1:{events:[  {time:[1], 
+              type:["Cow"], 
+							position:[3],
               wait:10}],
 		level: 1,
 		deploy: ["Soldier"]},

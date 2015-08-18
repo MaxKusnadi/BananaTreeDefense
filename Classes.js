@@ -154,11 +154,11 @@ World = Class.extend({
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
-			characterData.monkeys["Soldier"].attackRate /= 10;
+			characterData.monkeys["Soldier"].attackRate /= 2;
 			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.2/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
-					this.tree.slots[i].monkey.attackRate /= 10;
+					this.tree.slots[i].monkey.attackRate /= 2;
 				}
 			}
 					renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.05*canvas.width, 0.03*canvas.height, "Monkeys have been upgraded!");

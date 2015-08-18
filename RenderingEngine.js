@@ -173,6 +173,5 @@ RenderingEngine = Class.extend({
     for (var i=0; i<renderingEngine.messages.length; i++) {
     	renderingEngine.messages[i].render();
     }
-
 }
 });
