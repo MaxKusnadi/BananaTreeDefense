@@ -4,7 +4,7 @@
 var data = {
   monkeys: {
     "Soldier": {
-      hp: 550,
+      hp: 600,
       damage: 70,
       attackRate: 0.6,
       attackRange: 400,
@@ -55,7 +55,7 @@ var data = {
     }, 
     "Spider": {
       hp: 100,
-      damage: 60,
+      damage: 40,
       attackRate: 0.2,
       attackRange: 10,
       bulletType: "type1",
@@ -89,7 +89,7 @@ var data = {
       attackRate: 3,
       attackRange: 10,
       bulletType: "type1",
-      vx: 20,
+      vx: 50,
       reward: 0,
       point: 15000
     }
@@ -398,29 +398,29 @@ var imageData = {
   },
   "Gorilla" :{
     src: "images/gorilla1.png",
-    sizeX: 35.5,
-    sizeY: 50,
-    numX: 6,
+    sizeX: 69,
+    sizeY: 70,
+    numX: 10,
     numY: 1,
-    actualSizeX: 80,
-    actualSizeY:80,
+    actualSizeX: 160,
+    actualSizeY:280,
   },
   "Gorilla1" :{
     src: "images/gorilla1.png",
-    sizeX: 35.5,
-    sizeY: 50,
-    numX: 6,
+    sizeX: 69,
+    sizeY: 70,
+    numX: 10,
     numY: 1,
-    actualSizeX: 80,
-    actualSizeY:80,
+    actualSizeX: 160,
+    actualSizeY:280,
   }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
 
 levelData = {
 	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Gorilla", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
-							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+							position:[3, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
 							{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
