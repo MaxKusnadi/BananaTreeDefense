@@ -141,10 +141,12 @@ World = Class.extend({
       renderingEngine.createMessage((50/1200*canvas.width).toString()+"px Georgia", 3,  0.33*canvas.width, 0.93*canvas.height, "You Need More Gold");
       return;
     }else{
-      upgradeCost *= 1.2;
+			this.money -= this.upgradeCost;
+      this.upgradeCost *= 1.2;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
+			
       //Need Help
     }
   },

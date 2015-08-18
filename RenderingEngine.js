@@ -118,7 +118,7 @@ RenderingEngine = Class.extend({
 		ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.08*canvas.height);
 		ctx.fillText("Score: "+world.score,0.46*canvas.width,0.11*canvas.height);
 		ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
-		ctx.fillText("Upgrade cost: "+world.money, 0.20*canvas.width, 0.08*canvas.height);
+		ctx.fillText("Upgrade cost: "+world.upgradeCost, 0.20*canvas.width, 0.08*canvas.height);
 
 		for (key in this.buttons) {
 			this.buttons[key].render();

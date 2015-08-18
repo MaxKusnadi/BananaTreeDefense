@@ -73,6 +73,9 @@ InputManager = Class.extend({
 		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
 			inputManager.status = "pause";
 		}
+		if (Math.abs(upgradeButton.x-x)<=upgradeButton.sx &&Math.abs(upgradeButton.y-y)<=upgradeButton.sy){
+			inputManager.status = "upgrade";
+		}
 		for (var i=0; i<6; i++) {
 			var slot = world.tree.slots[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
@@ -97,11 +100,10 @@ mouseUp: function(event) {
 	var rect = canvas.getBoundingClientRect();
 	var x = event.clientX - rect.left;
 	var y = event.clientY - rect.top;
-	if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
-		game.restartGame();
-	}
-	if(inputManager.status=="restartGame"&&Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
-		game.restartGame();
+	if(inputManager.status=="restartGame"){
+		if (Math.abs(restartButton.x-x)<=restartButton.sx &&Math.abs(restartButton.y-y)<=restartButton.sy){
+			game.restartGame();
+		}else inputManager.status=null;
 	}
 	if (inputManager.paused) {
 		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.status=="resume"){
@@ -125,7 +127,13 @@ mouseUp: function(event) {
 			renderingEngine.render();
 			audio.stopBackground();
 		}
+		inputManager.status = null;
 		inputManager.deploying = null;
+		return;
+	}
+	if (inputManager.status=="upgrade"){
+		world.upgrade();
+		inputManager.status = null;
 		return;
 	}
 	if (inputManager.deploying) {
