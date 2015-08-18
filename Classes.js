@@ -142,6 +142,9 @@ World = Class.extend({
       return;
     }else{
       upgradeCost *= 1.2;
+      ctx.fillRect(0,0,canvas.width, canvas.height);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
       //Need Help
     }
   },
