@@ -28,6 +28,7 @@ var imageData = null;
 var imageManager = null;
 var pauseResumeButton = null;
 var restartButton = null;
+var upgradeButton = null;
 var floorPostion = null;
 var numCloud = null;
 var scoreDisplay = null;
@@ -53,18 +54,19 @@ var setup = function() {
 	gravity = 1.25*canvas.height;
 	coinAcc = gravity;
 	slotSize = {
-  x : 0.02*canvas.width,
-  y: 0.05*canvas.height
+		x : 0.02*canvas.width,
+		y: 0.05*canvas.height
 	};
 	coinSize = {x:0.02*canvas.width, y:0.02*canvas.width};
 	moneyDisplay = {x:0.70*canvas.width, y:0.07*canvas.height};
 	numberToLoad = (function() {var i = 0; for (key in musicData) i++; for (key in imageData) i++; return i;})();
-  characterData = data;
-  bulletData = bulletData;
-	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
-  restartButton = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
+	characterData = data;
+	bulletData = bulletData;
+	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.04*canvas.width, sy: 0.03*canvas.height};
+	restartButton = {x:0.40*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
+	upgradeButton = {x:0.15*canvas.width, y: 0.07*canvas.height, sx: 0.04*canvas.width, sy: 0.03*canvas.height};
 	numCloud = 2;
-	scoreDisplay = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height}
+	scoreDisplay = {x:0.30*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
 	//game = new gameEngine(level0);
 	//new data structure
 	game = new gameEngine(1);

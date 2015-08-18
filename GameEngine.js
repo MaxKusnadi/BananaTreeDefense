@@ -40,8 +40,10 @@ gameEngine = Class.extend({
 		game.interval = setInterval(game.action, frameRate);
 		renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
 			pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
-		renderingEngine.createButton("Restart",(18/1200*canvas.width).toString()+"px Georgia", "Restart", restartButton.x-0.022*canvas.width, restartButton.y+0.01*canvas.height,
+		renderingEngine.createButton("Restart",(18/1200*canvas.width).toString()+"px Georgia", "Restart", restartButton.x-0.025*canvas.width, restartButton.y+0.01*canvas.height,
 			restartButton.sx, restartButton.sy, restartButton.x, restartButton.y);
+		renderingEngine.createButton("Upgrade",(18/1200*canvas.width).toString()+"px Georgia", "Upgrade", upgradeButton.x-0.030*canvas.width, upgradeButton.y+0.01*canvas.height,
+			upgradeButton.sx, upgradeButton.sy, upgradeButton.x, upgradeButton.y);
 	},
 
 	pause: function() {
@@ -84,6 +86,11 @@ gameEngine = Class.extend({
 		inputManager = new InputManager();
 		game.startGame(1);
 		audio.reset();
+	},
+
+	upgrade: function(){
+		world.monkey.levelUp();
+		renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 1, 0.30*canvas.width, 0.95*canvas.height, "Monkeys have been upgraded!");
 	}
 
 });

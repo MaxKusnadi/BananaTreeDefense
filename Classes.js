@@ -20,6 +20,7 @@ World = Class.extend({
 	wave: null,
 	bgClass: null,
   score: null,
+  upgradeCost: null,
   /*
   init: function(file) {
     this.script = file;
@@ -58,6 +59,7 @@ World = Class.extend({
 		this.flag = true;
 		this.bgClass = new backgroundClass();
     this.score= 0;
+    this.upgradeCost = 200;
     for (var i=0; i<levelData[levelNum].deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -132,6 +134,16 @@ World = Class.extend({
     }
 		remove(this.coins);
 		remove(renderingEngine.messages);
+  },
+
+  upgrade: function(){
+    if(this.money < this.upgradeCost){
+      renderingEngine.createMessage((50/1200*canvas.width).toString()+"px Georgia", 3,  0.33*canvas.width, 0.93*canvas.height, "You Need More Gold");
+      return;
+    }else{
+      upgradeCost *= 1.2;
+      //Need Help
+    }
   },
   
   action: function() {
@@ -435,12 +447,6 @@ monkey = armedBeing.extend({
 				ctx.fillRect(this.from.x, this.from.y, 0.0083*canvas.width,0.0083*canvas.width);
 			});
 		}
-  },
-  
-  levelUp: function(){
-    this.damage *=1.3;
-    this.hp *= 1.2;
-    this.hp *= 1.1;
   },
   
   action: function(list) {
