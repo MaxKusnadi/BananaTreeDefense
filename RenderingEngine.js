@@ -57,7 +57,7 @@ RenderingEngine = Class.extend({
 		renderingEngine.diff = (number-renderingEngine.number)/30;
 		renderingEngine.interval = setInterval(function() {ctx.clearRect(0.45*canvas.width,0.52*canvas.height, 0.1*canvas.width, 0.1*canvas.height);
 			ctx.fillText(Math.round(renderingEngine.number)+"%", 0.45*canvas.width, 0.6*canvas.height);
-			renderingEngine.number += renderingEngine.diff;}, frameRate*2);
+			renderingEngine.number += renderingEngine.diff;}, 32.2);
 		ctx.fillText(Math.round(game.loaded/numberToLoad*100)+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";

@@ -909,7 +909,7 @@ ImageManager = Class.extend({
 			var y = 0;
 			var sx = imageData[key].actualSizeX/1200*canvas.width;
 			var sy = imageData[key].actualSizeY/720*canvas.height;
-      if(key == "Soldier" || key == "Soldier1"){
+      if(key == "Soldier" || key == "Soldier1"||key == "type2"||key =="type21"){
         if (key[key.length-1]=='1') {
           for (var i=0; i<imageData[key].numY; i++) {
             for (var j=imageData[key].numX-1; j>=0; j-=2) {
