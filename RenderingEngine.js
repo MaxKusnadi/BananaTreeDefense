@@ -133,9 +133,9 @@ RenderingEngine = Class.extend({
 
 		//render tree hp bar
 		ctx.fillStyle = "rgb(255,0,0)";
-		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.totalHp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/4)*canvas.width,0.13*canvas.height,world.tree.totalHp*0.0001*canvas.width,0.02*canvas.height);
 		ctx.fillStyle = "rgb(0,255,0)";
-		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.hp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/4)*canvas.width,0.13*canvas.height,world.tree.hp*0.0001*canvas.width,0.02*canvas.height);
 		ctx.fillStyle = "#000000";
 		
 		ctx.fillRect(0,0,canvas.width, 0.125*canvas.height);
