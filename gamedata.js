@@ -7,7 +7,7 @@ var data = {
       hp: 800,
       damage: 70,
       attackRate: 0.6,
-      attackRange: 450,
+      attackRange: 400,
       bulletType: "type2",
       cost: 70
     },
@@ -27,7 +27,7 @@ var data = {
       hp: 350,
       damage: 53,
       attackRate: 0.8,
-      attackRange: 350,
+      attackRange: 300,
       bulletType: "type1",
       vx: 70,
       reward: 25,
@@ -37,7 +37,7 @@ var data = {
       hp: 600,
       damage: 40,
       attackRate: 1.8,
-      attackRange: 350,
+      attackRange: 275,
       bulletType: "type1",
       vx: 50,
       reward: 30,
@@ -47,7 +47,7 @@ var data = {
       hp: 1000,
       damage: 60,
       attackRate: 0.5,
-      attackRange: 380,
+      attackRange: 330,
       bulletType: "spell",
       vx: 30,
       reward: 40,
@@ -77,7 +77,7 @@ var data = {
       hp: 1000,
       damage: 60,
       attackRate: 0.7,
-      attackRange: 350,
+      attackRange: 300,
       bulletType: "spell",
       vx: 45,
       reward: 65,
@@ -88,7 +88,7 @@ var data = {
       damage: 250,
       attackRate: 2,
       attackRange: 100,
-      bulletType: "spell",
+      bulletType: "banana",
       vx: 30,
       reward: 0,
       point: 15000
@@ -110,6 +110,10 @@ var bulletData= {
 	"spell": {
 		v: 240,
 		type : "straight"
+	},
+	"banana": {
+		v: 120,
+		type : "projectile"
 	}
 }
 //---------------------------MUSIC DATA--------------------------------
@@ -196,7 +200,23 @@ var imageData = {
     numY: 1,
     actualSizeX: 20,
     actualSizeY: 20},
-  "type1" : {
+  "banana" : {
+		src: "images/banana.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 8,
+    actualSizeX: 200,
+    actualSizeY: 200},
+	"banana1" : {
+		src: "images/banana1.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 8,
+    actualSizeX: 200,
+    actualSizeY: 200},
+	"type1" : {
     src: "images/bullet.png",
     sizeX: 70,
     sizeY: 65,

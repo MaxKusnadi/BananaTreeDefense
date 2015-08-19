@@ -98,6 +98,23 @@ World = Class.extend({
 			var m = new monster(mon.hp, positionData[position].x
 			, positionData[position].y-80/720*canvas.height, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
+			var mm = new monster(mon.hp, positionData[position].x
+			, positionData[position].y-80/720*canvas.height, mon.damage,
+			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
+			mm.render.animate = (function() {});
+			mm.reduceHp = (function(damage) {m.reduceHp(damage)});
+			mm.action = (function() {this.x = m.x, this.y = m.y});
+			this.objects[(position==0?1:2)].push(mm);
+			m.flag = false;
+			m.move = (function() {
+    this.x += this.vx;
+    this.moved = true;
+		if (!m.flag) {
+		renderingEngine.vibrate(0.03,50,1);
+		m.flag = true;
+		setTimeout(function(){m.flag = false}, 500);
+		}
+  });
 		}else{
 		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
@@ -149,7 +166,7 @@ World = Class.extend({
     }else{
 			monkeySpeed += 1;
 			this.money -= this.upgradeCost;
-      this.upgradeCost *= 1.5;
+      this.upgradeCost *= 1.6;
 			this.upgradeCost = Math.ceil(this.upgradeCost/10)*10;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
@@ -159,7 +176,7 @@ World = Class.extend({
       characterData.monkeys["Soldier"].damage += 30;
       world.tree.hp += 200;
       world.tree.totalHp += 200;
-			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.1/10)*10;
+			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.3/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
 					this.tree.slots[i].monkey.attackRate /= 1.2;
@@ -316,6 +333,7 @@ tree = livingBeing.extend({
   render: null,
 	x: null,
 	y: null,
+	flag: false,
   
   init: function(level) {
     this._super(this.generateHp(level), TREE_POSITION_X, TREE_POSITION_Y);
@@ -339,6 +357,13 @@ tree = livingBeing.extend({
     //ctx.restore();
 		list[5] -= this.from.x;
 		list[6] -= this.from.y;
+		});
+		this.render.hit = (function() {
+			if (!world.tree.flag&&!world.tree.isDead) {
+				renderingEngine.vibrate(0.02, 50, 5);
+				world.tree.flag = true;
+				setTimeout((function(){world.tree.flag = false}), 600);
+		}
 	});
 		this.x = TREE_POSITION_X;
 		this.y = TREE_POSITION_Y;
@@ -471,7 +496,7 @@ monkey = armedBeing.extend({
   type : null,
   
   init: function(hp, slotNumber, damage, attackRate, attackRange, bulletType, cost, type) {
-    this._super(hp, SLOTS_POSITION_X[slotNumber]+0.005*canvas.width*(slotNumber<3?-1:1), SLOTS_POSITION_Y[slotNumber],
+    this._super(hp, SLOTS_POSITION_X[slotNumber]+0.005*canvas.width*(slotNumber<2?-1:1), SLOTS_POSITION_Y[slotNumber],
     damage, attackRate, attackRange, bulletType);
     this.slotNumber = slotNumber;
     this.cost = cost;
@@ -589,6 +614,7 @@ monster = armedBeing.extend({
   },
   
   reduceHp: function(damage){
+		console.log(damage);
     this.hp -= damage;
 		this.render.hit();
     if (this.hp<=0 && !this.isDead){

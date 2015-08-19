@@ -47,14 +47,14 @@ RenderingEngine = Class.extend({
 	
 	vibrate: function(magnitudee, time, n) {
 		var magnitude = magnitudee*canvas.height;
-		document.getElementById("vibrate").height += magnitude;
+		document.getElementById("vibrate").height = magnitude;
 		setTimeout(renderingEngine.reverseVibrate, time, magnitudee, time, n);
 	},
 	
 	reverseVibrate: function(magnitudee, time, n) {
 		n -= 1;
 		var magnitude = magnitudee*canvas.height;
-		document.getElementById("vibrate").height -= magnitude;
+		document.getElementById("vibrate").height = 0;
 		if (n>0) {
 			setTimeout(renderingEngine.vibrate, time,magnitudee*0.8, time*1.2, n);
 		}
