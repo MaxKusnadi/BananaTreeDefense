@@ -84,7 +84,7 @@ var data = {
       point: 150
     },
     "Gorilla": {
-      hp: 25000,
+      hp: 50000,
       damage: 250,
       attackRate: 3,
       attackRange: 200,
