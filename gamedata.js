@@ -44,8 +44,8 @@ var data = {
       point: 100
     },
     "Skeleton": {
-      hp: 1000,
-      damage: 60,
+      hp: 800,
+      damage: 40,
       attackRate: 0.5,
       attackRange: 330,
       bulletType: "spell",
