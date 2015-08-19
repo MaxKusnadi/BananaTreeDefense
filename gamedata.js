@@ -65,8 +65,8 @@ var data = {
     },
     "Snail": {
       hp: 5000,
-      damage: 1000,
-      attackRate: 10,
+      damage: 800,
+      attackRate: 1,
       attackRange: 200,
       bulletType: "spell",
       vx: 50,
@@ -84,9 +84,9 @@ var data = {
       point: 150
     },
     "Gorilla": {
-      hp: 10000,
+      hp: 12000,
       damage: 250,
-      attackRate: 3,
+      attackRate: 2,
       attackRange: 100,
       bulletType: "spell",
       vx: 30,

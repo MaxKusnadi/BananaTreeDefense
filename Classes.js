@@ -149,20 +149,21 @@ World = Class.extend({
     }else{
 			monkeySpeed += 1;
 			this.money -= this.upgradeCost;
-      this.upgradeCost *= 1.2;
+      this.upgradeCost *= 1.5;
 			this.upgradeCost = Math.ceil(this.upgradeCost/10)*10;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
-			characterData.monkeys["Soldier"].attackRate /= 1.1;
-      characterData.monkeys["Soldier"].hp += 200;
+			characterData.monkeys["Soldier"].attackRate /= 1.2;
+      //characterData.monkeys["Soldier"].hp += 50;
       characterData.monkeys["Soldier"].damage += 50;
       world.tree.hp += 200;
+      world.tree.totalHp += 200;
 			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.1/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
-					this.tree.slots[i].monkey.attackRate /= 1.1;
-          this.tree.slots[i].monkey.hp += 200;
+					this.tree.slots[i].monkey.attackRate /= 1.2;
+          //this.tree.slots[i].monkey.hp += 200;
           this.tree.slots[i].monkey.damage += 50;
 				}
 			}
