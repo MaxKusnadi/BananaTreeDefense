@@ -102,7 +102,7 @@ World = Class.extend({
 			, positionData[position].y-80/720*canvas.height, mon.damage,
 			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type, mon.point);
 			mm.render.animate = (function() {});
-			mm.reduceHp = (function(damage) {m.reduceHp(damage)});
+			mm.reduceHp = (function(damage) {m.reduceHp(damage);if (m.isDead){mm.isDead = true}});
 			mm.action = (function() {this.x = m.x, this.y = m.y});
 			this.objects[(position==0?1:2)].push(mm);
 			m.flag = false;
