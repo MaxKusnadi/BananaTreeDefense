@@ -63,6 +63,7 @@ gameEngine = Class.extend({
 	action: function() {
 		if (world.isGameOver()&& game.over) {
 			//render
+			renderingEngine.vibrate(0.1, 25, 10);
 			renderingEngine.createMessage((100/1200*canvas.width).toString()+"px Georgia", 999999, 0.34*canvas.width, 0.95*canvas.height, "You Lost!");
 			game.over = false;
 			audio.stopBackground();
@@ -94,6 +95,7 @@ gameEngine = Class.extend({
 		//game.startGame(1);
 		audio.reset();
 		characterData.monkeys["Soldier"].attackRate = game.data;
+		document.getElementById("vibrate").height = 0;
 		game.checkLoading();
 	}
 });

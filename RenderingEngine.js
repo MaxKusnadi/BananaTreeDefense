@@ -45,6 +45,21 @@ RenderingEngine = Class.extend({
 		ctx.fillText("3. Enjoy", 0.15*canvas.width, 0.8*canvas.height);
 	},
 	
+	vibrate: function(magnitudee, time, n) {
+		var magnitude = magnitudee*canvas.height;
+		document.getElementById("vibrate").height += magnitude;
+		setTimeout(renderingEngine.reverseVibrate, time, magnitudee, time, n);
+	},
+	
+	reverseVibrate: function(magnitudee, time, n) {
+		n -= 1;
+		var magnitude = magnitudee*canvas.height;
+		document.getElementById("vibrate").height -= magnitude;
+		if (n>0) {
+			setTimeout(renderingEngine.vibrate, time,magnitudee*0.8, time*1.2, n);
+		}
+	},
+	
 	loadingPage: function() {
 		//render temporary
 		clearInterval(renderingEngine.interval);
@@ -57,7 +72,7 @@ RenderingEngine = Class.extend({
 		renderingEngine.diff = (number-renderingEngine.number)/30;
 		renderingEngine.interval = setInterval(function() {ctx.clearRect(0.45*canvas.width,0.52*canvas.height, 0.1*canvas.width, 0.1*canvas.height);
 			ctx.fillText(Math.floor(renderingEngine.number)+"%", 0.45*canvas.width, 0.6*canvas.height);
-			renderingEngine.number += renderingEngine.diff;}, 32.2);
+			renderingEngine.number += renderingEngine.diff;}, 33.3);
 		ctx.fillText(Math.round(game.loaded/numberToLoad*100)+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
