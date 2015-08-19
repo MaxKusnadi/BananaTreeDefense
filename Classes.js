@@ -329,6 +329,18 @@ tree = livingBeing.extend({
     this.coolDownLength = this.generateCoolDown(level);
     this.coolDownRate = frameRate/1000;
     this.render = new animation(this, "tree");
+		this.render.animate = (function(x, y) {
+		var list = this.src[this.frame];
+		this.frame = (this.frame+1)%this.size;
+		list[5] += this.from.x;
+		list[6] += this.from.y;
+    //ctx.translate(canvas.width,0);
+    //ctx.scale(-1,-1);
+		ctx.drawImage.apply(ctx,list);
+    //ctx.restore();
+		list[5] -= this.from.x;
+		list[6] -= this.from.y;
+	});
 		this.x = TREE_POSITION_X;
 		this.y = TREE_POSITION_Y;
 		this.type = "coin";
