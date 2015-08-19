@@ -64,8 +64,8 @@ var data = {
       point: 75
     },
     "Snail": {
-      hp: 4000,
-      damage: 75,
+      hp: 3000,
+      damage: 60,
       attackRate: 2,
       attackRange: 150,
       bulletType: "spell",
@@ -74,7 +74,7 @@ var data = {
       point: 200
     }, 
     "Zombie": {
-      hp: 1000,
+      hp: 900,
       damage: 60,
       attackRate: 0.7,
       attackRange: 300,
