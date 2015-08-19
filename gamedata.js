@@ -25,7 +25,7 @@ var data = {
   monsters: {
     "Cow": {
       hp: 350,
-      damage: 43,
+      damage: 49,
       attackRate: 0.8,
       attackRange: 300,
       bulletType: "type1",
@@ -35,7 +35,7 @@ var data = {
     }, 
     "Chicken": {
       hp: 500,
-      damage: 40,
+      damage: 45,
       attackRate: 1.8,
       attackRange: 275,
       bulletType: "type1",
@@ -44,8 +44,8 @@ var data = {
       point: 100
     },
     "Skeleton": {
-      hp: 800,
-      damage: 40,
+      hp: 1000,
+      damage: 50,
       attackRate: 0.5,
       attackRange: 330,
       bulletType: "spell",
@@ -54,7 +54,7 @@ var data = {
       point: 150
     }, 
     "Spider": {
-      hp: 350,
+      hp: 450,
       damage: 30,
       attackRate: 0.2,
       attackRange: 100,
@@ -64,8 +64,8 @@ var data = {
       point: 75
     },
     "Snail": {
-      hp: 2000,
-      damage: 60,
+      hp: 4000,
+      damage: 70,
       attackRate: 2,
       attackRange: 150,
       bulletType: "spell",
@@ -74,8 +74,8 @@ var data = {
       point: 200
     }, 
     "Zombie": {
-      hp: 900,
-      damage: 60,
+      hp: 1000,
+      damage: 70,
       attackRate: 1.2,
       attackRange: 300,
       bulletType: "spell",
@@ -84,8 +84,8 @@ var data = {
       point: 150
     },
     "Gorilla": {
-      hp: 25000,
-      damage: 240,
+      hp: 30000,
+      damage: 300,
       attackRate: 3,
       attackRange: 200,
       bulletType: "banana",
