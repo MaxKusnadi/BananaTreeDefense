@@ -95,6 +95,7 @@ gameEngine = Class.extend({
 		//game.startGame(1);
 		audio.reset();
 		characterData.monkeys["Soldier"].attackRate = game.data;
+		characterData.monkeys["Soldier"].cost = 80;
 		document.getElementById("vibrate").height = 0;
 		game.checkLoading();
 	}
