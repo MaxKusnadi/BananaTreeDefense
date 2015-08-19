@@ -44,8 +44,8 @@ var data = {
       point: 100
     },
     "Skeleton": {
-      hp: 1000,
-      damage: 50,
+      hp: 800,
+      damage: 40,
       attackRate: 0.5,
       attackRange: 330,
       bulletType: "spell",
@@ -85,7 +85,7 @@ var data = {
     },
     "Gorilla": {
       hp: 50000,
-      damage: 250,
+      damage: 120,
       attackRate: 3,
       attackRange: 200,
       bulletType: "banana",
