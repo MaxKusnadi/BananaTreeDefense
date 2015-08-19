@@ -56,16 +56,16 @@ var data = {
     "Spider": {
       hp: 450,
       damage: 30,
-      attackRate: 0.2,
+      attackRate: 0.5,
       attackRange: 100,
       bulletType: "spell",
-      vx: 180,
+      vx: 160,
       reward: 50,
       point: 75
     },
     "Snail": {
-      hp: 4000,
-      damage: 75,
+      hp: 3800,
+      damage: 40,
       attackRate: 2,
       attackRange: 150,
       bulletType: "spell",
@@ -74,9 +74,9 @@ var data = {
       point: 200
     }, 
     "Zombie": {
-      hp: 1000,
+      hp: 950,
       damage: 60,
-      attackRate: 0.7,
+      attackRate: 0.9,
       attackRange: 300,
       bulletType: "spell",
       vx: 45,
@@ -464,7 +464,7 @@ levelData = {
               wait:10},
 
 							{time:[1, 5, 10, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
-              type:["Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider", "Spider", "Skeleton", "Spider", "Skeleton", "Spider", "Spider", "Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider"], 
+              type:["Skeleton", "Spider", "Skeleton", "Skeleton", "Spider", "Spider", "Skeleton", "Spider", "Skeleton", "Spider", "Spider", "Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider"], 
               position:[0, 1, 0, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
