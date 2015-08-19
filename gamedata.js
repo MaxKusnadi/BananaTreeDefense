@@ -35,7 +35,7 @@ var data = {
     }, 
     "Chicken": {
       hp: 500,
-      damage: 30,
+      damage: 40,
       attackRate: 1.8,
       attackRange: 275,
       bulletType: "type1",
@@ -44,8 +44,8 @@ var data = {
       point: 100
     },
     "Skeleton": {
-      hp: 800,
-      damage: 40,
+      hp: 1000,
+      damage: 50,
       attackRate: 0.5,
       attackRange: 330,
       bulletType: "spell",
