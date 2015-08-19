@@ -134,7 +134,7 @@ World = Class.extend({
 			remove(this.objects[i]);
     }
     remove(this.bullets);
-    for (var i=0; i<6; i++) {
+    for (var i=0; i<4; i++) {
       var m = world.tree.slots[i].monkey;
       if (m && m.isDead) world.tree.slots[i].monkey = null;
     }
@@ -188,7 +188,7 @@ World = Class.extend({
       }
       else if (list[0] == "rotating") {
         if (this.rotateBuffer.length==0) {
-          for (var i=0; i<6; i++) {
+          for (var i=0; i<4; i++) {
             var m = world.tree.slots[i].monkey;
             if (m) {
               this.rotateBuffer.push(new dummyMonkey(m.type,i));
@@ -198,12 +198,12 @@ World = Class.extend({
           }
           this.rotateBuffer.push(list[2]);
         }else{
-          var diff = (list[2] - this.rotateBuffer[6]+6)%6;
-          for (var i=0; i<6; i++) {
+          var diff = (list[2] - this.rotateBuffer[4]+4)%4;
+          for (var i=0; i<4; i++) {
             if (this.rotateBuffer[i]) {
-              this.rotateBuffer[i].x = SLOTS_POSITION_X[(diff+i)%6];
-              this.rotateBuffer[i].y = SLOTS_POSITION_Y[(diff+i)%6];
-							this.rotateBuffer[i].slotNumber = (diff+i)%6;
+              this.rotateBuffer[i].x = SLOTS_POSITION_X[(diff+i)%4];
+              this.rotateBuffer[i].y = SLOTS_POSITION_Y[(diff+i)%4];
+							this.rotateBuffer[i].slotNumber = (diff+i)%4;
 							this.rotateBuffer[i].render.change()
             }
           }
@@ -214,7 +214,7 @@ World = Class.extend({
         this.buffer = null;
       }
       else if (list[0] == "rotate") {
-        world.tree.rotateClockwise((list[2] - this.rotateBuffer[6]+6)%6);
+        world.tree.rotateClockwise((list[2] - this.rotateBuffer[4]+4)%4);
         this.rotateBuffer = [];
       }
       else if (list[0] == "clear") {
@@ -232,13 +232,13 @@ World = Class.extend({
     this.bgClass.action();
 		for (var j=0; j<4; j++) {
       for (var i=0; i<this.objects[j].length; i++) {
-        var b = this.objects[j][i].action(this.tree.slots[Math.floor(j*1.5 + 0.5)]);
+        var b = this.objects[j][i].action(this.tree.slots[j]);
         if (b) this.bullets.push(b);
       }
     }
-    for (var i=0; i<6; i++) {
+    for (var i=0; i<4; i++) {
       if (this.tree.slots[i].monkey) {
-        var b = this.tree.slots[i].monkey.action(world.objects[Math.floor(i*0.7+0.2)]);
+        var b = this.tree.slots[i].monkey.action(world.objects[i]);
         if (b) this.bullets.push(b);
       }
     }
@@ -368,8 +368,8 @@ tree = livingBeing.extend({
   rotateClockwise: function(diff) {
     if (this.rotateCoolDown>0 || diff==0) return;
     var s = [];
-    for (var i=0; i<6; i++) {
-      s.push(world.tree.slots[(i+6-diff)%6]);
+    for (var i=0; i<4; i++) {
+      s.push(world.tree.slots[(i+4-diff)%4]);
       s[i].x = SLOTS_POSITION_X[i];
       s[i].y = SLOTS_POSITION_Y[i];
       var m = s[i].monkey;
@@ -410,7 +410,7 @@ dummyMonkey = Class.extend({
 		this.slotNumber = num;
 		this.render = new animation(this, type+"Dummy");
 		this.render.checkFace = (function() {
-			return this.from.slotNumber<3;
+			return this.from.slotNumber<2;
 		});
 		this.render.change();
 		if (this.render.src == null) {
@@ -479,7 +479,7 @@ monkey = armedBeing.extend({
 		this.type = type;
 		this.render = new animation(this, type);
 		this.render.checkFace = (function() {
-			return this.from.slotNumber<3;
+			return this.from.slotNumber<2;
 		});
 		this.render.change();
 		this.render.animate = (function(x, y) {

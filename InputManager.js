@@ -76,7 +76,7 @@ InputManager = Class.extend({
 		if (Math.abs(upgradeButton.x-x)<=upgradeButton.sx &&Math.abs(upgradeButton.y-y)<=upgradeButton.sy){
 			inputManager.status = "upgrade";
 		}
-		for (var i=0; i<6; i++) {
+		for (var i=0; i<4; i++) {
 			var slot = world.tree.slots[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
 				if (slot.monkey) {
@@ -137,7 +137,7 @@ mouseUp: function(event) {
 		return;
 	}
 	if (inputManager.deploying) {
-		for (var i=0; i<6; i++) {
+		for (var i=0; i<4; i++) {
 			var slot = world.tree.slots[i];
 			if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
 				inputManager.store.push(["deploy", inputManager.deploying, i]);
@@ -149,7 +149,7 @@ mouseUp: function(event) {
 	}else if (inputManager.rotating) {
 		var nearest = null;
 		var dist = 9999999999999;
-		for (var i=0; i<6; i++) {
+		for (var i=0; i<4; i++) {
 			var slot = world.tree.slots[i];
 			var currdist = Math.abs(x-slot.x)+Math.abs(y-slot.y);
 			if (currdist<dist) {
@@ -201,7 +201,7 @@ mouseMove: function(event) {
 	}else if(inputManager.rotating) {
 		var nearest = null;
 		var dist = 99999999999999999;
-		for (var i=0; i<6; i++) {
+		for (var i=0; i<4; i++) {
 			var slot = world.tree.slots[i];
 			var currdist = Math.abs(x-slot.x)+Math.abs(y-slot.y);
 			if (currdist<dist) {
