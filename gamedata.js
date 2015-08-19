@@ -54,7 +54,7 @@ var data = {
       point: 150
     }, 
     "Spider": {
-      hp: 450,
+      hp: 350,
       damage: 30,
       attackRate: 0.2,
       attackRange: 100,
