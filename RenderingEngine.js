@@ -99,10 +99,6 @@ RenderingEngine = Class.extend({
     
 
 
-    //render cooldown text: temporary
-    ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
-    ctx.fillText("CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.47*canvas.width, 0.105*canvas.height);
-
 
 
     //font definition temporary
@@ -188,5 +184,8 @@ RenderingEngine = Class.extend({
     for (var i=0; i<renderingEngine.messages.length; i++) {
     	renderingEngine.messages[i].render();
     }
+		
+		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
+    ctx.fillText("Rotate CoolDown: "+Math.ceil(world.tree.rotateCoolDown),0.67*canvas.width, 0.11*canvas.height);
 }
 });
