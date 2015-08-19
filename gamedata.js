@@ -44,17 +44,17 @@ var data = {
       point: 100
     },
     "Skeleton": {
-      hp: 800,
+      hp: 1000,
       damage: 60,
       attackRate: 0.5,
       attackRange: 380,
       bulletType: "spell",
       vx: 30,
-      reward: 35,
+      reward: 40,
       point: 150
     }, 
     "Spider": {
-      hp: 200,
+      hp: 400,
       damage: 30,
       attackRate: 0.2,
       attackRange: 100,
@@ -64,13 +64,13 @@ var data = {
       point: 75
     },
     "Snail": {
-      hp: 5000,
-      damage: 800,
-      attackRate: 1,
-      attackRange: 200,
+      hp: 3000,
+      damage: 80,
+      attackRate: 2,
+      attackRange: 150,
       bulletType: "spell",
       vx: 50,
-      reward: 50,
+      reward: 60,
       point: 200
     }, 
     "Zombie": {
@@ -80,7 +80,7 @@ var data = {
       attackRange: 350,
       bulletType: "spell",
       vx: 45,
-      reward: 35,
+      reward: 65,
       point: 150
     },
     "Gorilla": {
