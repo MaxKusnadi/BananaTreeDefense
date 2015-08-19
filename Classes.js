@@ -149,7 +149,7 @@ World = Class.extend({
     }else{
 			monkeySpeed += 1;
 			this.money -= this.upgradeCost;
-      this.upgradeCost *= 1.5;
+      this.upgradeCost *= 1.6;
 			this.upgradeCost = Math.ceil(this.upgradeCost/10)*10;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
@@ -159,7 +159,7 @@ World = Class.extend({
       characterData.monkeys["Soldier"].damage += 30;
       world.tree.hp += 200;
       world.tree.totalHp += 200;
-			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.1/10)*10;
+			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.3/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
 					this.tree.slots[i].monkey.attackRate /= 1.2;
