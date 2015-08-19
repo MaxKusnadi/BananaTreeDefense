@@ -4,12 +4,12 @@
 var data = {
   monkeys: {
     "Soldier": {
-      hp: 600,
+      hp: 800,
       damage: 70,
       attackRate: 0.6,
-      attackRange: 400,
+      attackRange: 450,
       bulletType: "type2",
-      cost: 80
+      cost: 70
     },
     // "Archer": {
     //   hp: 550,
@@ -24,42 +24,42 @@ var data = {
   
   monsters: {
     "Cow": {
-      hp: 250,
-      damage: 50,
+      hp: 350,
+      damage: 30,
       attackRate: 0.8,
-      attackRange: 200,
+      attackRange: 350,
       bulletType: "type1",
       vx: 70,
       reward: 25,
       point: 100
     }, 
     "Chicken": {
-      hp: 500,
-      damage: 60,
+      hp: 600,
+      damage: 40,
       attackRate: 1.8,
-      attackRange: 50,
+      attackRange: 350,
       bulletType: "type1",
       vx: 50,
       reward: 30,
       point: 100
     },
     "Skeleton": {
-      hp: 600,
-      damage: 80,
+      hp: 800,
+      damage: 60,
       attackRate: 0.5,
-      attackRange: 150,
+      attackRange: 380,
       bulletType: "spell",
       vx: 30,
       reward: 35,
       point: 150
     }, 
     "Spider": {
-      hp: 100,
-      damage: 40,
+      hp: 200,
+      damage: 30,
       attackRate: 0.2,
-      attackRange: 10,
-      bulletType: "type1",
-      vx: 150,
+      attackRange: 100,
+      bulletType: "spell",
+      vx: 180,
       reward: 50,
       point: 75
     },
@@ -67,29 +67,29 @@ var data = {
       hp: 5000,
       damage: 1000,
       attackRate: 10,
-      attackRange: 1,
-      bulletType: "type1",
-      vx: 5,
+      attackRange: 200,
+      bulletType: "spell",
+      vx: 50,
       reward: 50,
       point: 200
     }, 
     "Zombie": {
-      hp: 600,
+      hp: 1000,
       damage: 60,
       attackRate: 0.7,
-      attackRange: 150,
-      bulletType: "type2",
-      vx: 25,
+      attackRange: 350,
+      bulletType: "spell",
+      vx: 45,
       reward: 35,
       point: 150
     },
     "Gorilla": {
-      hp: 7000,
+      hp: 10000,
       damage: 250,
       attackRate: 3,
-      attackRange: 50,
-      bulletType: "type1",
-      vx: 50,
+      attackRange: 100,
+      bulletType: "spell",
+      vx: 30,
       reward: 0,
       point: 15000
     }
@@ -438,22 +438,22 @@ var imageData = {
 //----------------------------LEVEL DATA-------------------------------------------------------------
 
 levelData = {
-	1:{events:[  {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+	1:{events:[  {time:[1, 5, 10, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
-							position:[3, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+							position:[3, 1, 0, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
 							{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider", "Spider", "Skeleton", "Spider", "Skeleton", "Spider", "Spider", "Skeleton", "Skeleton", "Skeleton", "Skeleton", "Spider"], 
-              position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              position:[0, 1, 0, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
-              {time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+              {time:[1, 5, 10, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
               type:["Zombie", "Zombie", "Zombie", "Zombie", "Snail", "Snail", "Zombie", "Snail", "Zombie", "Snail", "Snail", "Zombie", "Zombie", "Zombie", "Zombie", "Snail"], 
-              position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+              position:[0, 1, 0, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
               wait:10},
 
-              {time:[1, 1], 
+              {time:[5, 5], 
               type:["Gorilla", "Gorilla"], 
               position:[0, 3],
               wait:10}],

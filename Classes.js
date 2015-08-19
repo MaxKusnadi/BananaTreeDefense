@@ -59,7 +59,7 @@ World = Class.extend({
 		this.flag = true;
 		this.bgClass = new backgroundClass();
     this.score= 0;
-    this.upgradeCost = 200;
+    this.upgradeCost = 100;
     for (var i=0; i<levelData[levelNum].deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -147,21 +147,28 @@ World = Class.extend({
       renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1,  0.07*canvas.width, 0.03*canvas.height, "You Need More Gold");
       return;
     }else{
-			monkeySpeed+=1;
+			monkeySpeed += 1;
 			this.money -= this.upgradeCost;
       this.upgradeCost *= 1.2;
 			this.upgradeCost = Math.ceil(this.upgradeCost/10)*10;
       ctx.fillRect(0,0,canvas.width, canvas.height);
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
-			characterData.monkeys["Soldier"].attackRate /= 2;
-			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.2/10)*10;
+			characterData.monkeys["Soldier"].attackRate /= 1.1;
+      characterData.monkeys["Soldier"].hp += 200;
+      characterData.monkeys["Soldier"].attack += 50;
+      world.tree.hp += 200;
+			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.1/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
-					this.tree.slots[i].monkey.attackRate /= 2;
+					this.tree.slots[i].monkey.attackRate /= 1.1;
+          this.tree.slots[i].monkey.hp += 200;
+          this.tree.slots[i].monkey.attack += 50;
 				}
 			}
-					renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.05*canvas.width, 0.03*canvas.height, "Monkeys have been upgraded!");
+			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.05*canvas.width, 0.03*canvas.height, "Monkeys have been upgraded!");
+      renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.15*canvas.width, 0.35*canvas.height, "1.2 x Attack Speed!!");
+      renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.75*canvas.width, 0.35*canvas.height, "1.2 x Attack Speed!!");
 
 			
       //Need Help
@@ -332,7 +339,7 @@ tree = livingBeing.extend({
   },
   
   generateHp: function(level) {
-    return 1000;
+    return 2500;
   },
   
   addMonkey: function(slotNumber, monkey) {
