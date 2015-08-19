@@ -59,7 +59,7 @@ World = Class.extend({
 		this.flag = true;
 		this.bgClass = new backgroundClass();
     this.score= 0;
-    this.upgradeCost = 100;
+    this.upgradeCost = 130;
     for (var i=0; i<levelData[levelNum].deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -172,16 +172,16 @@ World = Class.extend({
       ctx.fillStyle = "#000000";
       ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
 			characterData.monkeys["Soldier"].attackRate /= 1.2;
-      characterData.monkeys["Soldier"].hp += 200;
-      characterData.monkeys["Soldier"].damage += 30;
+      characterData.monkeys["Soldier"].hp += 100;
+      characterData.monkeys["Soldier"].damage += 20;
       world.tree.hp += 200;
       world.tree.totalHp += 200;
 			characterData.monkeys["Soldier"].cost = Math.ceil(characterData.monkeys["Soldier"].cost*1.3/10)*10;
 			for (var i=0; i<6; i++) {
 				if (this.tree.slots[i].monkey) {
 					this.tree.slots[i].monkey.attackRate /= 1.2;
-          this.tree.slots[i].monkey.hp += 200;
-          this.tree.slots[i].monkey.damage += 30;
+          this.tree.slots[i].monkey.hp += 100;
+          this.tree.slots[i].monkey.damage += 20;
 				}
 			}
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 1, 0.05*canvas.width, 0.03*canvas.height, "Monkeys have been upgraded!");
