@@ -151,7 +151,7 @@ RenderingEngine = Class.extend({
 		}
 		  //render boxes temporary
 		  ctx.font = (15/1200*canvas.width).toString()+"px Georgia";
-		  for (var i=0; i<4; i++) {
+		  for (var i=0; i<6; i++) {
 		  	ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
 		  	ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
 
@@ -176,7 +176,7 @@ RenderingEngine = Class.extend({
 
 		//render rotating units
 		if (world.rotateBuffer.length>0) {
-			for (var i=0; i<4; i++) {
+			for (var i=0; i<6; i++) {
 				if (world.rotateBuffer[i]) {
 					world.rotateBuffer[i].render.animate();
 				}
