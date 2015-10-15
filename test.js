@@ -26,6 +26,7 @@ var coinSize = null;
 var moneyDisplay = null;
 var imageData = null;
 var imageManager = null;
+var pauseResumeButton = null;
 //----------------------------------------GAMEDATA-----------------------------------------------------------
 //---------------------------------------CHARACTER DATA-----------------------------------------------------
 var data = {
@@ -149,14 +150,30 @@ var imageData = {
     numY: 6,
     actualSizeX: 70,
     actualSizeY: 60},
+  "type11" : {
+    src: "images/bullet1.png",
+    sizeX: 70,
+    sizeY: 65,
+    numX: 14,
+    numY: 6,
+    actualSizeX: 70,
+    actualSizeY: 60},
   "type2" : {
-    src: "images/banana.png",
+    src: "images/newbanana.png",
     sizeX: 120,
     sizeY: 120,
     numX: 10,
     numY: 7,
-    actualSizeX: 60,
-    actualSizeY: 60},
+    actualSizeX: 40,
+    actualSizeY: 40},
+  "type21" : {
+    src: "images/newbanana1.png",
+    sizeX: 120,
+    sizeY: 120,
+    numX: 10,
+    numY: 6,
+    actualSizeX: 40,
+    actualSizeY: 40},
   "tree" : {
     src: "images/tree.png",
     sizeX: 222,
@@ -169,7 +186,7 @@ var imageData = {
   "Cow" :{
     src: "images/cow.png",
     sizeX: 237,
-    sizeY: 160,
+    sizeY: 159,
     numX: 8,
     numY: 8,
     actualSizeX: 60,
@@ -183,9 +200,28 @@ var imageData = {
     numY: 1,
     actualSizeX: 60,
     actualSizeY:60,
+  },
+  "Cow1" :{
+    src: "images/cow1.png",
+    sizeX: 237,
+    sizeY: 159,
+    numX: 8,
+    numY: 8,
+    actualSizeX: 60,
+    actualSizeY:60,
+  },
+  "Chicken1" :{
+    src: "images/chicken1.png",
+    sizeX: 33,
+    sizeY: 20,
+    numX: 3,
+    numY: 1,
+    actualSizeX: 60,
+    actualSizeY:60,
   }
 }
 //----------------------------LEVEL DATA-------------------------------------------------------------
+/*
 level0 = {
   events: [{
     time: 1,
@@ -251,22 +287,27 @@ level0 = {
     time: 45,
     type: "Chicken",
     position: 1
-  }
-    
-    
-    ],
+  }],
   level: 1,
   deployNumber: 2,
   deploy: ["Soldier", "Archer"]
 
 }
-/*
-levelData = {
-	1:[{time:[0,0,0], type:['a','b','c'], position:[1,2,3]},//wave 1
-		{time:[1,1,1], type:['x','y','z'], position:[0,0,0]}],//wave 2
-	2:[...]
-}
 */
+levelData = {
+	1:{events:[	{time:[1, 5, 8, 10, 12, 15, 15, 20, 15, 25, 30, 35, 35, 35, 40, 45], 
+							type:["Cow", "Cow", "Cow", "Cow", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken", "Chicken", "Cow", "Cow", "Cow", "Cow", "Chicken"], 
+							position:[0, 1, 1, 2, 3, 1, 2, 3, 1,0, 2, 1, 2, 3, 0, 1],
+							wait:10},
+							
+							{time:[1,1,1,1],
+							type:["Chicken","Chicken","Chicken","Chicken"],
+							position:[0,1,2,3]}],
+		level: 1,
+		deploy: ["Soldier", "Archer"]},
+	2:{}
+}
+
 //------------------------------MAIN-------------------------------------
 var setup = function() {
   canvas = document.getElementById("canvas");
@@ -278,7 +319,7 @@ var setup = function() {
 	}else if (canvas.height/canvas.width<0.6) {
 		canvas.width = canvas.height/0.6;
 	}
-	positionData = {0: {x:0, y:0.75*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.75*canvas.height}};
+	positionData = {0: {x:0, y:0.78*canvas.height}, 1: {x:0, y:0.25*canvas.height}, 2: {x:canvas.width, y:0.25*canvas.height}, 3: {x:canvas.width, y:0.78*canvas.height}};
   boxPosition = {x: 0.03*canvas.width, y:0.0625*canvas.height};
 	TREE_POSITION_X = 0.5*canvas.width;
 	TREE_POSITION_Y = 0.5*canvas.height;
@@ -295,14 +336,16 @@ var setup = function() {
 	numberToLoad = (function() {var i = 0; for (key in musicData) i++; for (key in imageData) i++; return i;})();
   characterData = data;
   bulletData = bulletData;
-	game = new gameEngine(level0);
+	pauseResumeButton = {x:0.90*canvas.width, y: 0.07*canvas.height, sx: 0.03*canvas.width, sy: 0.03*canvas.height};
+	//game = new gameEngine(level0);
+	//new data structure
+	game = new gameEngine(1);
 };
 
 
 
 //------------------------------GAMEENGINE---------------------------------
 gameEngine = Class.extend({
-  world: null,
   interval: null,
 	over: true,
 	loaded: 0,
@@ -331,27 +374,40 @@ gameEngine = Class.extend({
 		}
 	},
 	
-	startGame: function() {
+	startGame: function(event) {
+		if (event.button == 2) return;
 		document.getElementById("canvas").removeEventListener("mousedown", game.startGame);
 		clearInterval(game.interval);
-		audio.play("background");
+		audio.playBackground();
 		world = new world(game.file);
 		inputManager = new inputManager();
 		game.interval = setInterval(game.action, frameRate);
+		renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+			pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
 	},
   
+	pause: function() {
+		audio.pause();
+		clearInterval(this.interval);
+	},
+	
+	resume: function() {
+		audio.resume();
+		game.interval = setInterval(game.action, frameRate);
+	},
+	
   action: function() {
     if (world.isGameOver() && game.over) {
 			//render
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Lost!");
 			game.over = false;
-      audio.stop("background");
+      audio.stopBackground();
       audio.play("gameover");
     }else if (world.isWin()&& game.over) {
 			//render
 			renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 999999, 0.46*canvas.width, 0.94*canvas.height, "You Win!");
 			game.over = false;
-      audio.stop("background");
+      audio.stopBackground();
       audio.play("win");
     }
 		world.action();
@@ -369,17 +425,31 @@ gameEngine = Class.extend({
 renderingEngine = Class.extend({
 	messages: null,
 	string: null,
+	buttons: null,
+	gradient: null,
 	
 	init: function() {
 		this.messages = [];
+		this.buttons = {};
+		this.gradient = ctx.createLinearGradient(1,0.8125*canvas.height,1, canvas.height-1);
+		this.gradient.addColorStop(0,"#D2691E");
+		this.gradient.addColorStop(1,"#A52A2A");
 	},
 	
 	waitingPage: function() {
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
+
 		this.string == "Click to start" ? this.string = "" : this.string = "Click to start"
-		ctx.fillText(this.string, 0.35*canvas.width, 0.5*canvas.height);
+		ctx.fillText(this.string, 0.35*canvas.width, 0.9*canvas.height);
+    ctx.fillText("Instruction :", 0.35*canvas.width, 0.2*canvas.height);
+    ctx.fillText("1. Defend the tree from the incoming", 0.15*canvas.width, 0.3*canvas.height);
+    ctx.fillText("     hordes of wild animals", 0.15*canvas.width, 0.4*canvas.height);
+    ctx.fillText("2. Drag and deploy armies of monkey", 0.15*canvas.width, 0.5*canvas.height);
+    ctx.fillText("     from top left hand corner to the", 0.15*canvas.width, 0.6*canvas.height);
+    ctx.fillText("     6 given boxes", 0.15*canvas.width, 0.7*canvas.height);
+    ctx.fillText("3. Enjoy", 0.15*canvas.width, 0.8*canvas.height);
 	},
 	
 	loadingPage: function() {
@@ -388,6 +458,7 @@ renderingEngine = Class.extend({
 		ctx.clearRect(1, 1, canvas.width-2, canvas.height-2);
 		ctx.font = (50/1200*canvas.width).toString()+"px Georgia";
 		ctx.fillText(renderingEngine.string, 0.4*canvas.width, 0.5*canvas.height);
+		ctx.fillText(Math.round(game.loaded/numberToLoad*100)+"%", 0.45*canvas.width, 0.6*canvas.height);
 		renderingEngine.string+='.';
 		if (renderingEngine.string.length == 13) renderingEngine.string = "Loading";
 	},
@@ -396,19 +467,25 @@ renderingEngine = Class.extend({
 		this.messages.push(new message(style, duration, x, y, text));
 	},
 	
+	createButton: function(key, style, text, xx, yy, sx, sy, x, y) {
+		this.buttons[key] = new button(style, text, xx, yy, sx, sy, x, y);
+	},
+	
 	render: function() {
 		//render screen: temporary
+
 		ctx.fillRect(0,0,canvas.width, canvas.height);
-		ctx.fillRect(0,0.125*canvas.height,canvas.width,0.8125*canvas.height);
-    ctx.clearRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-2);
+		ctx.fillStyle = "#00FFFF";
+    ctx.fillRect(1,0.125*canvas.height+1,canvas.width-2, 0.6875*canvas.height-1);
+		ctx.fillStyle = this.gradient;
+		ctx.fillRect(1,0.8125*canvas.height,canvas.width-2, 0.1875*canvas.height-2);
+		ctx.fillStyle = "#000000";
+    //ctx.fillStyle = "#19A3FF";
     ctx.clearRect(1,1,canvas.width-2,0.125*canvas.height-2);
-    ctx.clearRect(1,0.8125*canvas.height+1,canvas.width-2, 0.1875*canvas.height-2);
   	ctx.font=(20/1200*canvas.width).toString()+"px Georgia";
   	ctx.fillText("Tree Hp: "+Math.round(world.tree.hp),0.46*canvas.width,0.07*canvas.height);
   	ctx.fillText("Money: "+world.money, moneyDisplay.x, moneyDisplay.y);
 		
-    //render tree
-    world.tree.render.animate();
 		
     //render cooldown text: temporary
 		ctx.font = (20/1200*canvas.width).toString()+"px Georgia";
@@ -416,17 +493,6 @@ renderingEngine = Class.extend({
 		
     //font definition temporary
 		ctx.font=(15/1200*canvas.width).toString()+"px Georgia";
-		
-    //render boxes temporary
-		for (var i=0; i<6; i++) {
-      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
-      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
-			
-			//render monkey
-			if (world.tree.slots[i].monkey) {
-				world.tree.slots[i].monkey.render.animate();
-				}
-		};
 		
     //render deployable units (cost temporary)
     for (var i=0; i<world.deploy.length; i++) {
@@ -441,14 +507,29 @@ renderingEngine = Class.extend({
 			}
 		}
 		
-    //render bullets
-		for (var i=0; i<world.bullets.length; i++) {
-			world.bullets[i].render.animate();
-		}
-		
     //render coins
 		for (var i=0; i<world.coins.length; i++) {
 			world.coins[i].render.animate();
+		}
+		
+		
+    //render tree
+    world.tree.render.animate();
+		
+    //render boxes temporary
+		for (var i=0; i<6; i++) {
+      ctx.fillRect(world.tree.slots[i].x-slotSize.x, world.tree.slots[i].y-slotSize.y, 2*slotSize.x,2*slotSize.y);
+      ctx.clearRect(world.tree.slots[i].x-slotSize.x+1, world.tree.slots[i].y-slotSize.y+1, 2*slotSize.x-2,2*slotSize.y-2);
+			
+			//render monkey
+			if (world.tree.slots[i].monkey) {
+				world.tree.slots[i].monkey.render.animate();
+				}
+		};
+		
+		 //render bullets
+		for (var i=0; i<world.bullets.length; i++) {
+			world.bullets[i].render.animate();
 		}
 		
     //render popup messages
@@ -456,6 +537,9 @@ renderingEngine = Class.extend({
 			this.messages[i].render();
 		}
 		
+		for (key in this.buttons) {
+			this.buttons[key].render();
+		}
     //render deploying units 
     if(world.buffer) {
 			world.buffer.render.animate();
@@ -468,6 +552,14 @@ renderingEngine = Class.extend({
 				}
       }
     }
+		
+		//render tree hp bar
+		ctx.fillStyle = "rgb(255,0,0)";
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.totalHp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillStyle = "rgb(0,255,0)";
+		ctx.fillRect((0.50-world.tree.totalHp*0.0002/2)*canvas.width,0.13*canvas.height,world.tree.hp*0.0002*canvas.width,0.02*canvas.height);
+		ctx.fillStyle = "#000000";
+		
 	}
 });
 		
@@ -477,6 +569,7 @@ renderingEngine = Class.extend({
 inputManager = Class.extend({
   store: null,
   deploying: null,
+	paused: false,
   
   init: function() {
     this.store = [];
@@ -491,7 +584,7 @@ inputManager = Class.extend({
     this.store.splice(0,1);
     return x;
   },
-  
+	
   mouseDown: function(event) {
 		if (event.button == 2) return;
 		if (world.isWin() || world.isGameOver()) {
@@ -507,6 +600,15 @@ inputManager = Class.extend({
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
+		if (inputManager.paused) {
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
+			inputManager.deploying = "resume";
+			}
+			return;
+		}
+		if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
+			inputManager.deploying = "pause";
+		}
     for (var i=0; i<6; i++) {
       var slot = world.tree.slots[i];
       if (Math.abs(slot.x-x)<=slotSize.x && Math.abs(slot.y-y)<=slotSize.y) {
@@ -530,7 +632,31 @@ inputManager = Class.extend({
     var rect = canvas.getBoundingClientRect();
     var x = event.clientX - rect.left;
     var y = event.clientY - rect.top;
-    
+		if (inputManager.paused) {
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy&&inputManager.deploying=="resume"){
+				game.resume();
+				inputManager.paused = false;
+				renderingEngine.buttons["Resume"].isDead = true;
+				renderingEngine.createButton("Pause",(20/1200*canvas.width).toString()+"px Georgia", "Pause", pauseResumeButton.x-0.022*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+				audio.playBackground();
+			}
+			inputManager.deploying = null;
+			return;
+		}
+		if (inputManager.deploying=="pause"){
+			if (Math.abs(pauseResumeButton.x-x)<=pauseResumeButton.sx &&Math.abs(pauseResumeButton.y-y)<=pauseResumeButton.sy){
+				game.pause();
+				inputManager.paused = true;
+				renderingEngine.buttons["Pause"].isDead = true;
+				renderingEngine.createButton("Resume",(20/1200*canvas.width).toString()+"px Georgia", "Resume", pauseResumeButton.x-0.03*canvas.width, pauseResumeButton.y+0.01*canvas.height,
+				pauseResumeButton.sx, pauseResumeButton.sy, pauseResumeButton.x, pauseResumeButton.y);
+				renderingEngine.render();
+				audio.stopBackground();
+			}
+			inputManager.deploying = null;
+			return;
+		}
     if (this.deploying) {
       for (var i=0; i<6; i++) {
         var slot = world.tree.slots[i];
@@ -616,20 +742,16 @@ world = Class.extend({
 	flag: null,
 	count: null,
 	wave: null,
-  
+  /*
   init: function(file) {
     this.script = file;
-		//newdatastructure
-		//this.script = levelData[file];
     this.tree = new tree(this.script.level);
     this.nextTimer = this.script.events[0].time;
-		//this.nextTimer = this.script[0].time[0];
     this.bullets = [];
     this.deploy = [];
     this.rotateBuffer = [];
     this.money = startingGold;
 		this.coins = [];
-    //todo
     for (var i=0; i<this.script.deploy.length; i++) {
       this.deploy.push(new slot(null,null));
       var box = this.deploy[i];
@@ -640,8 +762,35 @@ world = Class.extend({
       m.y = box.y;
       box.monkey = m;
     }
-    this.objects = {0: [], 1:[], 2:[], 3:[]}; //a,b,c,d correspond to different direction of spawning
+    this.objects = {0: [], 1:[], 2:[], 3:[]};
   },
+	*/
+	//new data structure
+	init: function(levelNum) {
+		this.script = levelData[levelNum].events;
+		this.nextTimer = this.script[0].time[0];
+		this.count = 0;
+		this.wave = 0;
+		this.tree = new tree(levelData[levelNum].level);
+    this.bullets = [];
+    this.deploy = [];
+    this.rotateBuffer = [];
+    this.money = startingGold;
+		this.coins = [];
+		this.flag = true;
+    for (var i=0; i<levelData[levelNum].deploy.length; i++) {
+      this.deploy.push(new slot(null,null));
+      var box = this.deploy[i];
+      box.x = boxPosition.x+(i*2*slotSize.x);
+      box.y = boxPosition.y;
+      var m = new dummyMonkey(levelData[levelNum].deploy[i]);
+      m.x = box.x;
+      m.y = box.y;
+      box.monkey = m;
+    }
+    this.objects = {0: [], 1:[], 2:[], 3:[]};
+  },
+	
   
   isGameOver: function() {
     return this.gameOver;
@@ -652,14 +801,23 @@ world = Class.extend({
     return (this.objects[0].length == 0 && this.objects[1].length == 0  && this.objects[2].length == 0  && this.objects[3].length == 0 );
   },
   
-  spawn: function(xx) {
+  /*spawn: function(xx) {
     var mon = characterData.monsters[xx.type];
     var m = new monster(mon.hp, positionData[xx.position].x, positionData[xx.position].y, mon.damage,
       mon.attackRate, mon.attackRange, mon.bulletType, ((xx.position)>1 ? -mon.vx: mon.vx), mon.reward, xx.type);
     this.objects[xx.position].push(m);
     audio.play(m.type);
   },
-  
+  */
+	// new data structure
+	spawn: function(type, position) {
+		var mon = characterData.monsters[type];
+		var m = new monster(mon.hp, positionData[position].x, positionData[position].y, mon.damage,
+			mon.attackRate, mon.attackRange, mon.bulletType, (position>1 ? -mon.vx: mon.vx), mon.reward, type);
+		this.objects[position].push(m);
+		audio.play(type);
+	},
+	
   spawnMonkey: function(mon, position) {
     if (this.tree.slots[position].monkey !== null){
       return;
@@ -770,20 +928,30 @@ world = Class.extend({
 			this.coins[i].action();
 		}
     this.removeDead();
-	//todo add wave feature
+		//new data structure
+		while (!this.isFinish && this.timer >= this.nextTimer) {
+			if (this.flag) {
+				renderingEngine.createMessage((20/1200*canvas.width).toString()+"px Georgia", 3,  0.46*canvas.width, 0.9*canvas.height, "Wave "+(this.wave+1));
+				this.flag = false;
+			}
+			this.spawn(this.script[this.wave].type[this.count], this.script[this.wave].position[this.count]);
+		  this.count++;
+      if (this.count == this.script[this.wave].time.length) {
+			  if (this.wave == this.script.length-1) {
+				  this.isFinish = true;
+			  }else {
+				  this.timer = -this.script[this.wave].wait;
+				  this.nextTimer = this.script[this.wave+1].time[0];
+			  }
+        this.wave++;
+				this.count = 0;
+				this.flag = true;
+      }
+      else this.nextTimer = this.script[this.wave].time[this.count];
+    }
+		/*
     while (!this.isFinish && this.timer >= this.nextTimer) {
       this.spawn(this.script.events[0]);
-      this.script.events.splice(0,1);
-      if (this.script.events.length == 0) {
-        this.isFinish = true;
-      }
-      else this.nextTimer = this.script.events[0].time;
-    }
-		/*newdatastructure
-		this.count = 0;
-		this.wave = 0;
-		while (!this.isFinish && this.timer >= this.nextTimer) {
-      this.spawn(this.script[this.wave]);
       this.script.events.splice(0,1);
       if (this.script.events.length == 0) {
         this.isFinish = true;
@@ -800,9 +968,11 @@ livingBeing = Class.extend({
   x: null,
   y: null,
   isDead: null,
+	totalHp: null,
   
   init: function(hp, x, y) {
     this.hp = hp;
+		this.totalHp = hp;
     this.x = x;
     this.y = y;
     this.isDead = false;
@@ -845,6 +1015,7 @@ tree = livingBeing.extend({
     this.render = new animation(this, "tree");
 		this.x = TREE_POSITION_X;
 		this.y = TREE_POSITION_Y;
+		this.type = "coin";
   },
   //todo/discuss: generateHp and generateCoolDown
   
@@ -1027,8 +1198,12 @@ monster = armedBeing.extend({
     this.vx = vx/1000*frameRate;
     this.reward = reward;
   	this.type = type;
-    this.render = new animation(this,type);
-		//temporary
+    if(vx > 0){
+      this.render = new animation(this,type+"1");
+    }else{
+      this.render = new animation(this,type);  
+    }
+    //temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
 				ctx.fillText(this.from.type, this.from.x-0.016*canvas.width, this.from.y-0.014*canvas.height);
@@ -1176,7 +1351,11 @@ bullet = Class.extend({
     this.target = target;
     this.time = t[2];
     this.v = v;
-		this.render = new animation(this, name);
+    if(this.vx>0){
+      this.render = new animation(this, name+"1");
+    }else{
+      this.render = new animation(this, name);
+    }
 		//temporary
 		if (this.render.src == null) {
 			this.render.animate = (function() {
@@ -1287,10 +1466,44 @@ message = Class.extend({
 	}
 });
 
+button = Class.extend({
+	x: null,
+	y: null,
+	sx: null,
+	sy: null,
+	text: null,
+	isDead: false,
+	style: null,
+	xx: null,
+	yy: null,
+	
+	init: function(style, text, xx, yy, sx, sy, x, y) {
+		this.x = x;
+		this.y = y;
+		this.sx = sx;
+		this.sy = sy;
+		this.text = text;
+		this.xx = xx;
+		this.yy = yy;
+		this.style = style;
+	},
+	
+	render: function() {
+		if (this.isDead) return;
+		ctx.fillRect(this.x-this.sx, this.y-this.sy, 2*this.sx, 2*this.sy);
+		ctx.clearRect(this.x-this.sx+1, this.y-this.sy+1, 2*this.sx-2, 2*this.sy-2);
+		ctx.font = this.style;
+		ctx.fillText(this.text, this.xx, this.yy);
+	}
+});
+		
 audioManager = Class.extend({
   collections: null,
+	playing: null,
   init: function(){
     this.collections = {};
+		this.playing = [];
+		this.count = 0;
     for(var key in musicData){
       var context = new Audio();
 			context.oncanplaythrough = (function(){game.loaded++;game.checkLoading();});
@@ -1300,24 +1513,48 @@ audioManager = Class.extend({
       this.collections[key] = context;
     }
   },
-
+	
+	remove: function(name) {
+		var index = this.playing.indexOf(name);
+		this.playing.splice(index,1);
+	},
+	
+	playBackground: function() {
+		this.collections["background"].play();
+	},
+	
   play: function(name){
-		if (!this.collections[name].paused) {
-			var clone = new Audio(musicData[name].src);
-			clone.loop = musicData[name].loop;
-			clone.volume = musicData[name].volume;
-			clone.play();
-		}else this.collections[name].play();
+		var clone = new Audio(musicData[name].src);
+		clone.loop = musicData[name].loop;
+		clone.volume = musicData[name].volume;
+		if (!clone.loop) {
+			clone.onended = (function(){
+				audio.remove(clone);
+			});
+		}
+		audio.playing.push(clone);
+		clone.play();
   },
 
   playMove: function(name){
     this.collections[name].play();
   },
-
-  stop: function(name){
-    this.collections[name].pause();
-  }
-
+	
+	stopBackground: function() {
+		this.collections["background"].pause();
+	},
+	
+	pause: function() {
+		for(var i=0; i<this.playing.length; i++) {
+			this.playing[i].pause();
+		}
+	},
+	
+	resume: function() {
+		for(var i=0; i<this.playing.length; i++) {
+			this.playing[i].play();
+		}
+	}
 });
 
 imageManager = Class.extend({
@@ -1335,11 +1572,20 @@ imageManager = Class.extend({
 			var y = 0;
 			var sx = imageData[key].actualSizeX/1200*canvas.width;
 			var sy = imageData[key].actualSizeY/720*canvas.height;
+			if (key[key.length-1]=='1') {
+				for (var i=0; i<imageData[key].numY; i++) {
+					for (var j=imageData[key].numX-1; j>=0; j--) {
+						var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
+						list.push(inside);
+					}
+				}
+			}else {
 			for (var i=0; i<imageData[key].numY; i++) {
 				for (var j=0; j<imageData[key].numX; j++) {
 					var inside = [img, x+j*imageData[key].sizeX, y+i*imageData[key].sizeY, imageData[key].sizeX, imageData[key].sizeY, -sx/2, -sy/2, sx, sy];
 					list.push(inside);
 				}
+			}
 			}
 			this.collections[key] = list;
 		}
@@ -1371,9 +1617,16 @@ animation = Class.extend({
 		this.frame = (this.frame+1)%this.size;
 		list[5] += this.from.x;
 		list[6] += this.from.y;
+    //ctx.translate(canvas.width,0);
+    //ctx.scale(-1,-1);
 		ctx.drawImage.apply(ctx,list);
+    //ctx.restore();
 		list[5] -= this.from.x;
 		list[6] -= this.from.y;
 	}
 });
 
+backgroundClass = Class.extend({
+  cloud : null,
+  grass : null
+});
